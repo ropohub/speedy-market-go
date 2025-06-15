@@ -461,10 +461,14 @@ const Categories: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <div className="relative">
+              <button
+                onClick={() => navigate('/cart')}
+                className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Open cart"
+              >
                 <ShoppingCart className="w-5 h-5 text-black" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-              </div>
+              </button>
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">B</span>
               </div>
