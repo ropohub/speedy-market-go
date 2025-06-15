@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// From frontend we only support 3 levels of categories.
+message Category {
+  int64 category_id = 1;
+  string name = 2;
+  string image_url = 3;
+  repeated Category subcategories = 4;
+}
+
+message CategorySet { repeated Category categories = 1; }

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+import "api/common/proto/address.proto";
+import "api/common/enums/codes.proto";
+
+// RequestHeader represents the header of a request.
+message RequestHeader {
+  // Address of the customer.
+  Address customer_address = 1;
+}
+
+// ResponseHeader represents the header of a response.
+message ResponseHeader { enums.Code.Enum status = 1; }

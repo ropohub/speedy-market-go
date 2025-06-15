@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package api.common.proto.orderservice;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto/orderservice;api_proto_orderservice";
+
+import "api/common/proto/header.proto";
+
+service OrderService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+  rpc ConfirmPayment(ConfirmPaymentRequest) returns (ConfirmPaymentResponse);
+}
+
+message PlaceOrderRequest {
+  repeated ProductVariantWithQuantity product_variants_with_quantity = 1;
+
+  int64 customer_address_link_id = 2;
+}
+
+message PlaceOrderResponse {
+  ResponseHeader header = 1;
+
+  string order_number = 2;
+
+  string razorpay_order_id = 3;
+
+  int64 amount_micros = 4;
+}
+
+message ProductVariantWithQuantity {
+  int64 product_variant_id = 1;
+
+  int32 quantity = 2;
+}
+
+message ConfirmPaymentRequest {
+  string razorpay_order_id = 1;
+
+  string razorpay_payment_id = 2;
+
+  string razorpay_signature = 3;
+}
+
+message ConfirmPaymentResponse {
+  ResponseHeader header = 1;
+
+  bool success = 2;
+
+  string order_number = 3;
+}

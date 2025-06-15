@@ -1,62 +1,162 @@
+import React, { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
+import SearchBar from '../components/SearchBar';
+import CategorySelector from '../components/CategorySelector';
+import YellowBanner from '../components/YellowBanner';
+import AutoSlidingBanner from '../components/AutoSlidingBanner';
+import MovingBanner from '../components/MovingBanner';
+import FeaturedCategories from '../components/FeaturedCategories';
+import EthnicCollection from '../components/EthnicCollection';
+import ProductGrid from '../components/ProductGrid';
+import { MapPin, ChevronDown, User, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { categories, banners, products, quickPicks, trendingProducts, justInProducts, featuredCategories, heroImages } from '../data/mockData';
 
-import { ShoppingCart, Package, Truck, Store } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Hero from "@/components/Hero";
-import CategoryGrid from "@/components/CategoryGrid";
-import FeaturedProducts from "@/components/FeaturedProducts";
-import DeliveryPromise from "@/components/DeliveryPromise";
-import Footer from "@/components/Footer";
+interface LegacyProduct {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  brand: string;
+  originalPrice?: number;
+}
 
-const Index = () => {
+interface CartItem extends LegacyProduct {
+  selectedSize?: string;
+  quantity: number;
+}
+
+const Index: React.FC = () => {
+  const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState('women');
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isSearchSticky, setIsSearchSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Get the delivery bar height (approximately 72px based on the padding and content)
+      const deliveryBarHeight = 72;
+      setIsSearchSticky(window.scrollY >= deliveryBarHeight);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleAddToCart = (product: LegacyProduct) => {
+    const existingItem = cartItems.find(item => item.id === product.id);
+    if (existingItem) {
+      setCartItems(cartItems.map(item => item.id === product.id ? {
+        ...item,
+        quantity: item.quantity + 1
+      } : item));
+    } else {
+      const newCartItem: CartItem = {
+        ...product,
+        selectedSize: 'M',
+        quantity: 1
+      };
+      setCartItems([...cartItems, newCartItem]);
+    }
+    console.log('Added to cart:', product);
+  };
+
+  const handleUpdateCartQuantity = (id: string, quantity: number) => {
+    setCartItems(cartItems.map(item => item.id === id ? {
+      ...item,
+      quantity
+    } : item));
+  };
+
+  const handleRemoveCartItem = (id: string) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+  };
+
+  const currentBanners = banners[selectedCategory as keyof typeof banners];
+  const currentProducts = products[selectedCategory as keyof typeof products];
+  const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
+  const currentHeroImages = heroImages[selectedCategory as keyof typeof heroImages];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="bg-gradient-to-r from-blue-600 to-orange-500 p-2 rounded-xl">
-              <Package className="h-6 w-6 text-white" />
+    <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
+      <div className="bg-white min-h-screen">
+        {/* Hero Section - Background image with overlay content */}
+        <div className="relative" style={{
+          height: '55vh',
+          backgroundImage: 'url(/lovable-uploads/3d5567e9-bee1-49b1-846c-a831ff5e4325.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
+          {/* Top Bar Content Over Background */}
+          <div className="absolute top-0 left-0 right-0 z-10 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-black" />
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1 py-0">
+                    <span className="text-zinc-950 text-lg font-bold">Home</span>
+                    <ChevronDown className="w-4 h-4 text-black" />
+                  </div>
+                  <span className="opacity-90 text-zinc-950 font-semibold text-xs">Flat 103, house 288, Medicity, Islam...</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => navigate('/cart')}
+                  className="relative"
+                >
+                  <ShoppingCart className="w-5 h-5 text-black" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                </button>
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-semibold text-sm">B</span>
+                </div>
+              </div>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-              QuickMart
-            </span>
           </div>
-          
-          <nav className="hidden md:flex items-center space-x-8">
-            <a href="#categories" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-              Categories
-            </a>
-            <a href="#about" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-              How it Works
-            </a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-              Contact
-            </a>
-          </nav>
-          
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" className="hidden sm:flex">
-              Sign In
-            </Button>
-            <Button className="bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600">
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Cart
-            </Button>
+
+          {/* Search Bar - Moved up slightly */}
+          <div className={`absolute top-16 left-0 right-0 z-10 ${isSearchSticky ? 'invisible' : 'visible'}`}>
+            <SearchBar />
           </div>
         </div>
-      </header>
 
-      <main>
-        <Hero />
-        <DeliveryPromise />
-        <CategoryGrid />
-        <FeaturedProducts />
-      </main>
+        {/* Sticky Search Bar */}
+        <div className={`fixed top-0 left-0 right-0 z-50 bg-black shadow-md transition-transform duration-300 ${isSearchSticky ? 'translate-y-0' : '-translate-y-full'}`}>
+          <SearchBar />
+        </div>
 
-      <Footer />
-    </div>
+        {/* Scrollable Content - No gap, attached to background */}
+        <div className="bg-gray-50">
+          {/* Yellow Banner */}
+          <YellowBanner />
+          
+          <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+          
+          <div className="pt-3">
+            <AutoSlidingBanner banners={currentBanners} />
+          </div>
+          
+          <div className="my-4">
+            <MovingBanner text="FLAT 10% OFF ON YOUR FIRST ORDER" />
+          </div>
+          
+          <div className="bg-white">
+            <FeaturedCategories categories={currentFeaturedCategories} />
+            
+            <EthnicCollection />
+            
+            <ProductGrid 
+              products={quickPicks}
+            />
+            
+            <ProductGrid 
+              products={trendingProducts}
+            />
+          </div>
+        </div>
+      </div>
+    </Layout>
   );
 };
 

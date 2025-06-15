@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+message Address {
+  // The full textual address of the store (e.g., "288, Sector-38 Gurgaon,
+  // Haryana, India").
+  string full_address = 1;
+
+  // The latitude of the store's location (in decimal degrees).
+  double latitude = 2;
+
+  // The longitude of the store's location (in decimal degrees).
+  double longitude = 3;
+
+  // Optional: The postal/ZIP code of the store.
+  string postal_code = 4;
+
+  // Optional: The city or locality of the store.
+  string city = 5;
+
+  // Optional: The state or region of the store.
+  string state = 6;
+
+  // Optional: The country of the store.
+  string country = 7;
+}

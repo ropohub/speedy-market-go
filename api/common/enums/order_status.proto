@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.common.enums;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/enums;api_enums";
+
+message OrderStatus {
+  enum Enum {
+    UNKNOWN = 0;
+
+    ORDER_PLACED = 1;
+
+    DELIVERY_PARTNER_ASSIGNED = 2;
+
+    PICKED = 3;
+
+    DELIVERED = 4;
+
+    WAITING = 5;
+
+    REFUND_PENDING = 6;
+
+    COMPLETED = 7;
+  }
+}

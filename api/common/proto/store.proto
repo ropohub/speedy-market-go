@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+import "api/common/proto/address.proto";
+
+// Represents a store entity with various attributes.
+message Store {
+  // Represents the primary key of the store.
+  message PrimaryKey {
+    // Unique identifier for the store.
+    int64 store_id = 1;
+  }
+
+  // The primary key of the store.
+  PrimaryKey primary_key = 1;
+
+  // The website URL of the store.
+  string website_url = 2;
+
+  // A list of image URLs associated with the store.
+  repeated string image_urls = 3;
+
+  // The name of the store.
+  string name = 4;
+
+  // A description of the store.
+  string description = 5;
+
+  // The address of the store.
+  Address address = 7;
+
+  int64 distance_in_meters = 8;
+
+  int64 time_in_millis = 9;
+}

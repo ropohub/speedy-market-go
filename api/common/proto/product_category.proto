@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// Represents a product category in the system.
+message ProductCategoryPB {
+  // Enum for different types of product categories.
+  enum Enum {
+    // Unknown product category.
+    UNKNOWN = 0;
+
+    // Product category for shirts.
+    SHIRT = 1;
+
+    // Product category for pants.
+    PANTS = 2;
+
+    // Product category for jeans.
+    JEANS = 3;
+  }
+}

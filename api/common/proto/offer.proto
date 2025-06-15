@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// Represents an offer with various types and attributes.
+message Offer {
+  // Represents the primary key of the offer.
+  message PrimaryKey {
+    // Unique identifier for the offer.
+    string offer_id = 1;
+  }
+
+  // The primary key of the offer.
+  PrimaryKey primary_key = 1;
+
+  // Description of the offer.
+  string description = 2;
+
+  // Indicates if the offer is active.
+  bool is_active = 3;
+
+  // One of the different types of offers.
+  oneof offer {
+    // Multi-buy offer details.
+    MultiBuyOffer multi_buy_offer = 4;
+
+    // Flat discount offer details.
+    FlatDiscountOffer flat_discount_offer = 5;
+
+    // Percentage discount offer details.
+    PercentageOffer percentage_offer = 6;
+
+    // Fixed price offer details.
+    FixedPriceOffer fixed_price_offer = 7;
+  }
+
+  // Priority of the offer.
+  int64 priority = 8;
+
+  // Start date of the offer.
+  string start_date = 9;
+
+  // End date of the offer.
+  string end_date = 10;
+}
+
+// Represents a multi-buy offer.
+message MultiBuyOffer {
+  // Minimum number of items required to avail the offer.
+  int64 min_items = 1;
+
+  // Number of free items given in the offer.
+  int64 free_items = 2;
+}
+
+// Represents a flat discount offer.
+message FlatDiscountOffer {
+  // Minimum number of items required to avail the offer.
+  int64 min_items = 1;
+
+  // Discount amount in micros.
+  double discount_amount_micros = 2;
+}
+
+// Represents a percentage discount offer.
+message PercentageOffer {
+  // Minimum number of items required to avail the offer.
+  int64 min_items = 1;
+
+  // Discount percentage.
+  double discount_percentage = 2;
+}
+
+// Represents a fixed price offer.
+message FixedPriceOffer {
+  // Minimum number of items required to avail the offer.
+  int64 min_items = 1;
+
+  // Fixed discounted price in micros.
+  double fixed_discounted_price_micros = 2;
+}

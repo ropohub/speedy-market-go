@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.common.proto.brandservice;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto/brandservice;api_proto_brandservice";
+
+import "api/common/proto/brand.proto";
+import "api/common/proto/header.proto";
+
+// BrandService defines a gRPC service for managing brand-related operations.
+service BrandService {
+  // GetBrand retrieves information about one or more brands.
+  rpc GetBrand(GetBrandRequest) returns (GetBrandResponse);
+}
+
+// GetBrandRequest represents the input message for the GetBrand RPC.
+message GetBrandRequest {
+  // Header for the request, typically containing metadata like authentication
+  // or tracing information.
+  RequestHeader header = 1;
+}
+
+// GetBrandResponse represents the output message for the GetBrand RPC.
+message GetBrandResponse {
+  // Header for the response, typically containing metadata like status codes or
+  // tracing information.
+  ResponseHeader header = 1;
+  // A list of brands retrieved in response to the request.
+  repeated Brand brands = 2;
+}

@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package api.common.proto.storeservice;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto/storeservice;api_proto_storeservice";
+
+import "api/common/proto/filter.proto";
+import "api/common/proto/header.proto";
+import "api/common/proto/product.proto";
+import "api/common/proto/store.proto";
+
+// StoreService defines the service for store-related operations.
+service StoreService {
+  // GetStore retrieves a stream of stores based on the provided request.
+  rpc GetStore(GetStoreRequest) returns (stream GetStoreResponse);
+
+  // GetStorePriceForProduct retrieves the price of a product in different
+  // stores.
+  rpc GetStorePriceForProduct(GetStorePriceForProductRequest)
+      returns (GetStorePriceForProductResponse);
+}
+
+// GetStoreRequest is the request message for retrieving stores.
+message GetStoreRequest {
+  // OrderBy specifies the field and order for sorting the results.
+  message OrderBy {
+    // Enum field to sort by.
+    Field.Enum field = 1;
+
+    // Whether to sort in descending order.
+    bool descending = 2;
+  }
+
+  // Request header containing metadata.
+  RequestHeader header = 1;
+
+  // List of store selectors to filter the results.
+  repeated StoreSelector selectors = 2;
+
+  // Order by criteria for sorting the results.
+  repeated OrderBy order_by = 3;
+}
+
+// GetStoreResponse is the response message containing the list of stores.
+message GetStoreResponse {
+  // Response header containing metadata.
+  ResponseHeader header = 1;
+
+  // List of stores matching the request.
+  repeated Store stores = 2;
+}
+
+// GetStorePriceForProductRequest is the request message for retrieving store
+// prices for a product.
+message GetStorePriceForProductRequest {
+  // Request header containing metadata.
+  RequestHeader header = 1;
+
+  // Primary key of the product.
+  Product.PrimaryKey product_key = 2;
+}
+
+// GetStorePriceForProductResponse is the response message containing store
+// prices for a product.
+message GetStorePriceForProductResponse {
+  // StorePrice contains the store and its discounted price for the product.
+  message StorePrice {
+    // Store information.
+    Store store = 1;
+
+    // Discounted price in micros.
+    int64 discounted_price_micros = 2;
+  }
+
+  // Response header containing metadata.
+  ResponseHeader header = 1;
+
+  // List of store prices for the product.
+  repeated StorePrice store_prices = 2;
+}
+
+// StoreSelector is used to filter stores based on specific fields and filters.
+message StoreSelector {
+  // Enum field to filter by.
+  Field.Enum field = 1;
+
+  // Filters to apply on the field.
+  Filter filter = 2;
+}
+
+// Field defines the enum for various fields that can be used for sorting and
+// filtering.
+message Field {
+  enum Enum {
+    // Unknown field.
+    UNKNOWN = 0;
+
+    // Store key field.
+    STORE_KEY = 1;
+    // Brand key field.
+    BRAND_KEY = 2;
+    // Product key field.
+    PRODUCT_KEY = 3;
+
+    // Gender field.
+    GENDER = 4;
+    // Category field.
+    CATEGORY = 5;
+
+    // Rating field.
+    RATING = 6;
+    // Discount percentage field.
+    DISCOUNT_PERCENTAGE = 7;
+    // Distance field.
+    DISTANCE = 8;
+  }
+}

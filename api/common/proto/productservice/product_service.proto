@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package api.common.proto.productservice;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto/productservice;api_proto_productservice";
+
+import "api/common/proto/filter.proto";
+import "api/common/proto/header.proto";
+import "api/common/proto/product.proto";
+import "api/common/proto/category.proto";
+
+// ProductService defines the service for handling product-related operations.
+service ProductService {
+  // GetProduct retrieves a stream of products based on the provided request.
+  rpc GetProduct(GetProductRequest) returns (stream GetProductResponse);
+
+  rpc GetProductDetails(GetProductDetailsRequest)
+      returns (GetProductDetailsResponse);
+
+  rpc GetCategorySet(GetCategorySetRequest) returns (GetCategorySetResponse);
+}
+
+message GetCategorySetRequest { RequestHeader header = 1; }
+
+message GetCategorySetResponse {
+  ResponseHeader header = 1;
+
+  CategorySet category_set = 2;
+}
+
+message GetProductDetailsRequest {
+  RequestHeader header = 1;
+
+  int64 product_id = 2;
+}
+
+message GetProductDetailsResponse {
+  ResponseHeader header = 1;
+
+  ProductDetails product_details = 2;
+}
+
+// GetProductRequest represents the request message for retrieving products.
+message GetProductRequest {
+  // OrderBy specifies the field and order for sorting the products.
+  message OrderBy {
+    // The field to sort by.
+    Field.Enum selector = 1;
+
+    // Whether to sort in descending order.
+    bool descending = 2;
+  }
+
+  // The request header containing metadata.
+  RequestHeader header = 1;
+
+  string search_query = 2;
+
+  // The list of product selectors to filter the products.
+  repeated ProductSelector selectors = 3;
+
+  // The list of order by criteria for sorting the products.
+  repeated OrderBy order_by = 4;
+}
+
+// GetProductResponse represents the response message containing the products.
+message GetProductResponse {
+  // The response header containing metadata.
+  ResponseHeader header = 1;
+
+  // The list of products retrieved.
+  repeated Product products = 2;
+}
+
+// ProductSelector specifies the criteria for selecting products.
+message ProductSelector {
+  // The field to filter by.
+  Field.Enum field = 1;
+
+  // The filter criteria for the selected field.
+  Filter filter = 2;
+}
+
+// Field defines the various fields that can be used for filtering and sorting.
+message Field {
+  enum Enum {
+    // Unknown field.
+    UNKNOWN = 0;
+
+    // Field for product key.
+    PRODUCT_KEY = 1;
+    // Field for brand key.
+    BRAND_KEY = 2;
+    // Field for store key.
+    STORE_KEY = 3;
+    PRODUCT_VARIANT_KEY = 4;
+
+    // Field for gender.
+    GENDER = 5;
+    // Field for category.
+    CATEGORY = 6;
+
+    // Field for rating.
+    RATING = 7;
+    // Field for discount price in micros.
+    DISCOUNT_PRICE_MICROS = 8;
+    // Field for discount percentage.
+    DISCOUNT_PERCENTAGE = 9;
+
+    // Field for distance.
+    DISTANCE = 10;
+    // Field for offer.
+    OFFER = 11;
+
+    FROM_DELIVERY_PARTNERS = 12;
+
+    CATEGORY_ID = 13;
+  }
+}

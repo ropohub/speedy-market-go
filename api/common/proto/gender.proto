@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// GenderPB represents gender information, typically used to categorize or
+// identify an entity's gender.
+message GenderPB {
+  enum Enum {
+    UNKNOWN = 0;
+    MALE = 1;
+    FEMALE = 2;
+    NEUTRAL = 3;
+  }
+}

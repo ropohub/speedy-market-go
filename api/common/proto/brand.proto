@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// Brand represents information about a brand, including its identifier, name,
+// description, and associated images.
+message Brand {
+  // PrimaryKey is a nested message that uniquely identifies a brand.
+  message PrimaryKey {
+    // The unique ID of the brand.
+    int32 brand_id = 1;
+  }
+  PrimaryKey primary_key = 1;
+
+  // The name of the brand.
+  string name = 2;
+
+  // A brief description of the brand.
+  string description = 3;
+
+  // A list of URLs pointing to images associated with the brand.
+  repeated string image_urls = 4;
+}

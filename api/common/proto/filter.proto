@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package api.common.proto;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto;api_proto";
+
+// Filter represents a condition or criteria used to query or filter data.
+message Filter {
+  // Operator defines the type of comparison or condition to be applied in the
+  // filter.
+  enum Operator {
+    UNKNOWN = 0;
+
+    EQUALS = 1;
+    NOT_EQUALS = 2;
+
+    IN = 3;
+    NOT_IN = 4;
+
+    GREATHER_THAN = 5;
+    GREATHER_THAN_OR_EQUALS = 6;
+    LESS_THAN = 7;
+    LESS_THAN_OR_EQUALS = 8;
+
+    IS_NULL = 9;
+    IS_NOT_NULL = 10;
+
+    CONTAINS_ANY = 11;
+    CONTAINS_ALL = 12;
+    CONTAINS_NONE = 13;
+
+    NOT_EMPTY = 14;
+  }
+
+  // The operator to apply for this filter condition.
+  Operator operator = 1;
+
+  // A list of values associated with the filter condition.
+  // The interpretation of these values depends on the operator.
+  Value value = 2;
+}
+
+// Value represents a single value of a specific type used in a filter
+// condition.
+message Value {
+  oneof value {
+    bool bool_value = 1;
+    string string_value = 2;
+    int64 int64_value = 3;
+    uint64 uint64_value = 4;
+    float float_value = 5;
+    double double_value = 6;
+    bytes bytes_value = 7;
+    BoolList bool_list = 8;
+    StringList string_list = 9;
+    Int64List int64_list = 10;
+    Uint64Values uint64_list = 11;
+    FloatList float_list = 12;
+    DoubleList double_list = 13;
+    BytesList bytes_list = 14;
+  }
+}
+
+message BoolList {
+  repeated bool bool_values = 1;
+}
+
+message StringList {
+  repeated string string_values = 1;
+}
+
+message Int64List {
+  repeated int64 int64_values = 1;
+}
+
+message Uint64Values {
+  repeated uint64 uint64_values = 11;
+}
+
+message FloatList {
+  repeated float float_values = 12;
+}
+
+message DoubleList {
+  repeated double double_values = 13;
+}
+
+message BytesList {
+  repeated bytes bytes_values = 14;
+}
+

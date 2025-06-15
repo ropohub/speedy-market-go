@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package api.common.proto.customerservice;
+
+option go_package = "github.com/ropohub/ropo/protogen/api/common/proto/customerservice;api_proto_customerservice";
+
+import "api/common/proto/header.proto";
+import "api/common/proto/address.proto";
+
+service CustomerService {
+  rpc GetCustomer(GetCustomerRequest) returns (GetCustomerResponse);
+
+  rpc AddCustomerAddress(AddCustomerAddressRequest)
+      returns (AddCustomerAddressResponse);
+}
+
+message GetCustomerRequest {
+  RequestHeader header = 1;
+
+  string phone_number = 2;
+}
+
+message GetCustomerResponse {
+  ResponseHeader header = 1;
+
+  repeated OrderReciever order_recievers = 2;
+}
+
+message AddCustomerAddressRequest {
+  RequestHeader header = 1;
+
+  OrderReciever order_reciever = 2;
+}
+
+message AddCustomerAddressResponse {
+  ResponseHeader header = 1;
+
+  int64 customer_address_link_id = 2;
+}
+
+message OrderReciever {
+  Address reciever_address = 1;
+
+  string house_number_and_floor = 2;
+
+  string receiver_name = 3;
+
+  string reciever_phone_number = 4;
+
+  int64 customer_address_link_id = 5;
+}
