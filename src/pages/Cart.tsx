@@ -1,26 +1,16 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
-import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCartItems, mutateCartItem } from '../api/cartClient';
 import Auth from './Auth';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  brand: string;
-  selectedSize?: string;
-  quantity: number;
-  productVariantId: number;
-}
+import CartItem from '../components/cart/CartItem';
+import OrderSummary from '../components/cart/OrderSummary';
+import { CartLoadingState, CartErrorState, CartEmptyState } from '../components/cart/CartStates';
+import { CartItem as CartItemType } from '../types/cart';
 
 const Cart: React.FC = () => {
-  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   
@@ -45,8 +35,18 @@ const Cart: React.FC = () => {
     return <Auth />;
   }
 
+  // Loading state
+  if (isLoading) {
+    return <CartLoadingState />;
+  }
+
+  // Error state
+  if (error) {
+    return <CartErrorState />;
+  }
+
   // Map API response to CartItem format
-  const cartItems: CartItem[] = cartResponse?.itemsWithQuantityList?.map((item, index) => ({
+  const cartItems: CartItemType[] = cartResponse?.itemsWithQuantityList?.map((item, index) => ({
     id: `item-${item.productVariantId}`,
     name: `Product ${item.productVariantId}`, // TODO: Get actual product details
     price: 999, // TODO: Get actual price from product service
@@ -56,6 +56,11 @@ const Cart: React.FC = () => {
     quantity: item.quantity,
     productVariantId: item.productVariantId,
   })) || [];
+
+  // Empty cart state
+  if (cartItems.length === 0) {
+    return <CartEmptyState />;
+  }
 
   const handleUpdateQuantity = (productVariantId: number, newQuantity: number) => {
     updateCartMutation.mutate({ productVariantId, quantity: newQuantity });
@@ -69,63 +74,6 @@ const Cart: React.FC = () => {
   const deliveryFee = 99;
   const total = subtotal + deliveryFee;
 
-  const handleCheckout = () => {
-    navigate('/checkout');
-  };
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-            <p className="text-gray-600">Loading your cart...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <Layout>
-        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600 mb-4">Failed to load cart items</p>
-            <button 
-              onClick={() => queryClient.invalidateQueries({ queryKey: ['cartItems'] })}
-              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (cartItems.length === 0) {
-    return (
-      <Layout>
-        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-            <p className="text-gray-600 mb-6">Add some items to get started</p>
-            <button 
-              onClick={() => navigate('/categories')}
-              className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
-            >
-              Continue Shopping
-            </button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
@@ -138,91 +86,23 @@ const Cart: React.FC = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {cartItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm">
-                <div className="flex gap-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-500">{item.brand}</p>
-                        <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
-                      </div>
-                      <button
-                        onClick={() => handleRemoveItem(item.productVariantId)}
-                        disabled={updateCartMutation.isPending}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-full disabled:opacity-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleUpdateQuantity(item.productVariantId, item.quantity - 1)}
-                          disabled={updateCartMutation.isPending || item.quantity <= 1}
-                          className="p-1 hover:bg-gray-100 rounded-full disabled:opacity-50"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="font-medium">{item.quantity}</span>
-                        <button
-                          onClick={() => handleUpdateQuantity(item.productVariantId, item.quantity + 1)}
-                          disabled={updateCartMutation.isPending}
-                          className="p-1 hover:bg-gray-100 rounded-full disabled:opacity-50"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="font-semibold text-lg">₹{item.price * item.quantity}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <CartItem
+                key={item.id}
+                {...item}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+                isUpdating={updateCartMutation.isPending}
+              />
             ))}
           </div>
 
           {/* Order Summary */}
-          <div className="bg-white rounded-lg p-6 shadow-sm h-fit">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
-            
-            <div className="space-y-3 mb-4">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">₹{subtotal}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Delivery Fee</span>
-                <span className="font-medium">₹{deliveryFee}</span>
-              </div>
-              <div className="border-t pt-3">
-                <div className="flex justify-between">
-                  <span className="font-bold text-lg">Total</span>
-                  <span className="font-bold text-lg">₹{total}</span>
-                </div>
-              </div>
-            </div>
-
-            <button 
-              onClick={handleCheckout}
-              disabled={updateCartMutation.isPending}
-              className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors disabled:opacity-50"
-            >
-              Proceed to Checkout
-            </button>
-            
-            <button 
-              onClick={() => navigate('/categories')}
-              className="w-full mt-3 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-            >
-              Continue Shopping
-            </button>
-          </div>
+          <OrderSummary
+            subtotal={subtotal}
+            deliveryFee={deliveryFee}
+            total={total}
+            isUpdating={updateCartMutation.isPending}
+          />
         </div>
       </div>
     </Layout>
