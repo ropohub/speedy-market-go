@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCartItems, mutateCartItem } from '../api/cartClient';
 import Auth from './Auth';
 
 interface CartItem {
@@ -14,51 +16,53 @@ interface CartItem {
   brand: string;
   selectedSize?: string;
   quantity: number;
+  productVariantId: number;
 }
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
   
-  // Mock cart items - in real app this would come from context/state management
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 'w1',
-      name: 'Floral Summer Dress',
-      price: 1299,
-      image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
-      brand: 'Zara',
-      selectedSize: 'M',
-      quantity: 1
+  // Fetch cart items using React Query
+  const { data: cartResponse, isLoading, error } = useQuery({
+    queryKey: ['cartItems'],
+    queryFn: getCartItems,
+    enabled: isAuthenticated,
+  });
+
+  // Mutation for updating cart items
+  const updateCartMutation = useMutation({
+    mutationFn: ({ productVariantId, quantity }: { productVariantId: number; quantity: number }) =>
+      mutateCartItem(productVariantId, quantity),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cartItems'] });
     },
-    {
-      id: 'w2',
-      name: 'Cotton White Shirt',
-      price: 899,
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
-      brand: 'H&M',
-      selectedSize: 'L',
-      quantity: 2
-    }
-  ]);
+  });
 
   // Show login screen if user is not authenticated
   if (!isAuthenticated) {
     return <Auth />;
   }
 
-  const handleUpdateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      handleRemoveItem(id);
-      return;
-    }
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+  // Map API response to CartItem format
+  const cartItems: CartItem[] = cartResponse?.itemsWithQuantityList?.map((item, index) => ({
+    id: `item-${item.productVariantId}`,
+    name: `Product ${item.productVariantId}`, // TODO: Get actual product details
+    price: 999, // TODO: Get actual price from product service
+    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
+    brand: 'Brand Name', // TODO: Get actual brand
+    selectedSize: 'M', // TODO: Get actual size
+    quantity: item.quantity,
+    productVariantId: item.productVariantId,
+  })) || [];
+
+  const handleUpdateQuantity = (productVariantId: number, newQuantity: number) => {
+    updateCartMutation.mutate({ productVariantId, quantity: newQuantity });
   };
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleRemoveItem = (productVariantId: number) => {
+    updateCartMutation.mutate({ productVariantId, quantity: 0 });
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -68,6 +72,39 @@ const Cart: React.FC = () => {
   const handleCheckout = () => {
     navigate('/checkout');
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600">Loading your cart...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Layout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Failed to load cart items</p>
+            <button 
+              onClick={() => queryClient.invalidateQueries({ queryKey: ['cartItems'] })}
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -116,8 +153,9 @@ const Cart: React.FC = () => {
                         <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
                       </div>
                       <button
-                        onClick={() => handleRemoveItem(item.id)}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-full"
+                        onClick={() => handleRemoveItem(item.productVariantId)}
+                        disabled={updateCartMutation.isPending}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-full disabled:opacity-50"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -126,15 +164,17 @@ const Cart: React.FC = () => {
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-3">
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                          className="p-1 hover:bg-gray-100 rounded-full"
+                          onClick={() => handleUpdateQuantity(item.productVariantId, item.quantity - 1)}
+                          disabled={updateCartMutation.isPending || item.quantity <= 1}
+                          className="p-1 hover:bg-gray-100 rounded-full disabled:opacity-50"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="font-medium">{item.quantity}</span>
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                          className="p-1 hover:bg-gray-100 rounded-full"
+                          onClick={() => handleUpdateQuantity(item.productVariantId, item.quantity + 1)}
+                          disabled={updateCartMutation.isPending}
+                          className="p-1 hover:bg-gray-100 rounded-full disabled:opacity-50"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -170,7 +210,8 @@ const Cart: React.FC = () => {
 
             <button 
               onClick={handleCheckout}
-              className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
+              disabled={updateCartMutation.isPending}
+              className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors disabled:opacity-50"
             >
               Proceed to Checkout
             </button>
