@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import NavigationBar from '../components/NavigationBar';
 import FilterBar from '../components/FilterBar';
@@ -114,6 +115,13 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
 };
 
 const ProductListPage = () => {
+  const { category, subcategory } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const {
     data,
     error,
@@ -122,7 +130,7 @@ const ProductListPage = () => {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ['shopifyProducts'],
+    queryKey: ['shopifyProducts', category, subcategory],
     queryFn: fetchProductsFromShopify,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => {
@@ -167,6 +175,16 @@ const ProductListPage = () => {
     };
   })) ?? [];
 
+  const handleBack = () => {
+    if (category || subcategory) {
+      navigate('/categories');
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const pageTitle = subcategory || category || 'Products';
+
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -177,7 +195,7 @@ const ProductListPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
+      <Header onBackClick={handleBack} title={pageTitle.replace(/-/g, ' ')} />
       <NavigationBar />
       <FilterBar />
       <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
