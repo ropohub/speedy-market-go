@@ -154,8 +154,8 @@ const SearchResults = () => {
         <h1 className="text-lg font-medium">Search Results</h1>
       </header>
 
-      {/* Search Bar with black background */}
-      <div className="bg-black">
+      {/* Search Bar with white background */}
+      <div className="bg-white">
         <SearchBar />
       </div>
 

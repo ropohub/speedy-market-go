@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import SearchBar from '../components/SearchBar';
@@ -7,10 +8,11 @@ import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import MovingBanner from '../components/MovingBanner';
 import FeaturedCategories from '../components/FeaturedCategories';
 import EthnicCollection from '../components/EthnicCollection';
-import ProductGrid from '../components/ProductGrid';
+import TopSellingProducts from '../components/TopSellingProducts';
+import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { MapPin, ChevronDown, User, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { categories, banners, products, quickPicks, trendingProducts, justInProducts, featuredCategories, heroImages } from '../data/mockData';
+import { categories, banners, featuredCategories, heroImages } from '../data/mockData';
 
 interface LegacyProduct {
   id: string;
@@ -72,7 +74,6 @@ const Index: React.FC = () => {
   };
 
   const currentBanners = banners[selectedCategory as keyof typeof banners];
-  const currentProducts = products[selectedCategory as keyof typeof products];
   const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
   const currentHeroImages = heroImages[selectedCategory as keyof typeof heroImages];
 
@@ -146,13 +147,9 @@ const Index: React.FC = () => {
             
             <EthnicCollection />
             
-            <ProductGrid 
-              products={quickPicks}
-            />
+            <TopSellingProducts category={selectedCategory} />
             
-            <ProductGrid 
-              products={trendingProducts}
-            />
+            <ProductYouCantMiss category={selectedCategory} />
           </div>
         </div>
       </div>
