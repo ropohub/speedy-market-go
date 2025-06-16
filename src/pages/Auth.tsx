@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -63,30 +62,33 @@ const Auth: React.FC = () => {
     }
   };
 
-  // Setup reCAPTCHA verifier
-  const setupRecaptcha = (): RecaptchaVerifier => {
-    // Clean up any existing verifier first
+  // Setup reCAPTCHA verifier with proper DOM check and rendering
+  const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
     cleanupRecaptcha();
-    
-    // Create new verifier
-    const verifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      {
-        size: "invisible",
-        callback: (response: any) => {
-          console.log("reCAPTCHA solved");
-        },
-        'expired-callback': () => {
-          console.log("reCAPTCHA expired");
-          cleanupRecaptcha();
-        }
+
+    // Ensure container exists in the DOM
+    const container = document.getElementById("recaptcha-container");
+    if (!container) {
+      throw new Error("reCAPTCHA container not found");
+    }
+
+    const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+      callback: (response: any) => {
+        console.log("reCAPTCHA solved");
+      },
+      'expired-callback': () => {
+        console.log("reCAPTCHA expired");
+        cleanupRecaptcha();
       }
-    );
+    });
 
     recaptchaVerifierRef.current = verifier;
     window.recaptchaVerifier = verifier;
-    
+
+    // Force render to DOM and wait for it
+    await verifier.render();
+
     return verifier;
   };
 
@@ -100,7 +102,7 @@ const Auth: React.FC = () => {
     const phone = `+91${phoneNumber}`;
     
     try {
-      const appVerifier = setupRecaptcha();
+      const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
@@ -142,9 +144,11 @@ const Auth: React.FC = () => {
       const phone = `+91${phoneNumber}`;
       
       // Wait a bit to ensure cleanup is complete
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const appVerifier = setupRecaptcha();
+      const appVerifier = await setupRecaptcha();
+      // Wait for proper rendering before using
+      await appVerifier.render();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setResendTimer(60); // Restart timer
