@@ -218,6 +218,9 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        {/* reCAPTCHA container - always present in DOM */}
+        <div ref={recaptchaContainer} id="recaptcha-container" style={{ display: 'none' }} />
+        
         {/* Header */}
         <div className="flex items-center mb-6">
           <button 
@@ -254,7 +257,6 @@ const Auth: React.FC = () => {
                 We'll send you an OTP to verify your number
               </p>
             </div>
-            <div ref={recaptchaContainer} id="recaptcha-container" />
             <button
               onClick={handleSendOTP}
               disabled={phoneNumber.length !== 10 || isLoading}
