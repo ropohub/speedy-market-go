@@ -13,6 +13,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@improbable-eng/grpc-web": "^0.15.0",
+    "@protobuf-ts/grpcweb-transport": "^2.11.0",
     "@protobuf-ts/plugin": "^2.11.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",

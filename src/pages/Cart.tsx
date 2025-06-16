@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Auth from './Auth';
+import { cartService } from '../api/cartClient';
+import { ItemWithQuantity } from '../../protogen/api/common/proto/cartservice/cart_service';
 
 interface CartItem {
   id: string;
@@ -14,51 +16,117 @@ interface CartItem {
   brand: string;
   selectedSize?: string;
   quantity: number;
+  productVariantId: bigint;
 }
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  
-  // Hardcoded cart items
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 'w1',
-      name: 'Floral Summer Dress',
-      price: 1299,
-      image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
-      brand: 'Zara',
-      selectedSize: 'M',
-      quantity: 1
-    },
-    {
-      id: 'w2',
-      name: 'Cotton White Shirt',
-      price: 899,
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
-      brand: 'H&M',
-      selectedSize: 'L',
-      quantity: 2
-    }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Show login screen if user is not authenticated
   if (!isAuthenticated) {
     return <Auth />;
   }
 
-  const handleUpdateQuantity = (id: string, newQuantity: number) => {
+  // Fetch cart items on component mount
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        setLoading(true);
+        const response = await cartService.getCartItems();
+        
+        // Map protobuf response to our cart items format
+        // For now, we'll use dummy data for display since we need product details
+        const mappedItems: CartItem[] = response.itemsWithQuantity.map((item: ItemWithQuantity, index: number) => ({
+          id: item.productVariantId.toString(),
+          name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
+          price: 999 + (index * 100), // Dummy price
+          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
+          brand: 'Brand Name', // Dummy brand
+          selectedSize: 'M', // Dummy size
+          quantity: item.quantity,
+          productVariantId: item.productVariantId
+        }));
+
+        setCartItems(mappedItems);
+      } catch (err) {
+        console.error('Failed to fetch cart items:', err);
+        setError('Failed to load cart items');
+        // Fallback to hardcoded data for now
+        setCartItems([
+          {
+            id: 'w1',
+            name: 'Floral Summer Dress',
+            price: 1299,
+            image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
+            brand: 'Zara',
+            selectedSize: 'M',
+            quantity: 1,
+            productVariantId: BigInt(1)
+          },
+          {
+            id: 'w2',
+            name: 'Cotton White Shirt',
+            price: 899,
+            image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
+            brand: 'H&M',
+            selectedSize: 'L',
+            quantity: 2,
+            productVariantId: BigInt(2)
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
+
+  const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       handleRemoveItem(id);
       return;
     }
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+
+    try {
+      const item = cartItems.find(item => item.id === id);
+      if (!item) return;
+
+      // Update via gRPC
+      await cartService.mutateCart(item.productVariantId, newQuantity);
+      
+      // Update local state
+      setCartItems(cartItems.map(item => 
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      ));
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
+      // Fallback to local update for now
+      setCartItems(cartItems.map(item => 
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      ));
+    }
   };
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleRemoveItem = async (id: string) => {
+    try {
+      const item = cartItems.find(item => item.id === id);
+      if (!item) return;
+
+      // Remove via gRPC (set quantity to 0)
+      await cartService.mutateCart(item.productVariantId, 0);
+      
+      // Update local state
+      setCartItems(cartItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Failed to remove item:', error);
+      // Fallback to local removal for now
+      setCartItems(cartItems.filter(item => item.id !== id));
+    }
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -68,6 +136,37 @@ const Cart: React.FC = () => {
   const handleCheckout = () => {
     navigate('/checkout');
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading cart...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
