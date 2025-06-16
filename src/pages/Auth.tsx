@@ -21,6 +21,7 @@ const Auth: React.FC = () => {
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
   const recaptchaContainer = useRef<HTMLDivElement | null>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   const from = location.state?.from || '/';
 
@@ -38,41 +39,55 @@ const Auth: React.FC = () => {
   // Clean up reCAPTCHA on component unmount
   useEffect(() => {
     return () => {
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
-      }
+      cleanupRecaptcha();
     };
   }, []);
 
-  // Reset reCAPTCHA verifier
-  const resetRecaptcha = () => {
+  // Clean up reCAPTCHA verifier
+  const cleanupRecaptcha = () => {
+    if (recaptchaVerifierRef.current) {
+      try {
+        recaptchaVerifierRef.current.clear();
+      } catch (error) {
+        console.log("Error clearing reCAPTCHA:", error);
+      }
+      recaptchaVerifierRef.current = null;
+    }
     if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (error) {
+        console.log("Error clearing window reCAPTCHA:", error);
+      }
       window.recaptchaVerifier = null;
     }
   };
 
   // Setup reCAPTCHA verifier
-  const setupRecaptcha = () => {
-    resetRecaptcha();
+  const setupRecaptcha = (): RecaptchaVerifier => {
+    // Clean up any existing verifier first
+    cleanupRecaptcha();
     
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: (response: any) => {
-            console.log("reCAPTCHA solved");
-          },
-          'expired-callback': () => {
-            console.log("reCAPTCHA expired");
-            resetRecaptcha();
-          }
+    // Create new verifier
+    const verifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: (response: any) => {
+          console.log("reCAPTCHA solved");
+        },
+        'expired-callback': () => {
+          console.log("reCAPTCHA expired");
+          cleanupRecaptcha();
         }
-      );
-    }
+      }
+    );
+
+    recaptchaVerifierRef.current = verifier;
+    window.recaptchaVerifier = verifier;
+    
+    return verifier;
   };
 
   const handleSendOTP = async () => {
@@ -85,8 +100,7 @@ const Auth: React.FC = () => {
     const phone = `+91${phoneNumber}`;
     
     try {
-      setupRecaptcha();
-      const appVerifier = window.recaptchaVerifier;
+      const appVerifier = setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
@@ -94,7 +108,7 @@ const Auth: React.FC = () => {
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
-      resetRecaptcha();
+      cleanupRecaptcha();
       
       let errorMessage = "Failed to send OTP";
       if (error.code === 'auth/too-many-requests') {
@@ -125,21 +139,25 @@ const Auth: React.FC = () => {
     setOtp(''); // Clear current OTP
     
     try {
-      // Setup fresh reCAPTCHA for resend
-      setupRecaptcha();
       const phone = `+91${phoneNumber}`;
-      const appVerifier = window.recaptchaVerifier;
+      
+      // Wait a bit to ensure cleanup is complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const appVerifier = setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setResendTimer(60); // Restart timer
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
-      resetRecaptcha();
+      cleanupRecaptcha();
       
       let errorMessage = "Failed to resend OTP";
       if (error.code === 'auth/too-many-requests') {
         errorMessage = "Too many requests. Please wait before requesting again.";
+      } else if (error.code === 'auth/argument-error') {
+        errorMessage = "Please try again after a moment.";
       }
       
       toast({ 
@@ -169,7 +187,7 @@ const Auth: React.FC = () => {
       login(phoneNumber);
       toast({ title: "Login successful!" });
       // Clean up reCAPTCHA after successful login
-      resetRecaptcha();
+      cleanupRecaptcha();
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error("OTP verification failed:", error);
@@ -190,7 +208,7 @@ const Auth: React.FC = () => {
     setOtp('');
     setConfirmationResult(null);
     setResendTimer(0);
-    resetRecaptcha();
+    cleanupRecaptcha();
   };
 
   return (
