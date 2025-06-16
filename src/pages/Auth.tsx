@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -23,18 +23,40 @@ const Auth: React.FC = () => {
 
   const from = location.state?.from || '/';
 
-  // Generate recaptcha only once (and only on phone step)
+  // Clean up reCAPTCHA on component unmount
+  useEffect(() => {
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    };
+  }, []);
+
+  // Reset reCAPTCHA verifier
+  const resetRecaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = null;
+    }
+  };
+
+  // Setup reCAPTCHA verifier
   const setupRecaptcha = () => {
-    // Check if already rendered
+    resetRecaptcha();
+    
     if (!window.recaptchaVerifier) {
-      // The auth object must be the first argument
       window.recaptchaVerifier = new RecaptchaVerifier(
         auth,
         "recaptcha-container",
         {
           size: "invisible",
           callback: (response: any) => {
-            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            console.log("reCAPTCHA solved");
+          },
+          'expired-callback': () => {
+            console.log("reCAPTCHA expired");
+            resetRecaptcha();
           }
         }
       );
@@ -46,18 +68,66 @@ const Auth: React.FC = () => {
       toast({ title: "Please enter a valid 10-digit phone number", variant: "destructive" });
       return;
     }
+    
     setIsLoading(true);
-    setupRecaptcha();
     const phone = `+91${phoneNumber}`;
+    
     try {
+      setupRecaptcha();
       const appVerifier = window.recaptchaVerifier;
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
-      toast({ title: "Failed to send OTP", description: error.message, variant: "destructive" });
-      window.recaptchaVerifier?.clear && window.recaptchaVerifier.clear();
+      console.error("Failed to send OTP:", error);
+      resetRecaptcha();
+      
+      let errorMessage = "Failed to send OTP";
+      if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many requests. Please try again later.";
+      } else if (error.code === 'auth/invalid-phone-number') {
+        errorMessage = "Invalid phone number format";
+      } else if (error.code === 'auth/missing-phone-number') {
+        errorMessage = "Phone number is required";
+      }
+      
+      toast({ 
+        title: errorMessage, 
+        description: error.message, 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOTP = async () => {
+    setIsLoading(true);
+    setOtp(''); // Clear current OTP
+    
+    try {
+      // Reset and setup new reCAPTCHA
+      setupRecaptcha();
+      const phone = `+91${phoneNumber}`;
+      const appVerifier = window.recaptchaVerifier;
+      const result = await signInWithPhoneNumber(auth, phone, appVerifier);
+      setConfirmationResult(result);
+      toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
+    } catch (error: any) {
+      console.error("Failed to resend OTP:", error);
+      resetRecaptcha();
+      
+      let errorMessage = "Failed to resend OTP";
+      if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many requests. Please wait before requesting again.";
+      }
+      
+      toast({ 
+        title: errorMessage, 
+        description: error.message, 
+        variant: "destructive" 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -79,12 +149,28 @@ const Auth: React.FC = () => {
       await confirmationResult.confirm(otp);
       login(phoneNumber);
       toast({ title: "Login successful!" });
+      // Clean up reCAPTCHA after successful login
+      resetRecaptcha();
       navigate(from, { replace: true });
     } catch (error: any) {
-      toast({ title: "Invalid OTP", description: error.message, variant: "destructive" });
+      console.error("OTP verification failed:", error);
+      let errorMessage = "Invalid OTP";
+      if (error.code === 'auth/invalid-verification-code') {
+        errorMessage = "Invalid OTP. Please check and try again.";
+      } else if (error.code === 'auth/code-expired') {
+        errorMessage = "OTP has expired. Please request a new one.";
+      }
+      toast({ title: errorMessage, description: error.message, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleBackToPhone = () => {
+    setStep('phone');
+    setOtp('');
+    setConfirmationResult(null);
+    resetRecaptcha();
   };
 
   return (
@@ -93,7 +179,7 @@ const Auth: React.FC = () => {
         {/* Header */}
         <div className="flex items-center mb-6">
           <button 
-            onClick={() => step === 'otp' ? setStep('phone') : navigate(-1)}
+            onClick={() => step === 'otp' ? handleBackToPhone() : navigate(-1)}
             className="p-2 hover:bg-gray-100 rounded-full mr-3"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -173,10 +259,7 @@ const Auth: React.FC = () => {
             </button>
 
             <button
-              onClick={() => {
-                setStep('phone');
-                setOtp('');
-              }}
+              onClick={handleBackToPhone}
               className="w-full text-orange-500 py-2 rounded-lg font-medium hover:bg-orange-50 transition-colors"
             >
               Change Number
@@ -186,10 +269,11 @@ const Auth: React.FC = () => {
               <p className="text-sm text-gray-500">
                 Didn't receive OTP?{' '}
                 <button 
-                  onClick={handleSendOTP}
-                  className="text-orange-500 font-medium hover:underline"
+                  onClick={handleResendOTP}
+                  disabled={isLoading}
+                  className="text-orange-500 font-medium hover:underline disabled:opacity-50"
                 >
-                  Resend
+                  {isLoading ? 'Resending...' : 'Resend'}
                 </button>
               </p>
             </div>
