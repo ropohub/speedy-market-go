@@ -21,7 +21,7 @@ const getProductByIdQuery = `
         name
         values
       }
-      images(first: 10) {
+      images(first: 250) {
         edges {
           node {
             url
@@ -29,7 +29,7 @@ const getProductByIdQuery = `
           }
         }
       }
-      variants(first: 10) {
+      variants(first: 250) {
         edges {
           node {
             id
