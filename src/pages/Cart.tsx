@@ -20,7 +20,7 @@ const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   
-  // Mock cart items - in real app this would come from context/state management
+  // Hardcoded cart items
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 'w1',
