@@ -137,13 +137,46 @@ const EthnicCollection: React.FC = () => {
               onClick={() => handleBrandClick(brand.id)}
               className="flex-shrink-0 w-32 h-40 cursor-pointer group"
             >
-              {/* Indian Arch Frame */}
-              <div className={`relative w-full h-full bg-gradient-to-b ${brand.backgroundColor} rounded-t-full rounded-b-lg overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-                {/* Arch decoration */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-b-full"></div>
-                
+              {/* Scalloped Frame - matching reference image */}
+              <div className={`relative w-full h-full bg-gradient-to-b ${brand.backgroundColor} overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300`}
+                style={{
+                  clipPath: `polygon(
+                    0% 0%, 
+                    10% 0%, 15% 8%, 20% 0%, 
+                    30% 0%, 35% 8%, 40% 0%, 
+                    50% 0%, 55% 8%, 60% 0%, 
+                    70% 0%, 75% 8%, 80% 0%, 
+                    90% 0%, 95% 8%, 100% 0%, 
+                    100% 100%, 
+                    95% 92%, 90% 100%, 
+                    80% 100%, 75% 92%, 70% 100%, 
+                    60% 100%, 55% 92%, 50% 100%, 
+                    40% 100%, 35% 92%, 30% 100%, 
+                    20% 100%, 15% 92%, 10% 100%, 
+                    0% 100%
+                  )`
+                }}
+              >
                 {/* Image */}
-                <div className="absolute inset-2 rounded-t-full rounded-b-lg overflow-hidden">
+                <div className="absolute inset-2 overflow-hidden" 
+                  style={{
+                    clipPath: `polygon(
+                      0% 0%, 
+                      10% 0%, 15% 8%, 20% 0%, 
+                      30% 0%, 35% 8%, 40% 0%, 
+                      50% 0%, 55% 8%, 60% 0%, 
+                      70% 0%, 75% 8%, 80% 0%, 
+                      90% 0%, 95% 8%, 100% 0%, 
+                      100% 100%, 
+                      95% 92%, 90% 100%, 
+                      80% 100%, 75% 92%, 70% 100%, 
+                      60% 100%, 55% 92%, 50% 100%, 
+                      40% 100%, 35% 92%, 30% 100%, 
+                      20% 100%, 15% 92%, 10% 100%, 
+                      0% 100%
+                    )`
+                  }}
+                >
                   <img 
                     src={brand.image} 
                     alt={brand.name} 
@@ -155,7 +188,7 @@ const EthnicCollection: React.FC = () => {
                 </div>
                 
                 {/* Brand Name */}
-                <div className="absolute bottom-2 left-0 right-0 text-center">
+                <div className="absolute bottom-4 left-0 right-0 text-center">
                   <span className="text-white text-xs font-bold bg-black bg-opacity-60 px-2 py-1 rounded">
                     {brand.name}
                   </span>

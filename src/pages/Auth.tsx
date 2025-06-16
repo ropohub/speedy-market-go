@@ -19,9 +19,21 @@ const Auth: React.FC = () => {
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [resendTimer, setResendTimer] = useState(0);
   const recaptchaContainer = useRef<HTMLDivElement | null>(null);
 
   const from = location.state?.from || '/';
+
+  // Timer effect for resend countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer(prev => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
 
   // Clean up reCAPTCHA on component unmount
   useEffect(() => {
@@ -78,6 +90,7 @@ const Auth: React.FC = () => {
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
+      setResendTimer(60); // Start 60 second timer
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
@@ -103,16 +116,22 @@ const Auth: React.FC = () => {
   };
 
   const handleResendOTP = async () => {
+    if (resendTimer > 0) {
+      toast({ title: `Please wait ${resendTimer} seconds before requesting a new OTP`, variant: "destructive" });
+      return;
+    }
+
     setIsLoading(true);
     setOtp(''); // Clear current OTP
     
     try {
-      // Reset and setup new reCAPTCHA
+      // Setup fresh reCAPTCHA for resend
       setupRecaptcha();
       const phone = `+91${phoneNumber}`;
       const appVerifier = window.recaptchaVerifier;
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
+      setResendTimer(60); // Restart timer
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
@@ -170,6 +189,7 @@ const Auth: React.FC = () => {
     setStep('phone');
     setOtp('');
     setConfirmationResult(null);
+    setResendTimer(0);
     resetRecaptcha();
   };
 
@@ -270,10 +290,10 @@ const Auth: React.FC = () => {
                 Didn't receive OTP?{' '}
                 <button 
                   onClick={handleResendOTP}
-                  disabled={isLoading}
+                  disabled={isLoading || resendTimer > 0}
                   className="text-orange-500 font-medium hover:underline disabled:opacity-50"
                 >
-                  {isLoading ? 'Resending...' : 'Resend'}
+                  {isLoading ? 'Resending...' : resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend'}
                 </button>
               </p>
             </div>
