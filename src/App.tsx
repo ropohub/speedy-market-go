@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import ProductListing from "./pages/ProductListing";
 import ProductDetail from "./pages/ProductDetail";
+import SearchResults from "./pages/SearchResults";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Auth from "./pages/Auth";
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/products" element={<ProductListing />} />
             <Route path="/products/:category/:subcategory" element={<ProductListing />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
