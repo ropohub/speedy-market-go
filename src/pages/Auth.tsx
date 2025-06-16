@@ -35,48 +35,41 @@ const Auth: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Clean up reCAPTCHA on component unmount
+  // Clean up reCAPTCHA on unmount
   useEffect(() => {
-    return () => {
-      cleanupRecaptcha();
-    };
+    return () => cleanupRecaptcha();
   }, []);
 
-  // Clean up reCAPTCHA verifier
   const cleanupRecaptcha = () => {
     if (recaptchaVerifierRef.current) {
       try {
         recaptchaVerifierRef.current.clear();
-      } catch (error) {
-        console.log("Error clearing reCAPTCHA:", error);
+      } catch (err) {
+        console.error("Failed to clear recaptcha:", err);
       }
       recaptchaVerifierRef.current = null;
     }
     if (window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier.clear();
-      } catch (error) {
-        console.log("Error clearing window reCAPTCHA:", error);
+      } catch (err) {
+        console.error("Failed to clear window.recaptchaVerifier:", err);
       }
       window.recaptchaVerifier = null;
     }
   };
 
-  // Setup reCAPTCHA verifier with proper DOM check and rendering
   const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
-    cleanupRecaptcha();
-
-    // Ensure container exists in the DOM
-    const container = document.getElementById("recaptcha-container");
-    if (!container) {
-      throw new Error("reCAPTCHA container not found");
+    if (recaptchaVerifierRef.current) {
+      return recaptchaVerifierRef.current;
     }
+
+    const container = document.getElementById("recaptcha-container");
+    if (!container) throw new Error("reCAPTCHA container not found");
 
     const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
       size: "invisible",
-      callback: (response: any) => {
-        console.log("reCAPTCHA solved");
-      },
+      callback: () => console.log("reCAPTCHA solved"),
       'expired-callback': () => {
         console.log("reCAPTCHA expired");
         cleanupRecaptcha();
@@ -86,7 +79,6 @@ const Auth: React.FC = () => {
     recaptchaVerifierRef.current = verifier;
     window.recaptchaVerifier = verifier;
 
-    // Force render to DOM and wait for it
     await verifier.render();
 
     return verifier;
@@ -97,21 +89,21 @@ const Auth: React.FC = () => {
       toast({ title: "Please enter a valid 10-digit phone number", variant: "destructive" });
       return;
     }
-    
+
     setIsLoading(true);
     const phone = `+91${phoneNumber}`;
-    
+
     try {
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
-      setResendTimer(60); // Start 60 second timer
+      setResendTimer(60);
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
       cleanupRecaptcha();
-      
+
       let errorMessage = "Failed to send OTP";
       if (error.code === 'auth/too-many-requests') {
         errorMessage = "Too many requests. Please try again later.";
@@ -120,12 +112,8 @@ const Auth: React.FC = () => {
       } else if (error.code === 'auth/missing-phone-number') {
         errorMessage = "Phone number is required";
       }
-      
-      toast({ 
-        title: errorMessage, 
-        description: error.message, 
-        variant: "destructive" 
-      });
+
+      toast({ title: errorMessage, description: error.message, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -133,42 +121,32 @@ const Auth: React.FC = () => {
 
   const handleResendOTP = async () => {
     if (resendTimer > 0) {
-      toast({ title: `Please wait ${resendTimer} seconds before requesting a new OTP`, variant: "destructive" });
+      toast({ title: `Please wait ${resendTimer}s before trying again`, variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
-    setOtp(''); // Clear current OTP
-    
+    setOtp('');
+
     try {
       const phone = `+91${phoneNumber}`;
-      
-      // Wait a bit to ensure cleanup is complete
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const appVerifier = await setupRecaptcha();
-      // Wait for proper rendering before using
-      await appVerifier.render();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
-      setResendTimer(60); // Restart timer
+      setResendTimer(60);
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
       cleanupRecaptcha();
-      
+
       let errorMessage = "Failed to resend OTP";
       if (error.code === 'auth/too-many-requests') {
         errorMessage = "Too many requests. Please wait before requesting again.";
       } else if (error.code === 'auth/argument-error') {
         errorMessage = "Please try again after a moment.";
       }
-      
-      toast({ 
-        title: errorMessage, 
-        description: error.message, 
-        variant: "destructive" 
-      });
+
+      toast({ title: errorMessage, description: error.message, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -185,12 +163,12 @@ const Auth: React.FC = () => {
       setOtp('');
       return;
     }
+
     setIsLoading(true);
     try {
       await confirmationResult.confirm(otp);
       login(phoneNumber);
       toast({ title: "Login successful!" });
-      // Clean up reCAPTCHA after successful login
       cleanupRecaptcha();
       navigate(from, { replace: true });
     } catch (error: any) {
@@ -220,7 +198,7 @@ const Auth: React.FC = () => {
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
         {/* reCAPTCHA container - always present in DOM */}
         <div ref={recaptchaContainer} id="recaptcha-container" style={{ display: 'none' }} />
-        
+
         {/* Header */}
         <div className="flex items-center mb-6">
           <button 
@@ -271,17 +249,13 @@ const Auth: React.FC = () => {
               <p className="text-sm text-gray-600 mb-4">
                 We've sent a 6-digit OTP to +91 {phoneNumber}
               </p>
-              
+
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Enter OTP
               </label>
-              
+
               <div className="flex justify-center">
-                <InputOTP
-                  maxLength={6}
-                  value={otp}
-                  onChange={(value) => setOtp(value)}
-                >
+                <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(value)}>
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
@@ -312,7 +286,7 @@ const Auth: React.FC = () => {
             <div className="text-center mt-4">
               <p className="text-sm text-gray-500">
                 Didn't receive OTP?{' '}
-                <button 
+                <button
                   onClick={handleResendOTP}
                   disabled={isLoading || resendTimer > 0}
                   className="text-orange-500 font-medium hover:underline disabled:opacity-50"
