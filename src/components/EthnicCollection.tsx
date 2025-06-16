@@ -1,6 +1,8 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { brandService } from '../api/brandClient';
+import { Brand } from '../../protogen/api/common/proto/brand';
 
 interface EthnicBrand {
   id: string;
@@ -11,8 +13,12 @@ interface EthnicBrand {
 
 const EthnicCollection: React.FC = () => {
   const navigate = useNavigate();
+  const [brands, setBrands] = useState<EthnicBrand[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const ethnicBrands: EthnicBrand[] = [
+  // Fallback brands in case API fails
+  const fallbackBrands: EthnicBrand[] = [
     {
       id: 'hm',
       name: 'H&M',
@@ -33,6 +39,33 @@ const EthnicCollection: React.FC = () => {
     }
   ];
 
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        setLoading(true);
+        const fetchedBrands = await brandService.getBrands();
+        
+        // Map the protobuf Brand objects to our EthnicBrand interface
+        const mappedBrands: EthnicBrand[] = fetchedBrands.map((brand: Brand, index: number) => ({
+          id: brand.primaryKey?.brandId.toString() || `brand-${index}`,
+          name: brand.name,
+          image: brand.imageUrls[0] || fallbackBrands[index % fallbackBrands.length].image,
+          backgroundColor: fallbackBrands[index % fallbackBrands.length].backgroundColor
+        }));
+
+        setBrands(mappedBrands.length > 0 ? mappedBrands : fallbackBrands);
+      } catch (err) {
+        console.error('Failed to fetch brands:', err);
+        setError('Failed to load brands');
+        setBrands(fallbackBrands); // Use fallback data
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
   const handleShopNow = () => {
     navigate('/products/women/ethnic-wear');
   };
@@ -40,6 +73,17 @@ const EthnicCollection: React.FC = () => {
   const handleBrandClick = (brandId: string) => {
     navigate(`/products/women/${brandId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading brands...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
@@ -80,11 +124,14 @@ const EthnicCollection: React.FC = () => {
 
       {/* Brands Section */}
       <div>
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900">Shop by Brand</h3>
+          {error && (
+            <span className="text-xs text-orange-600">Using fallback data</span>
+          )}
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          {ethnicBrands.map((brand) => (
+          {brands.map((brand) => (
             <div
               key={brand.id}
               onClick={() => handleBrandClick(brand.id)}
