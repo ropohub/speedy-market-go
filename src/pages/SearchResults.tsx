@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -143,7 +144,7 @@ const SearchResults = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="flex items-center p-4 border-b">
+      <header className="flex items-center p-4 border-b bg-white">
         <button
           onClick={() => navigate('/')}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors mr-4"
@@ -153,13 +154,13 @@ const SearchResults = () => {
         <h1 className="text-lg font-medium">Search Results</h1>
       </header>
 
-      {/* Search Bar */}
+      {/* Search Bar with black background */}
       <div className="bg-black">
         <SearchBar />
       </div>
 
-      {/* Results */}
-      <div className="p-4">
+      {/* Results with white background */}
+      <div className="p-4 bg-white">
         {searchQuery && (
           <div className="mb-4">
             <p className="text-gray-600">
