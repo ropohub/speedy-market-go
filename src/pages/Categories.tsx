@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import SearchBar from '../components/SearchBar';
@@ -445,7 +444,7 @@ const Categories: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen overflow-x-hidden">
         {/* Top Bar - Matching Home Page Style */}
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
@@ -505,7 +504,7 @@ const Categories: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 bg-white">
+          <div className="flex-1 bg-white overflow-x-hidden">
             {/* Banner */}
             <div className="p-4">
               <div className="bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl p-4 relative overflow-hidden">

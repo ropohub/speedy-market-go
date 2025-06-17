@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { User, Grid3X3, House } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -31,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Main Content */}
       <main className="pb-20">
         {children}
