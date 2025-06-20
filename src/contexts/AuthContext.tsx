@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
@@ -20,11 +21,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
       setIsLoading(true);
 
       if (user && user.phoneNumber) {
         try {
-          const token = await user.getIdToken(true); // ⬅ get fresh token
+          console.log('Getting Firebase token for Shopify auth...');
+          const token = await user.getIdToken(true);
           const response = await shopifyClient.login(token);
 
           const phone = user.phoneNumber.replace('+91', '');
@@ -33,6 +36,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           localStorage.setItem('userPhone', phone);
           localStorage.setItem('shopifyCustomerId', response.shopify_customer_id);
+          
+          console.log('✅ Authentication complete:', {
+            phone,
+            shopifyCustomerId: response.shopify_customer_id
+          });
         } catch (error) {
           console.error('❌ Shopify auth failed:', error);
           setUserPhone(null);
@@ -40,6 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.clear();
         }
       } else {
+        console.log('No user or phone number, clearing auth state');
         setUserPhone(null);
         setShopifyCustomerId(null);
         localStorage.clear();
@@ -52,14 +61,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = () => {
-    // no-op: handled by Firebase's observer
+    // This is handled automatically by the Firebase auth state observer
+    console.log('Login called - auth state will be handled by observer');
   };
 
   const logout = async () => {
-    await signOut(auth);
-    setUserPhone(null);
-    setShopifyCustomerId(null);
-    localStorage.clear();
+    try {
+      await signOut(auth);
+      setUserPhone(null);
+      setShopifyCustomerId(null);
+      localStorage.clear();
+      console.log('✅ Logout successful');
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+    }
   };
 
   return (

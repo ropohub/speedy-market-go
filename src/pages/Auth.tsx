@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -5,21 +6,18 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
 import { RecaptchaVerifier } from 'firebase/auth';
-import type { Auth } from 'firebase/auth';
 import { signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 import { toast } from "@/hooks/use-toast";
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
-  const recaptchaContainer = useRef<HTMLDivElement | null>(null);
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   const from = location.state?.from || '/';
@@ -35,53 +33,61 @@ const Auth: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Clean up reCAPTCHA on unmount
+  // Clean up reCAPTCHA on unmount only
   useEffect(() => {
-    return () => cleanupRecaptcha();
+    return () => {
+      if (recaptchaVerifierRef.current) {
+        try {
+          recaptchaVerifierRef.current.clear();
+        } catch (err) {
+          console.error("Failed to clear recaptcha:", err);
+        }
+      }
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (err) {
+          console.error("Failed to clear window.recaptchaVerifier:", err);
+        }
+      }
+    };
   }, []);
 
-  const cleanupRecaptcha = () => {
-    if (recaptchaVerifierRef.current) {
-      try {
-        recaptchaVerifierRef.current.clear();
-      } catch (err) {
-        console.error("Failed to clear recaptcha:", err);
-      }
-      recaptchaVerifierRef.current = null;
-    }
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-      } catch (err) {
-        console.error("Failed to clear window.recaptchaVerifier:", err);
-      }
-      window.recaptchaVerifier = null;
-    }
-  };
-
   const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
-    if (recaptchaVerifierRef.current) {
-      return recaptchaVerifierRef.current;
+    // Check if we already have a valid verifier
+    if (window.recaptchaVerifier) {
+      console.log('Using existing recaptchaVerifier');
+      return window.recaptchaVerifier;
     }
 
     const container = document.getElementById("recaptcha-container");
     if (!container) throw new Error("reCAPTCHA container not found");
 
+    console.log('Setting up new reCAPTCHA verifier');
     const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
       size: "invisible",
-      callback: () => console.log("reCAPTCHA solved"),
+      callback: () => {
+        console.log("reCAPTCHA solved");
+      },
       'expired-callback': () => {
-        console.log("reCAPTCHA expired");
-        cleanupRecaptcha();
+        console.log("reCAPTCHA expired, clearing verifier");
+        window.recaptchaVerifier = null;
+        recaptchaVerifierRef.current = null;
       }
     });
 
-    recaptchaVerifierRef.current = verifier;
-    window.recaptchaVerifier = verifier;
-
-    await verifier.render();
-
-    return verifier;
+    try {
+      await verifier.render();
+      console.log('reCAPTCHA rendered successfully');
+      
+      recaptchaVerifierRef.current = verifier;
+      window.recaptchaVerifier = verifier;
+      
+      return verifier;
+    } catch (error) {
+      console.error('Failed to render reCAPTCHA:', error);
+      throw error;
+    }
   };
 
   const handleSendOTP = async () => {
@@ -94,15 +100,23 @@ const Auth: React.FC = () => {
     const phone = `+91${phoneNumber}`;
 
     try {
+      console.log('Setting up reCAPTCHA...');
       const appVerifier = await setupRecaptcha();
+      
+      console.log('Sending OTP to:', phone);
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
+      
       setConfirmationResult(result);
       setStep('otp');
       setResendTimer(60);
+      
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
-      cleanupRecaptcha();
+      
+      // Clear verifiers on error
+      window.recaptchaVerifier = null;
+      recaptchaVerifierRef.current = null;
 
       let errorMessage = "Failed to send OTP";
       if (error.code === 'auth/too-many-requests') {
@@ -111,6 +125,8 @@ const Auth: React.FC = () => {
         errorMessage = "Invalid phone number format";
       } else if (error.code === 'auth/missing-phone-number') {
         errorMessage = "Phone number is required";
+      } else if (error.code === 'auth/invalid-app-credential') {
+        errorMessage = "Authentication configuration error. Please try again.";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -130,20 +146,27 @@ const Auth: React.FC = () => {
 
     try {
       const phone = `+91${phoneNumber}`;
+      console.log('Resending OTP to:', phone);
+      
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
+      
       setConfirmationResult(result);
       setResendTimer(60);
+      
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
-      cleanupRecaptcha();
+      
+      // Clear verifiers on error
+      window.recaptchaVerifier = null;
+      recaptchaVerifierRef.current = null;
 
       let errorMessage = "Failed to resend OTP";
       if (error.code === 'auth/too-many-requests') {
         errorMessage = "Too many requests. Please wait before requesting again.";
-      } else if (error.code === 'auth/argument-error') {
-        errorMessage = "Please try again after a moment.";
+      } else if (error.code === 'auth/invalid-app-credential') {
+        errorMessage = "Authentication configuration error. Please try again.";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -166,10 +189,18 @@ const Auth: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await confirmationResult.confirm(otp);
+      console.log('Verifying OTP with confirmationResult:', confirmationResult);
+      const userCredential = await confirmationResult.confirm(otp);
+      const user = userCredential.user;
+      
+      console.log("OTP verified successfully. Firebase user:", user);
       
       toast({ title: "Login successful!" });
-      cleanupRecaptcha();
+      
+      // Clear reCAPTCHA after successful verification
+      window.recaptchaVerifier = null;
+      recaptchaVerifierRef.current = null;
+      
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error("OTP verification failed:", error);
@@ -190,14 +221,16 @@ const Auth: React.FC = () => {
     setOtp('');
     setConfirmationResult(null);
     setResendTimer(0);
-    cleanupRecaptcha();
+    // Clear reCAPTCHA when going back
+    window.recaptchaVerifier = null;
+    recaptchaVerifierRef.current = null;
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
         {/* reCAPTCHA container - always present in DOM */}
-        <div ref={recaptchaContainer} id="recaptcha-container" style={{ display: 'none' }} />
+        <div id="recaptcha-container" style={{ display: 'none' }} />
 
         {/* Header */}
         <div className="flex items-center mb-6">
