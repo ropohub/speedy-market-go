@@ -39,21 +39,34 @@ const Checkout: React.FC = () => {
       
       // Fetch addresses
       const addressData = await addressService.getAddresses();
-      setAddresses(addressData);
+      console.log('Addresses fetched:', addressData);
+      
+      // Ensure we always have an array
+      const addressArray = Array.isArray(addressData) ? addressData : [];
+      setAddresses(addressArray);
       
       // Set first address as selected if available
-      if (addressData.length > 0 && !selectedAddressId) {
-        setSelectedAddressId(addressData[0].id);
+      if (addressArray.length > 0 && !selectedAddressId) {
+        setSelectedAddressId(addressArray[0].id);
       }
 
       // Fetch cart items to show in checkout
       const cartData = await cartService.getCartItems();
-      if (cartData.status !== 'empty' && cartData.items) {
+      console.log('Cart data fetched:', cartData);
+      
+      if (cartData && cartData.status !== 'empty' && Array.isArray(cartData.items)) {
         setCartItems(cartData.items);
+      } else {
+        setCartItems([]);
       }
 
     } catch (error: any) {
       console.error('Failed to fetch data:', error);
+      
+      // Set safe defaults on error
+      setAddresses([]);
+      setCartItems([]);
+      
       toast({
         title: "Loading Error",
         description: error.message || "Failed to load checkout data",
@@ -101,7 +114,7 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+  const subtotal = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0) : 0;
   const deliveryFee = 99;
   const total = subtotal + deliveryFee;
 
@@ -177,49 +190,55 @@ const Checkout: React.FC = () => {
               </div>
               
               <div className="space-y-3">
-                {addresses.map((address) => (
-                  <div
-                    key={address.id}
-                    onClick={() => setSelectedAddressId(address.id)}
-                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      selectedAddressId === address.id
-                        ? 'border-orange-500 bg-orange-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium">{address.name}</span>
+                {Array.isArray(addresses) && addresses.length > 0 ? (
+                  addresses.map((address) => (
+                    <div
+                      key={address.id}
+                      onClick={() => setSelectedAddressId(address.id)}
+                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                        selectedAddressId === address.id
+                          ? 'border-orange-500 bg-orange-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium">{address.name || 'No Name'}</span>
+                          </div>
+                          <p className="text-sm text-gray-600">{address.phone || 'No Phone'}</p>
+                          <p className="text-sm text-gray-600">{address.address || 'No Address'}</p>
+                          {(address.latitude !== 0 || address.longitude !== 0) && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Coordinates: {address.latitude}, {address.longitude}
+                            </p>
+                          )}
                         </div>
-                        <p className="text-sm text-gray-600">{address.phone}</p>
-                        <p className="text-sm text-gray-600">{address.address}</p>
-                        {(address.latitude !== 0 || address.longitude !== 0) && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Coordinates: {address.latitude}, {address.longitude}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          checked={selectedAddressId === address.id}
-                          onChange={() => setSelectedAddressId(address.id)}
-                          className="mt-1"
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteAddress(address.id);
-                          }}
-                          className="p-1 text-red-500 hover:bg-red-50 rounded"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            checked={selectedAddressId === address.id}
+                            onChange={() => setSelectedAddressId(address.id)}
+                            className="mt-1"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteAddress(address.id);
+                            }}
+                            className="p-1 text-red-500 hover:bg-red-50 rounded"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">No addresses found. Please add an address to continue.</p>
                   </div>
-                ))}
+                )}
                 
                 <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
                   <DialogTrigger asChild>
@@ -272,16 +291,16 @@ const Checkout: React.FC = () => {
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-4">Order Items</h2>
               
-              {cartItems.length > 0 ? (
+              {Array.isArray(cartItems) && cartItems.length > 0 ? (
                 <div className="space-y-3">
                   {cartItems.map((item, index) => (
                     <div key={item.product_variant_id || index} className="flex gap-3">
                       <div className="w-12 h-12 bg-gray-200 rounded"></div>
                       <div className="flex-1">
                         <h3 className="font-medium text-sm">Cart Item</h3>
-                        <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                        <p className="text-xs text-gray-500">Qty: {item.quantity || 1}</p>
                       </div>
-                      <span className="font-medium">₹{(item.price || 0) * item.quantity}</span>
+                      <span className="font-medium">₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -297,7 +316,7 @@ const Checkout: React.FC = () => {
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">₹{subtotal}</span>
+                  <span className="font-medium">₹{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
@@ -306,7 +325,7 @@ const Checkout: React.FC = () => {
                 <div className="border-t pt-3">
                   <div className="flex justify-between">
                     <span className="font-bold text-lg">Total</span>
-                    <span className="font-bold text-lg">₹{total}</span>
+                    <span className="font-bold text-lg">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -318,7 +337,7 @@ const Checkout: React.FC = () => {
 
               <button 
                 onClick={handlePlaceOrder}
-                disabled={placing || !selectedAddressId || cartItems.length === 0}
+                disabled={placing || !selectedAddressId || !Array.isArray(cartItems) || cartItems.length === 0}
                 className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 {placing ? 'Placing Order...' : 'Place Order'}
