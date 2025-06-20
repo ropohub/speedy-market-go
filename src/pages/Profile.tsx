@@ -1,15 +1,16 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import { User, MapPin, Phone, Mail, Package, LogOut } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../firebase';
 import Auth from './Auth';
 
 const Profile: React.FC = () => {
-  const { isAuthenticated, isLoading, userPhone, logout } = useAuth();
   const navigate = useNavigate();
+  const { userPhone, isLoading, logout } = useAuth();
+  const firebaseUser = auth.currentUser;
 
-  // ⏳ Wait for Firebase auth state to load
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -18,8 +19,7 @@ const Profile: React.FC = () => {
     );
   }
 
-  // 🔐 If still not authenticated, show login screen
-  if (!isAuthenticated) {
+  if (!firebaseUser) {
     return <Auth />;
   }
 
@@ -29,33 +29,14 @@ const Profile: React.FC = () => {
   };
 
   const mockOrders = [
-    {
-      id: 'ORD001',
-      date: '2024-06-10',
-      status: 'Delivered',
-      total: 2999,
-      items: 2
-    },
-    {
-      id: 'ORD002',
-      date: '2024-06-08',
-      status: 'Delivered',
-      total: 1599,
-      items: 1
-    },
-    {
-      id: 'ORD003',
-      date: '2024-06-05',
-      status: 'Delivered',
-      total: 4299,
-      items: 3
-    }
+    { id: 'ORD001', date: '2024-06-10', status: 'Delivered', total: 2999, items: 2 },
+    { id: 'ORD002', date: '2024-06-08', status: 'Delivered', total: 1599, items: 1 },
+    { id: 'ORD003', date: '2024-06-05', status: 'Delivered', total: 4299, items: 3 }
   ];
 
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
-        {/* Profile Header */}
         <div className="bg-white px-4 py-6 mb-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
@@ -68,7 +49,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* User Details */}
         <div className="bg-white mx-4 rounded-lg p-4 mb-4">
           <h3 className="font-semibold text-gray-900 mb-4">Personal Information</h3>
           <div className="space-y-3">
@@ -87,7 +67,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Past Orders */}
         <div className="bg-white mx-4 rounded-lg p-4 mb-4">
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-5 h-5 text-gray-700" />
@@ -114,9 +93,8 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Logout Button */}
         <div className="mx-4 mb-8">
-          <button 
+          <button
             onClick={handleLogout}
             className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
           >
