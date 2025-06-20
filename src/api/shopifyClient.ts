@@ -7,6 +7,25 @@ interface LoginError {
   error: string;
 }
 
+interface CartItem {
+  product_variant_id: string;
+  quantity: number;
+}
+
+interface CartUpdateRequest {
+  items: CartItem[];
+}
+
+interface CartUpdateResponse {
+  draft_order_id: string;
+  status: string;
+}
+
+interface CartGetResponse {
+  items: CartItem[];
+  status: string;
+}
+
 class ShopifyApiClient {
   private baseUrl: string;
 
@@ -30,9 +49,44 @@ class ShopifyApiClient {
 
     return response.json();
   }
+
+  async updateCart(firebaseToken: string, items: CartItem[]): Promise<CartUpdateResponse> {
+    const response = await fetch(`${this.baseUrl}/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${firebaseToken}`
+      },
+      body: JSON.stringify({ items })
+    });
+
+    if (!response.ok) {
+      const errorData: LoginError = await response.json();
+      throw new Error(errorData.error || 'Cart update failed');
+    }
+
+    return response.json();
+  }
+
+  async getCart(firebaseToken: string): Promise<CartGetResponse> {
+    const response = await fetch(`${this.baseUrl}/cart`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${firebaseToken}`
+      }
+    });
+
+    if (!response.ok) {
+      const errorData: LoginError = await response.json();
+      throw new Error(errorData.error || 'Cart fetch failed');
+    }
+
+    return response.json();
+  }
 }
 
-// You'll need to replace this with your actual backend URL
-const SHOPIFY_API_BASE_URL = process.env.VITE_SHOPIFY_API_URL || 'http://localhost:8080';
+// Updated with your backend URL
+const SHOPIFY_API_BASE_URL = process.env.VITE_SHOPIFY_API_URL || 'https://shopifyapi-851631422269.asia-south2.run.app';
 
 export const shopifyClient = new ShopifyApiClient(SHOPIFY_API_BASE_URL);

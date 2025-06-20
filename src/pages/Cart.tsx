@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +5,6 @@ import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
-import { ItemWithQuantity } from '../../protogen/api/common/proto/cartservice/cart_service';
 
 interface CartItem {
   id: string;
@@ -16,7 +14,7 @@ interface CartItem {
   brand: string;
   selectedSize?: string;
   quantity: number;
-  productVariantId: bigint;
+  productVariantId: string;
 }
 
 const Cart: React.FC = () => {
@@ -38,46 +36,30 @@ const Cart: React.FC = () => {
         setLoading(true);
         const response = await cartService.getCartItems();
         
-        // Map protobuf response to our cart items format
+        if (response.status === 'empty' || response.items.length === 0) {
+          setCartItems([]);
+          return;
+        }
+        
+        // Map REST API response to our cart items format
         // For now, we'll use dummy data for display since we need product details
-        const mappedItems: CartItem[] = response.itemsWithQuantity.map((item: ItemWithQuantity, index: number) => ({
-          id: item.productVariantId.toString(),
+        const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
+          id: item.product_variant_id,
           name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
           price: 999 + (index * 100), // Dummy price
           image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
           brand: 'Brand Name', // Dummy brand
           selectedSize: 'M', // Dummy size
           quantity: item.quantity,
-          productVariantId: item.productVariantId
+          productVariantId: item.product_variant_id
         }));
 
         setCartItems(mappedItems);
       } catch (err) {
         console.error('Failed to fetch cart items:', err);
         setError('Failed to load cart items');
-        // Fallback to hardcoded data for now
-        setCartItems([
-          {
-            id: 'w1',
-            name: 'Floral Summer Dress',
-            price: 1299,
-            image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
-            brand: 'Zara',
-            selectedSize: 'M',
-            quantity: 1,
-            productVariantId: BigInt(1)
-          },
-          {
-            id: 'w2',
-            name: 'Cotton White Shirt',
-            price: 899,
-            image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
-            brand: 'H&M',
-            selectedSize: 'L',
-            quantity: 2,
-            productVariantId: BigInt(2)
-          }
-        ]);
+        // Fallback to empty cart
+        setCartItems([]);
       } finally {
         setLoading(false);
       }
@@ -96,7 +78,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      // Update via gRPC
+      // Update via REST API
       await cartService.mutateCart(item.productVariantId, newQuantity);
       
       // Update local state
@@ -117,7 +99,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      // Remove via gRPC (set quantity to 0)
+      // Remove via REST API (set quantity to 0)
       await cartService.mutateCart(item.productVariantId, 0);
       
       // Update local state
