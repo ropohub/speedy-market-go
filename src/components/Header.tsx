@@ -1,20 +1,25 @@
-
 import React from 'react';
 import { ArrowLeft, Search, Heart, ShoppingBag } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
 
   const handleBackNavigation = () => {
-    // If we're on the products page, always go back to home or categories
-    // regardless of browser history to avoid the product detail loop
     if (location.pathname === '/products') {
       navigate('/');
     } else {
       navigate(-1);
     }
+  };
+
+  const handleCartClick = () => {
+    if (isLoading) return; // block until auth ready
+    if (isAuthenticated) navigate('/cart');
+    else navigate('/auth');
   };
 
   return (
@@ -37,7 +42,7 @@ const Header: React.FC = () => {
             <Heart className="w-5 h-5 text-gray-700" />
           </button>
           <button 
-            onClick={() => navigate('/cart')}
+            onClick={handleCartClick}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
           >
             <ShoppingBag className="w-5 h-5 text-gray-700" />
