@@ -138,12 +138,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('Manual login triggered with phone:', phone);
     try {
       const user = auth.currentUser;
-      if (!user) throw new Error("No Firebase user");
+      if (!user) throw new Error("Firebase user not available yet");
 
       const token = await user.getIdToken();
       console.log('Got token manually, calling Shopify login...');
       const shopifyResponse = await shopifyClient.login(token);
-      const cleanPhone = phone.replace('+91','');
+      const cleanPhone = phone.replace('+91', '');
       const customerId = shopifyResponse.shopify_customer_id;
 
       setIsAuthenticated(true);

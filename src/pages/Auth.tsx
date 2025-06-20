@@ -195,6 +195,7 @@ const Auth: React.FC = () => {
       toast({ title: "Please enter the complete OTP", variant: "destructive" });
       return;
     }
+
     if (!confirmationResult) {
       toast({ title: "Session expired", description: "Please resend OTP", variant: "destructive" });
       setStep('phone');
@@ -204,11 +205,15 @@ const Auth: React.FC = () => {
 
     setIsLoading(true);
     try {
-      console.log('Verifying OTP...');
-      await confirmationResult.confirm(otp);
+      console.log('Verifying OTP...', otp);
+      console.log("Confirming OTP with:", otp, confirmationResult);
       
-      // Wait for login to complete before navigating
-      await login(phoneNumber);
+      const result = await confirmationResult.confirm(otp);
+      const user = result.user;
+      console.log("OTP confirmed. Firebase user:", user);
+      
+      // Use Firebase's phone number, not our state
+      await login(user.phoneNumber || phoneNumber);
       
       toast({ title: "Login successful!" });
       cleanupRecaptcha();
