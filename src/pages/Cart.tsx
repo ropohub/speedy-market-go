@@ -30,6 +30,7 @@ const Cart: React.FC = () => {
     authLoading, 
     userPhone
   });
+  console.log("Cart: useAuth():", isAuthenticated, authLoading, userPhone);
 
   useEffect(() => {
     console.log('Cart useEffect - Auth state changed:', { isAuthenticated, authLoading });

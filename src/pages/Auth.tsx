@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -205,7 +206,10 @@ const Auth: React.FC = () => {
     try {
       console.log('Verifying OTP...');
       await confirmationResult.confirm(otp);
-      login(phoneNumber);
+      
+      // Wait for login to complete before navigating
+      await login(phoneNumber);
+      
       toast({ title: "Login successful!" });
       cleanupRecaptcha();
       console.log('Login successful, navigating to:', from);

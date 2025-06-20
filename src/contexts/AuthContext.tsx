@@ -8,7 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   userPhone: string | null;
   shopifyCustomerId: string | null;
-  login: (phone: string) => void;
+  login: (phone: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -134,9 +134,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const login = (phone: string) => {
-    console.log('Login called with phone:', phone);
-    // No-op: handled by Firebase callback
+  const login = async (phone: string) => {
+    console.log('Manual login triggered with phone:', phone);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("No Firebase user");
+
+      const token = await user.getIdToken();
+      console.log('Got token manually, calling Shopify login...');
+      const shopifyResponse = await shopifyClient.login(token);
+      const cleanPhone = phone.replace('+91','');
+      const customerId = shopifyResponse.shopify_customer_id;
+
+      setIsAuthenticated(true);
+      setUserPhone(cleanPhone);
+      setShopifyCustomerId(customerId);
+
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userPhone', cleanPhone);
+      localStorage.setItem('shopifyCustomerId', customerId);
+
+      console.log('Manual login complete with Shopify ID:', customerId);
+    } catch (err) {
+      console.error("Manual login failed:", err);
+      throw err;
+    }
   };
 
   const logout = async () => {
