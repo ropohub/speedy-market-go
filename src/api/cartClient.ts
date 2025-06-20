@@ -26,6 +26,7 @@ export const cartService = {
         throw new Error('User not authenticated');
       }
 
+      console.log('Fetching cart items for user:', user.phoneNumber);
       const token = await user.getIdToken();
       const response = await shopifyClient.getCart(token);
       
@@ -45,6 +46,7 @@ export const cartService = {
         throw new Error('User not authenticated');
       }
 
+      console.log('Mutating cart for user:', user.phoneNumber, 'variant:', productVariantId, 'quantity:', quantity);
       const token = await user.getIdToken();
       const items = [{
         product_variant_id: productVariantId,

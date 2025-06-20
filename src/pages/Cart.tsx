@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { auth } from '../firebase';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
+import { toast } from "@/hooks/use-toast";
 
 interface CartItem {
   id: string;
@@ -28,22 +30,28 @@ const Cart: React.FC = () => {
   const fetchCartItems = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       const user = auth.currentUser;
       if (!user) {
+        console.log('No authenticated user found');
         setError('User not authenticated.');
         return;
       }
 
-      const token = await user.getIdToken(true);
-      const response = await cartService.getCartItems(); // Your cartService must accept token
+      console.log('Fetching cart for authenticated user:', user.phoneNumber);
+      const response = await cartService.getCartItems();
 
-      if (response.status === 'empty' || response.items.length === 0) {
+      console.log('Cart API response:', response);
+
+      if (response.status === 'empty' || !response.items || response.items.length === 0) {
+        console.log('Cart is empty');
         setCartItems([]);
         setError(null);
         return;
       }
 
+      // Map API response to UI cart items with mock data
       const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
         id: item.product_variant_id,
         name: `Product ${index + 1}`,
@@ -55,20 +63,34 @@ const Cart: React.FC = () => {
         productVariantId: item.product_variant_id
       }));
 
+      console.log('Mapped cart items:', mappedItems);
       setCartItems(mappedItems);
       setError(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch cart items:', err);
-      setError('Failed to load cart items');
+      const errorMessage = err.message || 'Failed to load cart items';
+      setError(errorMessage);
       setCartItems([]);
+      
+      toast({
+        title: "Cart Loading Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCartItems();
-  }, []);
+    if (firebaseUser) {
+      console.log('User is authenticated, fetching cart');
+      fetchCartItems();
+    } else {
+      console.log('User not authenticated');
+      setLoading(false);
+    }
+  }, [firebaseUser]);
 
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -80,15 +102,30 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
+      console.log('Updating quantity for item:', id, 'to:', newQuantity);
+      
+      // Optimistically update UI
+      setCartItems(cartItems.map(item =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      ));
+
       await cartService.mutateCart(item.productVariantId, newQuantity);
-      setCartItems(cartItems.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      ));
-    } catch (error) {
+      
+      toast({
+        title: "Cart Updated",
+        description: "Item quantity updated successfully"
+      });
+    } catch (error: any) {
       console.error('Failed to update quantity:', error);
-      setCartItems(cartItems.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      ));
+      
+      // Revert optimistic update
+      await fetchCartItems();
+      
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update item quantity",
+        variant: "destructive"
+      });
     }
   };
 
@@ -97,11 +134,28 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
+      console.log('Removing item:', id);
+      
+      // Optimistically update UI
+      setCartItems(cartItems.filter(item => item.id !== id));
+
       await cartService.mutateCart(item.productVariantId, 0);
-      setCartItems(cartItems.filter(item => item.id !== id));
-    } catch (error) {
+      
+      toast({
+        title: "Item Removed",
+        description: "Item removed from cart successfully"
+      });
+    } catch (error: any) {
       console.error('Failed to remove item:', error);
-      setCartItems(cartItems.filter(item => item.id !== id));
+      
+      // Revert optimistic update
+      await fetchCartItems();
+      
+      toast({
+        title: "Remove Failed",
+        description: error.message || "Failed to remove item",
+        variant: "destructive"
+      });
     }
   };
 
@@ -134,13 +188,23 @@ const Cart: React.FC = () => {
     return (
       <Layout>
         <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600 mb-4">{error}</p>
+          <div className="text-center max-w-md mx-auto p-6">
+            <div className="text-red-600 mb-4">
+              <ShoppingBag className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <h2 className="text-xl font-bold mb-2">Cart Loading Error</h2>
+              <p className="text-sm">{error}</p>
+            </div>
             <button
               onClick={fetchCartItems}
-              className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
+              className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors mr-4"
             >
               Retry
+            </button>
+            <button
+              onClick={() => navigate('/categories')}
+              className="bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+            >
+              Continue Shopping
             </button>
           </div>
         </div>
