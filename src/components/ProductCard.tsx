@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../firebase';
 import ProductCardImage from './product-card/ProductCardImage';
 import ProductCardInfo from './product-card/ProductCardInfo';
 
@@ -30,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   itemNumber
 }) => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const firebaseUser = auth.currentUser;
 
   const handleCardClick = () => {
     if (onClick) {
@@ -39,13 +38,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click when clicking add to cart
-    
-    if (!isAuthenticated) {
+    e.stopPropagation();
+
+    if (!firebaseUser) {
       navigate('/auth', { state: { from: window.location.pathname } });
       return;
     }
-    
+
     onAddToCart(product);
   };
 
