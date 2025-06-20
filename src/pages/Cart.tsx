@@ -6,6 +6,7 @@ import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
+import { ItemWithQuantity } from '../../protogen/api/common/proto/cartservice/cart_service';
 
 interface CartItem {
   id: string;
@@ -15,67 +16,75 @@ interface CartItem {
   brand: string;
   selectedSize?: string;
   quantity: number;
-  productVariantId: string;
+  productVariantId: bigint;
 }
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('Cart component - Auth state:', { isAuthenticated, authLoading });
+  // Show login screen if user is not authenticated
+  if (!isAuthenticated) {
+    return <Auth />;
+  }
 
-  // Fetch cart items on component mount when authenticated
+  // Fetch cart items on component mount
   useEffect(() => {
-    if (!authLoading) {
-      if (isAuthenticated) {
-        console.log('User is authenticated, fetching cart items...');
-        fetchCartItems();
-      } else {
-        console.log('User not authenticated');
+    const fetchCartItems = async () => {
+      try {
+        setLoading(true);
+        const response = await cartService.getCartItems();
+        
+        // Map protobuf response to our cart items format
+        // For now, we'll use dummy data for display since we need product details
+        const mappedItems: CartItem[] = response.itemsWithQuantity.map((item: ItemWithQuantity, index: number) => ({
+          id: item.productVariantId.toString(),
+          name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
+          price: 999 + (index * 100), // Dummy price
+          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
+          brand: 'Brand Name', // Dummy brand
+          selectedSize: 'M', // Dummy size
+          quantity: item.quantity,
+          productVariantId: item.productVariantId
+        }));
+
+        setCartItems(mappedItems);
+      } catch (err) {
+        console.error('Failed to fetch cart items:', err);
+        setError('Failed to load cart items');
+        // Fallback to hardcoded data for now
+        setCartItems([
+          {
+            id: 'w1',
+            name: 'Floral Summer Dress',
+            price: 1299,
+            image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&h=200&fit=crop',
+            brand: 'Zara',
+            selectedSize: 'M',
+            quantity: 1,
+            productVariantId: BigInt(1)
+          },
+          {
+            id: 'w2',
+            name: 'Cotton White Shirt',
+            price: 899,
+            image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
+            brand: 'H&M',
+            selectedSize: 'L',
+            quantity: 2,
+            productVariantId: BigInt(2)
+          }
+        ]);
+      } finally {
         setLoading(false);
       }
-    }
-  }, [isAuthenticated, authLoading]);
+    };
 
-  const fetchCartItems = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log('Calling cartService.getCartItems()...');
-      const response = await cartService.getCartItems();
-      console.log('Cart API response:', response);
-      
-      if (response.status === 'empty' || response.items.length === 0) {
-        console.log('Cart is empty');
-        setCartItems([]);
-        return;
-      }
-      
-      // Map REST API response to our cart items format
-      const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
-        id: item.product_variant_id,
-        name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
-        price: 999 + (index * 100), // Dummy price
-        image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
-        brand: 'Brand Name', // Dummy brand
-        selectedSize: 'M', // Dummy size
-        quantity: item.quantity,
-        productVariantId: item.product_variant_id
-      }));
-
-      console.log('Mapped cart items:', mappedItems);
-      setCartItems(mappedItems);
-    } catch (err) {
-      console.error('Failed to fetch cart items:', err);
-      setError('Failed to load cart items');
-      setCartItems([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchCartItems();
+  }, []);
 
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -87,7 +96,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Updating quantity for item:', id, 'to:', newQuantity);
+      // Update via gRPC
       await cartService.mutateCart(item.productVariantId, newQuantity);
       
       // Update local state
@@ -108,7 +117,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Removing item:', id);
+      // Remove via gRPC (set quantity to 0)
       await cartService.mutateCart(item.productVariantId, 0);
       
       // Update local state
@@ -119,26 +128,6 @@ const Cart: React.FC = () => {
       setCartItems(cartItems.filter(item => item.id !== id));
     }
   };
-
-  // Show loading if auth is still loading
-  if (authLoading) {
-    return (
-      <Layout>
-        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Checking authentication...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  // Show login screen if user is not authenticated
-  if (!isAuthenticated) {
-    console.log('User not authenticated, showing Auth component');
-    return <Auth />;
-  }
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 99;
@@ -168,7 +157,7 @@ const Cart: React.FC = () => {
           <div className="text-center">
             <p className="text-red-600 mb-4">{error}</p>
             <button 
-              onClick={fetchCartItems}
+              onClick={() => window.location.reload()}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
               Retry

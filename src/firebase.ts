@@ -1,7 +1,7 @@
 
 // Firebase initialization file
 import { initializeApp } from "firebase/app";
-import { getAuth, RecaptchaVerifier, connectAuthEmulator } from "firebase/auth";
+import { getAuth, RecaptchaVerifier } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCiOvgweMsdeLRp1n9K0tSSZW5avoOe5gQ",
@@ -17,8 +17,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-
-// Set auth settings to work with different domains
-auth.settings.appVerificationDisabledForTesting = false;
-
 export { RecaptchaVerifier };

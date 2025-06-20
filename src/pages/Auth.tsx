@@ -35,89 +35,53 @@ const Auth: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Clean up reCAPTCHA on unmount and when component mounts
+  // Clean up reCAPTCHA on unmount
   useEffect(() => {
-    cleanupRecaptcha();
     return () => cleanupRecaptcha();
   }, []);
 
   const cleanupRecaptcha = () => {
-    console.log('Cleaning up reCAPTCHA...');
-    
     if (recaptchaVerifierRef.current) {
       try {
         recaptchaVerifierRef.current.clear();
-        console.log('Cleared recaptchaVerifierRef');
       } catch (err) {
         console.error("Failed to clear recaptcha:", err);
       }
       recaptchaVerifierRef.current = null;
     }
-    
     if (window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier.clear();
-        console.log('Cleared window.recaptchaVerifier');
       } catch (err) {
         console.error("Failed to clear window.recaptchaVerifier:", err);
       }
       window.recaptchaVerifier = null;
     }
-    
-    const container = document.getElementById("recaptcha-container");
-    if (container) {
-      container.innerHTML = '';
-      console.log('Cleared reCAPTCHA container HTML');
-    }
-
-    // Clear any existing reCAPTCHA widgets from the page
-    const existingWidgets = document.querySelectorAll('[data-sitekey]');
-    existingWidgets.forEach(widget => {
-      try {
-        widget.remove();
-      } catch (e) {
-        console.log('Failed to remove widget:', e);
-      }
-    });
   };
 
   const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
-    console.log('Setting up reCAPTCHA...');
-    
-    cleanupRecaptcha();
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
+    if (recaptchaVerifierRef.current) {
+      return recaptchaVerifierRef.current;
+    }
+
     const container = document.getElementById("recaptcha-container");
     if (!container) throw new Error("reCAPTCHA container not found");
 
-    try {
-      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-        callback: () => {
-          console.log("reCAPTCHA solved");
-        },
-        'expired-callback': () => {
-          console.log("reCAPTCHA expired");
-          cleanupRecaptcha();
-        }
-      });
-
-      recaptchaVerifierRef.current = verifier;
-      window.recaptchaVerifier = verifier;
-
-      await verifier.render();
-      console.log('reCAPTCHA rendered successfully');
-      return verifier;
-    } catch (error: any) {
-      console.error('Failed to render reCAPTCHA:', error);
-      cleanupRecaptcha();
-      
-      // If it's a domain issue, show a more helpful error
-      if (error.message?.includes('Hostname match not found') || error.code === 'auth/captcha-check-failed') {
-        throw new Error('Domain not authorized for SMS verification. Please contact support.');
+    const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      size: "invisible",
+      callback: () => console.log("reCAPTCHA solved"),
+      'expired-callback': () => {
+        console.log("reCAPTCHA expired");
+        cleanupRecaptcha();
       }
-      throw error;
-    }
+    });
+
+    recaptchaVerifierRef.current = verifier;
+    window.recaptchaVerifier = verifier;
+
+    await verifier.render();
+
+    return verifier;
   };
 
   const handleSendOTP = async () => {
@@ -130,14 +94,12 @@ const Auth: React.FC = () => {
     const phone = `+91${phoneNumber}`;
 
     try {
-      console.log('Sending OTP to:', phone);
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
       setResendTimer(60);
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
-      console.log('OTP sent successfully');
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
       cleanupRecaptcha();
@@ -147,12 +109,8 @@ const Auth: React.FC = () => {
         errorMessage = "Too many requests. Please try again later.";
       } else if (error.code === 'auth/invalid-phone-number') {
         errorMessage = "Invalid phone number format";
-      } else if (error.code === 'auth/captcha-check-failed') {
-        errorMessage = "Domain verification failed. Please refresh and try again.";
-      } else if (error.message?.includes('Domain not authorized')) {
-        errorMessage = error.message;
-      } else if (error.message?.includes('reCAPTCHA has already been rendered')) {
-        errorMessage = "Please refresh the page and try again";
+      } else if (error.code === 'auth/missing-phone-number') {
+        errorMessage = "Phone number is required";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -171,14 +129,12 @@ const Auth: React.FC = () => {
     setOtp('');
 
     try {
-      console.log('Resending OTP...');
       const phone = `+91${phoneNumber}`;
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setResendTimer(60);
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
-      console.log('OTP resent successfully');
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
       cleanupRecaptcha();
@@ -186,12 +142,8 @@ const Auth: React.FC = () => {
       let errorMessage = "Failed to resend OTP";
       if (error.code === 'auth/too-many-requests') {
         errorMessage = "Too many requests. Please wait before requesting again.";
-      } else if (error.code === 'auth/captcha-check-failed') {
-        errorMessage = "Domain verification failed. Please refresh and try again.";
-      } else if (error.message?.includes('Domain not authorized')) {
-        errorMessage = error.message;
-      } else if (error.message?.includes('reCAPTCHA has already been rendered')) {
-        errorMessage = "Please refresh the page and try again";
+      } else if (error.code === 'auth/argument-error') {
+        errorMessage = "Please try again after a moment.";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -214,25 +166,11 @@ const Auth: React.FC = () => {
 
     setIsLoading(true);
     try {
-      console.log('Verifying OTP...');
-      const result = await confirmationResult.confirm(otp);
-      
-      // Store authentication immediately in localStorage
-      const cleanPhone = phoneNumber;
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userPhone', cleanPhone);
-      localStorage.setItem('firebaseUser', JSON.stringify({
-        uid: result.user.uid,
-        phoneNumber: result.user.phoneNumber
-      }));
-      
+      await confirmationResult.confirm(otp);
       login(phoneNumber);
       toast({ title: "Login successful!" });
       cleanupRecaptcha();
-      console.log('Login successful, navigating to:', from);
-      
-      // Force a page reload to ensure auth state is properly updated
-      window.location.href = from;
+      navigate(from, { replace: true });
     } catch (error: any) {
       console.error("OTP verification failed:", error);
       let errorMessage = "Invalid OTP";
@@ -248,7 +186,6 @@ const Auth: React.FC = () => {
   };
 
   const handleBackToPhone = () => {
-    console.log('Going back to phone input');
     setStep('phone');
     setOtp('');
     setConfirmationResult(null);
@@ -259,8 +196,10 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        {/* reCAPTCHA container - always present in DOM */}
         <div ref={recaptchaContainer} id="recaptcha-container" style={{ display: 'none' }} />
 
+        {/* Header */}
         <div className="flex items-center mb-6">
           <button 
             onClick={() => step === 'otp' ? handleBackToPhone() : navigate(-1)}
