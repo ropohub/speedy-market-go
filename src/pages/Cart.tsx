@@ -128,23 +128,12 @@ const Cart: React.FC = () => {
     }
   };
 
-  // Show loading if auth is still loading
+  // Show loading spinner while auth state is loading
   if (authLoading) {
-    return (
-      <Layout>
-        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Checking authentication...</p>
-          </div>
-        </div>
-      </Layout>
-    );
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
-
-  // Show login screen if user is not authenticated
+  // Show login page only if auth is not loading and user is not authenticated
   if (!isAuthenticated) {
-    console.log('User not authenticated, showing Auth component');
     return <Auth />;
   }
 
