@@ -1,3 +1,4 @@
+
 interface LoginResponse {
   shopify_customer_id: string;
 }
@@ -86,6 +87,6 @@ class ShopifyApiClient {
 }
 
 // Updated with your backend URL
-const SHOPIFY_API_BASE_URL = 'https://shopifyapi-851631422269.asia-south2.run.app';
+const SHOPIFY_API_BASE_URL = process.env.VITE_SHOPIFY_API_URL || 'https://shopifyapi-851631422269.asia-south2.run.app';
 
 export const shopifyClient = new ShopifyApiClient(SHOPIFY_API_BASE_URL);

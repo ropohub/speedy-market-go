@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -36,67 +35,41 @@ const Auth: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Clean up reCAPTCHA only on unmount
+  // Clean up reCAPTCHA on unmount
   useEffect(() => {
     return () => cleanupRecaptcha();
   }, []);
 
   const cleanupRecaptcha = () => {
-    console.log('Cleaning up reCAPTCHA...');
-    
-    // Clear the current verifier reference
     if (recaptchaVerifierRef.current) {
       try {
         recaptchaVerifierRef.current.clear();
-        console.log('Cleared recaptchaVerifierRef');
       } catch (err) {
         console.error("Failed to clear recaptcha:", err);
       }
       recaptchaVerifierRef.current = null;
     }
-    
-    // Clear global window verifier
     if (window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier.clear();
-        console.log('Cleared window.recaptchaVerifier');
       } catch (err) {
         console.error("Failed to clear window.recaptchaVerifier:", err);
       }
       window.recaptchaVerifier = null;
     }
-    
-    // Clear the DOM container
-    const container = document.getElementById("recaptcha-container");
-    if (container) {
-      container.innerHTML = '';
-      console.log('Cleared reCAPTCHA container HTML');
-    }
   };
 
   const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
-    console.log('Setting up reCAPTCHA...');
-    
-    // Check if we already have a working verifier
-    if (window.recaptchaVerifier) {
-      console.log('Using existing recaptchaVerifier');
-      return window.recaptchaVerifier;
+    if (recaptchaVerifierRef.current) {
+      return recaptchaVerifierRef.current;
     }
-    
-    // Always clean up first if no existing verifier
-    cleanupRecaptcha();
-    
-    // Wait a bit for cleanup to complete
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     const container = document.getElementById("recaptcha-container");
     if (!container) throw new Error("reCAPTCHA container not found");
 
     const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
       size: "invisible",
-      callback: () => {
-        console.log("reCAPTCHA solved");
-      },
+      callback: () => console.log("reCAPTCHA solved"),
       'expired-callback': () => {
         console.log("reCAPTCHA expired");
         cleanupRecaptcha();
@@ -106,14 +79,7 @@ const Auth: React.FC = () => {
     recaptchaVerifierRef.current = verifier;
     window.recaptchaVerifier = verifier;
 
-    try {
-      await verifier.render();
-      console.log('reCAPTCHA rendered successfully');
-    } catch (error) {
-      console.error('Failed to render reCAPTCHA:', error);
-      cleanupRecaptcha();
-      throw error;
-    }
+    await verifier.render();
 
     return verifier;
   };
@@ -128,14 +94,12 @@ const Auth: React.FC = () => {
     const phone = `+91${phoneNumber}`;
 
     try {
-      console.log('Sending OTP to:', phone);
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setStep('otp');
       setResendTimer(60);
       toast({ title: "OTP sent!", description: `OTP sent to +91${phoneNumber}` });
-      console.log('OTP sent successfully');
     } catch (error: any) {
       console.error("Failed to send OTP:", error);
       cleanupRecaptcha();
@@ -147,8 +111,6 @@ const Auth: React.FC = () => {
         errorMessage = "Invalid phone number format";
       } else if (error.code === 'auth/missing-phone-number') {
         errorMessage = "Phone number is required";
-      } else if (error.message?.includes('reCAPTCHA has already been rendered')) {
-        errorMessage = "Please refresh the page and try again";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -167,14 +129,12 @@ const Auth: React.FC = () => {
     setOtp('');
 
     try {
-      console.log('Resending OTP...');
       const phone = `+91${phoneNumber}`;
       const appVerifier = await setupRecaptcha();
       const result = await signInWithPhoneNumber(auth, phone, appVerifier);
       setConfirmationResult(result);
       setResendTimer(60);
       toast({ title: "OTP resent!", description: `New OTP sent to +91${phoneNumber}` });
-      console.log('OTP resent successfully');
     } catch (error: any) {
       console.error("Failed to resend OTP:", error);
       cleanupRecaptcha();
@@ -184,8 +144,6 @@ const Auth: React.FC = () => {
         errorMessage = "Too many requests. Please wait before requesting again.";
       } else if (error.code === 'auth/argument-error') {
         errorMessage = "Please try again after a moment.";
-      } else if (error.message?.includes('reCAPTCHA has already been rendered')) {
-        errorMessage = "Please refresh the page and try again";
       }
 
       toast({ title: errorMessage, description: error.message, variant: "destructive" });
@@ -199,7 +157,6 @@ const Auth: React.FC = () => {
       toast({ title: "Please enter the complete OTP", variant: "destructive" });
       return;
     }
-
     if (!confirmationResult) {
       toast({ title: "Session expired", description: "Please resend OTP", variant: "destructive" });
       setStep('phone');
@@ -209,20 +166,10 @@ const Auth: React.FC = () => {
 
     setIsLoading(true);
     try {
-      console.log('Verifying OTP...', otp);
-      console.log("Confirming OTP with:", otp, confirmationResult);
-      console.log("Verifying with confirmationResult:", confirmationResult);
-      
-      const result = await confirmationResult.confirm(otp);
-      const user = result.user;
-      console.log("OTP confirmed. Firebase user:", user);
-      
-      // Use Firebase's phone number, not our state
-      await login(user.phoneNumber || phoneNumber);
-      
+      await confirmationResult.confirm(otp);
+      login(phoneNumber);
       toast({ title: "Login successful!" });
       cleanupRecaptcha();
-      console.log('Login successful, navigating to:', from);
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error("OTP verification failed:", error);
@@ -239,7 +186,6 @@ const Auth: React.FC = () => {
   };
 
   const handleBackToPhone = () => {
-    console.log('Going back to phone input');
     setStep('phone');
     setOtp('');
     setConfirmationResult(null);

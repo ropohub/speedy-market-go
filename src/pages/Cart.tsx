@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -20,66 +19,54 @@ interface CartItem {
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading: authLoading, userPhone } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('Cart component - Auth state:', { 
-    isAuthenticated, 
-    authLoading, 
-    userPhone
-  });
-  console.log("Cart: useAuth():", isAuthenticated, authLoading, userPhone);
+  // Show login screen if user is not authenticated
+  if (!isAuthenticated) {
+    return <Auth />;
+  }
 
+  // Fetch cart items on component mount
   useEffect(() => {
-    console.log('Cart useEffect - Auth state changed:', { isAuthenticated, authLoading });
-    
-    if (!authLoading && isAuthenticated) {
-      console.log('User is authenticated, fetching cart items...');
-      fetchCartItems();
-    } else if (!authLoading && !isAuthenticated) {
-      console.log('User not authenticated, will show login');
-      setLoading(false);
-    }
-  }, [isAuthenticated, authLoading]);
+    const fetchCartItems = async () => {
+      try {
+        setLoading(true);
+        const response = await cartService.getCartItems();
+        
+        if (response.status === 'empty' || response.items.length === 0) {
+          setCartItems([]);
+          return;
+        }
+        
+        // Map REST API response to our cart items format
+        // For now, we'll use dummy data for display since we need product details
+        const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
+          id: item.product_variant_id,
+          name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
+          price: 999 + (index * 100), // Dummy price
+          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
+          brand: 'Brand Name', // Dummy brand
+          selectedSize: 'M', // Dummy size
+          quantity: item.quantity,
+          productVariantId: item.product_variant_id
+        }));
 
-  const fetchCartItems = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      console.log('Calling cartService.getCartItems()...');
-      const response = await cartService.getCartItems();
-      console.log('Cart API response:', response);
-      
-      if (response.status === 'empty' || response.items.length === 0) {
-        console.log('Cart is empty');
+        setCartItems(mappedItems);
+      } catch (err) {
+        console.error('Failed to fetch cart items:', err);
+        setError('Failed to load cart items');
+        // Fallback to empty cart
         setCartItems([]);
-        return;
+      } finally {
+        setLoading(false);
       }
-      
-      // Map REST API response to our cart items format
-      const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
-        id: item.product_variant_id,
-        name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
-        price: 999 + (index * 100), // Dummy price
-        image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
-        brand: 'Brand Name', // Dummy brand
-        selectedSize: 'M', // Dummy size
-        quantity: item.quantity,
-        productVariantId: item.product_variant_id
-      }));
+    };
 
-      console.log('Mapped cart items:', mappedItems);
-      setCartItems(mappedItems);
-    } catch (err) {
-      console.error('Failed to fetch cart items:', err);
-      setError('Failed to load cart items');
-      setCartItems([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchCartItems();
+  }, []);
 
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -91,7 +78,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Updating quantity for item:', id, 'to:', newQuantity);
+      // Update via REST API
       await cartService.mutateCart(item.productVariantId, newQuantity);
       
       // Update local state
@@ -112,7 +99,7 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Removing item:', id);
+      // Remove via REST API (set quantity to 0)
       await cartService.mutateCart(item.productVariantId, 0);
       
       // Update local state
@@ -123,27 +110,6 @@ const Cart: React.FC = () => {
       setCartItems(cartItems.filter(item => item.id !== id));
     }
   };
-
-  // Show loading while auth is being determined
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // After auth loading is complete, check if user is authenticated
-  if (!isAuthenticated) {
-    console.log('User not authenticated, showing Auth component');
-    return <Auth />;
-  }
-
-  // User is authenticated, show cart
-  console.log('User is authenticated, showing cart');
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 99;
@@ -173,7 +139,7 @@ const Cart: React.FC = () => {
           <div className="text-center">
             <p className="text-red-600 mb-4">{error}</p>
             <button 
-              onClick={fetchCartItems}
+              onClick={() => window.location.reload()}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
               Retry
