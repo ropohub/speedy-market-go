@@ -31,18 +31,15 @@ const Cart: React.FC = () => {
     userPhone
   });
 
-  // Simple logic: if user is authenticated, show cart; if not, show login
   useEffect(() => {
     console.log('Cart useEffect - Auth state changed:', { isAuthenticated, authLoading });
     
-    if (!authLoading) {
-      if (isAuthenticated) {
-        console.log('User is authenticated, fetching cart items...');
-        fetchCartItems();
-      } else {
-        console.log('User not authenticated, will show login');
-        setLoading(false);
-      }
+    if (!authLoading && isAuthenticated) {
+      console.log('User is authenticated, fetching cart items...');
+      fetchCartItems();
+    } else if (!authLoading && !isAuthenticated) {
+      console.log('User not authenticated, will show login');
+      setLoading(false);
     }
   }, [isAuthenticated, authLoading]);
 
@@ -132,13 +129,13 @@ const Cart: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Checking authentication...</p>
         </div>
       </div>
     );
   }
 
-  // Simple logic: if not authenticated, show login
+  // After auth loading is complete, check if user is authenticated
   if (!isAuthenticated) {
     console.log('User not authenticated, showing Auth component');
     return <Auth />;
