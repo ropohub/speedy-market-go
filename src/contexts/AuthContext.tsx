@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUserPhone(storedPhone);
       setShopifyCustomerId(storedShopifyId);
       console.log('Restored authentication state from localStorage');
+      setIsLoading(false);
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -65,7 +66,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.removeItem('userPhone');
           localStorage.removeItem('shopifyCustomerId');
         }
-      } else {
+      } else if (!storedAuth) {
+        // Only clear state if we don't have stored auth
         console.log('User signed out or no phone number');
         setIsAuthenticated(false);
         setUserPhone(null);

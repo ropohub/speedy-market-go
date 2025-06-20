@@ -29,12 +29,14 @@ const Cart: React.FC = () => {
 
   // Fetch cart items on component mount when authenticated
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      console.log('Fetching cart items...');
-      fetchCartItems();
-    } else if (!authLoading && !isAuthenticated) {
-      console.log('User not authenticated, stopping cart fetch');
-      setLoading(false);
+    if (!authLoading) {
+      if (isAuthenticated) {
+        console.log('User is authenticated, fetching cart items...');
+        fetchCartItems();
+      } else {
+        console.log('User not authenticated');
+        setLoading(false);
+      }
     }
   }, [isAuthenticated, authLoading]);
 
