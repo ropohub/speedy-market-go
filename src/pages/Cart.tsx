@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -27,22 +28,19 @@ const Cart: React.FC = () => {
   console.log('Cart component - Auth state:', { 
     isAuthenticated, 
     authLoading, 
-    userPhone,
-    localStorage: {
-      isAuthenticated: localStorage.getItem('isAuthenticated'),
-      userPhone: localStorage.getItem('userPhone'),
-      shopifyCustomerId: localStorage.getItem('shopifyCustomerId')
-    }
+    userPhone
   });
 
-  // Fetch cart items on component mount when authenticated
+  // Simple logic: if user is authenticated, show cart; if not, show login
   useEffect(() => {
+    console.log('Cart useEffect - Auth state changed:', { isAuthenticated, authLoading });
+    
     if (!authLoading) {
       if (isAuthenticated) {
         console.log('User is authenticated, fetching cart items...');
         fetchCartItems();
       } else {
-        console.log('User not authenticated');
+        console.log('User not authenticated, will show login');
         setLoading(false);
       }
     }
@@ -128,14 +126,26 @@ const Cart: React.FC = () => {
     }
   };
 
-  // Show loading spinner while auth state is loading
+  // Show loading while auth is being determined
   if (authLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
-  // Show login page only if auth is not loading and user is not authenticated
+
+  // Simple logic: if not authenticated, show login
   if (!isAuthenticated) {
+    console.log('User not authenticated, showing Auth component');
     return <Auth />;
   }
+
+  // User is authenticated, show cart
+  console.log('User is authenticated, showing cart');
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const deliveryFee = 99;
