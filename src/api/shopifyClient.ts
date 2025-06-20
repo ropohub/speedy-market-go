@@ -26,6 +26,14 @@ interface CartGetResponse {
   status: string;
 }
 
+interface ProductsQueryParams {
+  query?: string;
+  first?: number;
+  after?: string;
+  sortKey?: 'RELEVANCE' | 'PRICE' | 'CREATED_AT';
+  reverse?: boolean;
+}
+
 class ShopifyApiClient {
   private baseUrl: string;
 
@@ -83,6 +91,31 @@ class ShopifyApiClient {
     }
 
     return response.json();
+  }
+
+  async getProducts(params: ProductsQueryParams = {}): Promise<any[]> {
+    // Mock implementation - replace with actual Shopify API call
+    console.log('Fetching products with params:', params);
+    
+    // Return mock data for now
+    return [
+      {
+        id: 'gid://shopify/Product/1',
+        name: 'Sample Product 1',
+        price: 2999,
+        image: '/placeholder.svg',
+        brand: 'Sample Brand',
+        originalPrice: 3999
+      },
+      {
+        id: 'gid://shopify/Product/2',
+        name: 'Sample Product 2',
+        price: 1999,
+        image: '/placeholder.svg',
+        brand: 'Sample Brand',
+        originalPrice: 2499
+      }
+    ];
   }
 }
 
