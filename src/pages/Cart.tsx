@@ -25,43 +25,48 @@ const Cart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 🧠 Fallback to Auth screen if user is not logged in
-  if (!firebaseUser) {
-    return <Auth />;
-  }
+  const fetchCartItems = async () => {
+    try {
+      setLoading(true);
+
+      const user = auth.currentUser;
+      if (!user) {
+        setError('User not authenticated.');
+        return;
+      }
+
+      const token = await user.getIdToken(true);
+      const response = await cartService.getCartItems(token); // Your cartService must accept token
+
+      if (response.status === 'empty' || response.items.length === 0) {
+        setCartItems([]);
+        setError(null);
+        return;
+      }
+
+      const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
+        id: item.product_variant_id,
+        name: `Product ${index + 1}`,
+        price: 999 + index * 100,
+        image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`,
+        brand: 'Brand Name',
+        selectedSize: 'M',
+        quantity: item.quantity,
+        productVariantId: item.product_variant_id
+      }));
+
+      setCartItems(mappedItems);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch cart items:', err);
+      setError('Failed to load cart items');
+      setCartItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        setLoading(true);
-        const response = await cartService.getCartItems();
-
-        if (response.status === 'empty' || response.items.length === 0) {
-          setCartItems([]);
-          return;
-        }
-
-        const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
-          id: item.product_variant_id,
-          name: `Product ${index + 1}`,
-          price: 999 + index * 100,
-          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`,
-          brand: 'Brand Name',
-          selectedSize: 'M',
-          quantity: item.quantity,
-          productVariantId: item.product_variant_id
-        }));
-
-        setCartItems(mappedItems);
-      } catch (err) {
-        console.error('Failed to fetch cart items:', err);
-        setError('Failed to load cart items');
-        setCartItems([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCartItems();
   }, []);
 
@@ -76,7 +81,6 @@ const Cart: React.FC = () => {
       if (!item) return;
 
       await cartService.mutateCart(item.productVariantId, newQuantity);
-
       setCartItems(cartItems.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
@@ -109,6 +113,10 @@ const Cart: React.FC = () => {
     navigate('/checkout');
   };
 
+  if (!firebaseUser) {
+    return <Auth />;
+  }
+
   if (loading) {
     return (
       <Layout>
@@ -129,7 +137,7 @@ const Cart: React.FC = () => {
           <div className="text-center">
             <p className="text-red-600 mb-4">{error}</p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={fetchCartItems}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
               Retry
