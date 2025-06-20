@@ -1,235 +1,197 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import Layout from '../components/Layout';
-import ProductCard from '../components/ProductCard';
-import Breadcrumbs from '../components/Breadcrumbs';
-import Pagination from '../components/Pagination';
-import FilterSidebar from '../components/FilterSidebar';
-import { shopifyClient } from '../api/shopifyClient';
-import { Slider } from "@/components/ui/slider"
+import React, { useEffect, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import Header from '../components/Header';
+import NavigationBar from '../components/NavigationBar';
+import FilterBar from '../components/FilterBar';
+import ProductGrid from '../components/ProductGrid';
 
-interface LegacyProduct {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  brand: string;
-  originalPrice?: number;
-}
+const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
+const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
 
-interface CartItem extends LegacyProduct {
-  selectedSize?: string;
-  quantity: number;
-}
-
-const PRODUCTS_PER_PAGE = 24;
-
-const ProductListing: React.FC = () => {
-  const { category, subcategory, collection } = useParams();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState('');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const page = searchParams.get('page');
-    if (page) {
-      setCurrentPage(parseInt(page, 10));
-    } else {
-      setCurrentPage(1);
-    }
-  }, [searchParams]);
-
-  const handleAddToCart = (product: LegacyProduct) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    if (existingItem) {
-      setCartItems(cartItems.map(item => item.id === product.id ? {
-        ...item,
-        quantity: item.quantity + 1
-      } : item));
-    } else {
-      const newCartItem: CartItem = {
-        ...product,
-        selectedSize: 'M',
-        quantity: 1
-      };
-      setCartItems([...cartItems, newCartItem]);
-    }
-    console.log('Added to cart:', product);
-  };
-
-  const handleUpdateCartQuantity = (id: string, quantity: number) => {
-    setCartItems(cartItems.map(item => item.id === id ? {
-      ...item,
-      quantity
-    } : item));
-  };
-
-  const handleRemoveCartItem = (id: string) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
-  };
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', newPage.toString());
-    navigate(`?${newParams.toString()}`, { replace: true });
-  };
-
-  const handleSortChange = (newSort: string) => {
-    setSortBy(newSort);
-  };
-
-  const handlePriceChange = (newPriceRange: number[]) => {
-    setPriceRange({ min: newPriceRange[0], max: newPriceRange[1] });
-  };
-
-  const handleBrandChange = (brand: string) => {
-    setSelectedBrands(prev => {
-      if (prev.includes(brand)) {
-        return prev.filter(b => b !== brand);
-      } else {
-        return [...prev, brand];
+const getProductsQuery = `
+  query GetProducts($first: Int!, $after: String) {
+    products(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
       }
-    });
-  };
-
-  const handleClearFilters = () => {
-    setSelectedBrands([]);
-    setPriceRange({ min: 0, max: 10000 });
-    setSortBy('');
-    setCurrentPage(1);
-    navigate(location.pathname);
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
-  };
-
-  const { data: products = [], isLoading, error } = useQuery({
-    queryKey: ['products', category, subcategory, collection, currentPage, sortBy, priceRange, selectedBrands],
-    queryFn: async () => {
-      console.log('Fetching products with params:', { category, subcategory, collection, currentPage, sortBy, priceRange, selectedBrands });
-      
-      let query = '';
-      
-      // Handle collection-based queries
-      if (collection) {
-        query = `collection:${collection}`;
-      } else if (category && subcategory) {
-        // Handle category-based queries
-        if (category === 'women' && subcategory === 'all') {
-          query = 'product_type:*';
-        } else {
-          query = `product_type:${subcategory}`;
+      edges {
+        cursor
+        node {
+          id
+          title
+          handle
+          vendor
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 1) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
         }
       }
+    }
+  }
+`;
 
-      // Add brand filters
-      if (selectedBrands.length > 0) {
-        const brandQuery = selectedBrands.map(brand => `vendor:${brand}`).join(' OR ');
-        query = query ? `${query} AND (${brandQuery})` : `(${brandQuery})`;
-      }
+interface ShopifyImage {
+  url: string;
+  altText: string | null;
+}
 
-      // Add price filters
-      if (priceRange.min > 0 || priceRange.max < 10000) {
-        const priceQuery = `variants.price:>=${priceRange.min} AND variants.price:<=${priceRange.max}`;
-        query = query ? `${query} AND ${priceQuery}` : priceQuery;
-      }
+interface ShopifyPrice {
+  amount: string;
+  currencyCode: string;
+}
 
-      return shopifyClient.getProducts({
-        query: query || undefined,
-        first: PRODUCTS_PER_PAGE,
-        after: currentPage > 1 ? btoa(`arrayconnection:${(currentPage - 1) * PRODUCTS_PER_PAGE - 1}`) : undefined,
-        sortKey: sortBy === 'price_asc' ? 'PRICE' : sortBy === 'price_desc' ? 'PRICE' : 'RELEVANCE',
-        reverse: sortBy === 'price_desc'
-      });
+interface ShopifyProductNode {
+  id: string;
+  title: string;
+  handle: string;
+  vendor: string;
+  priceRange: {
+    minVariantPrice: ShopifyPrice;
+  };
+  images: {
+    edges: { node: ShopifyImage }[];
+  };
+}
+
+interface ShopifyProductEdge {
+  cursor: string;
+  node: ShopifyProductNode;
+}
+
+interface ShopifyResponse {
+  data: {
+    products: {
+      pageInfo: {
+        hasNextPage: boolean;
+        endCursor: string | null;
+      };
+      edges: ShopifyProductEdge[];
+    };
+  };
+}
+
+const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: string | null }) => {
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
     },
-    staleTime: 5 * 60 * 1000,
+    body: JSON.stringify({
+      query: getProductsQuery,
+      variables: {
+        first: 10,
+        after: pageParam,
+      },
+    }),
   });
 
-  const getPageTitle = () => {
-    if (collection) {
-      return collection.charAt(0).toUpperCase() + collection.slice(1);
-    }
-    if (category && subcategory) {
-      if (subcategory === 'all') {
-        return `All ${category.charAt(0).toUpperCase() + category.slice(1)}`;
-      }
-      return subcategory.charAt(0).toUpperCase() + subcategory.slice(1);
-    }
-    return 'Products';
-  };
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error("Shopify API Error:", errorBody);
+    throw new Error('Failed to fetch products from Shopify.');
+  }
 
-  const getBreadcrumbs = () => {
-    const crumbs = [{ label: 'Home', path: '/' }];
-    
-    if (collection) {
-      crumbs.push({ label: 'Collections', path: '/categories' });
-      crumbs.push({ label: collection.charAt(0).toUpperCase() + collection.slice(1), path: '' });
-    } else if (category) {
-      crumbs.push({ label: 'Categories', path: '/categories' });
-      crumbs.push({ label: category.charAt(0).toUpperCase() + category.slice(1), path: `/products/${category}` });
-      if (subcategory) {
-        crumbs.push({ label: subcategory.charAt(0).toUpperCase() + subcategory.slice(1), path: '' });
-      }
-    }
-    
-    return crumbs;
-  };
+  const json: ShopifyResponse = await response.json();
+  if (json.data?.products) {
+      return json.data.products;
+  }
+  
+  console.error("Unexpected Shopify API response structure:", json);
+  throw new Error("Unexpected response structure from Shopify");
+};
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+const ProductListPage = () => {
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ['shopifyProducts'],
+    queryFn: fetchProductsFromShopify,
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => {
+      return lastPage.pageInfo.hasNextPage ? lastPage.pageInfo.endCursor : undefined;
+    },
+  });
+
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: '0px', // Trigger fetch only when element is in view
+      }
+    );
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const products = data?.pages.flatMap(page => page.edges.map(edge => {
+    const { node } = edge;
+    return {
+      id: node.id,
+      name: node.title,
+      price: parseFloat(node.priceRange.minVariantPrice.amount),
+      image: node.images.edges[0]?.node.url || '/placeholder.svg',
+      brand: node.vendor,
+    };
+  })) ?? [];
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-red-500">Error: {error.message}</p>
+      </div>
+    );
+  }
 
   return (
-    <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
-      <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs crumbs={getBreadcrumbs()} />
-        <h1 className="text-2xl font-bold mb-4">{getPageTitle()}</h1>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <NavigationBar />
+      <FilterBar />
+      <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
+      
+      {/* This invisible div will trigger loading more products */}
+      <div ref={loadMoreRef} />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Filter Sidebar */}
-          <aside className="md:col-span-1">
-            <FilterSidebar
-              brands={['Addidas', 'Nike', 'Puma', 'Reebok', 'Levis', 'Wrangler']}
-              selectedBrands={selectedBrands}
-              onBrandChange={handleBrandChange}
-              priceRange={priceRange}
-              onPriceChange={handlePriceChange}
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              onClearFilters={handleClearFilters}
-            />
-          </aside>
-
-          {/* Product Listing */}
-          <div className="md:col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {products.map((product: any) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(products.length / PRODUCTS_PER_PAGE)}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </div>
+      <div className="flex justify-center py-8">
+        {isFetchingNextPage && (
+          <p>Loading more...</p>
+        )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
-export default ProductListing;
+export default ProductListPage;

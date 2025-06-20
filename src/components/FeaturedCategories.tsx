@@ -9,7 +9,6 @@ interface FeaturedCategory {
   image: string;
   isDeal?: boolean;
   isPriceCategory?: boolean;
-  shopifyCollection?: string; // New field for Shopify collection handle
 }
 
 interface FeaturedCategoriesProps {
@@ -20,13 +19,8 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ categories }) =
   const navigate = useNavigate();
 
   const handleCategoryClick = (category: FeaturedCategory) => {
-    // If it has a Shopify collection, navigate to that collection
-    if (category.shopifyCollection) {
-      navigate(`/products/collection/${category.shopifyCollection}`);
-    } else {
-      // Default navigation to product listing page
-      navigate(`/products/men/${category.id}`);
-    }
+    // Navigate to product listing page
+    navigate(`/products/men/${category.id}`);
   };
 
   // Limit to 9 categories, handling cases where categories might be undefined.
