@@ -8,6 +8,9 @@ import Auth from './Auth';
 import { cartService } from '../api/cartClient';
 import { toast } from "@/hooks/use-toast";
 
+const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
+const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
+
 interface CartItem {
   id: string;
   name: string;
@@ -18,6 +21,53 @@ interface CartItem {
   quantity: number;
   productVariantId: string;
 }
+
+// Function to fetch product variant details from Shopify
+const fetchVariantDetails = async (variantId: string) => {
+  const query = `
+    query GetProductVariant($id: ID!) {
+      productVariant(id: $id) {
+        id
+        title
+        price {
+          amount
+          currencyCode
+        }
+        image {
+          url
+          altText
+        }
+        product {
+          title
+          vendor
+        }
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query,
+      variables: { id: variantId },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch variant details');
+  }
+
+  const json = await response.json();
+  return json.data?.productVariant;
+};
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
@@ -51,19 +101,60 @@ const Cart: React.FC = () => {
         return;
       }
 
-      // Map API response to UI cart items with mock data
-      const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
-        id: item.product_variant_id,
-        name: `Product ${index + 1}`,
-        price: 999 + index * 100,
-        image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`,
-        brand: 'Brand Name',
-        selectedSize: 'M',
-        quantity: item.quantity,
-        productVariantId: item.product_variant_id
-      }));
+      // Fetch real product details for each cart item
+      const mappedItems: CartItem[] = [];
+      
+      for (const item of response.items) {
+        try {
+          console.log('Fetching details for variant:', item.product_variant_id);
+          const variantDetails = await fetchVariantDetails(item.product_variant_id);
+          
+          if (variantDetails) {
+            // Find size from selectedOptions
+            const sizeOption = variantDetails.selectedOptions?.find(
+              (option: any) => option.name.toLowerCase() === 'size'
+            );
+            
+            mappedItems.push({
+              id: item.product_variant_id,
+              name: variantDetails.product?.title || 'Unknown Product',
+              price: Math.round(parseFloat(variantDetails.price?.amount || '0')),
+              image: variantDetails.image?.url || '/placeholder.svg',
+              brand: variantDetails.product?.vendor || 'Unknown Brand',
+              selectedSize: sizeOption?.value || undefined,
+              quantity: item.quantity,
+              productVariantId: item.product_variant_id
+            });
+          } else {
+            // Fallback to mock data if variant details not found
+            mappedItems.push({
+              id: item.product_variant_id,
+              name: 'Product Not Found',
+              price: 999,
+              image: '/placeholder.svg',
+              brand: 'Unknown Brand',
+              selectedSize: 'M',
+              quantity: item.quantity,
+              productVariantId: item.product_variant_id
+            });
+          }
+        } catch (variantError) {
+          console.error('Failed to fetch variant details:', variantError);
+          // Fallback to mock data on error
+          mappedItems.push({
+            id: item.product_variant_id,
+            name: 'Product Error',
+            price: 999,
+            image: '/placeholder.svg',
+            brand: 'Unknown Brand',
+            selectedSize: 'M',
+            quantity: item.quantity,
+            productVariantId: item.product_variant_id
+          });
+        }
+      }
 
-      console.log('Mapped cart items:', mappedItems);
+      console.log('Mapped cart items with real data:', mappedItems);
       setCartItems(mappedItems);
       setError(null);
     } catch (err: any) {
@@ -254,7 +345,9 @@ const Cart: React.FC = () => {
                       <div>
                         <h3 className="font-medium text-gray-900">{item.name}</h3>
                         <p className="text-sm text-gray-500">{item.brand}</p>
-                        <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
+                        {item.selectedSize && (
+                          <p className="text-sm text-gray-500">Size: {item.selectedSize}</p>
+                        )}
                       </div>
                       <button
                         onClick={() => handleRemoveItem(item.id)}
