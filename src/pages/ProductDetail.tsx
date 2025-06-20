@@ -5,6 +5,8 @@ import { ArrowLeft, ShoppingCart, Heart, Share } from 'lucide-react';
 import ImageCarousel from '../components/ImageCarousel';
 import { Button } from '../components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
+import { cartService } from '../api/cartClient';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
@@ -122,6 +124,7 @@ const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
 
   const { data: product, isLoading, error } = useQuery<ShopifyProduct, Error>({
     queryKey: ['shopifyProduct', productId],
@@ -136,6 +139,7 @@ const ProductDetailPage = () => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [sizeValidationShake, setSizeValidationShake] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     if (colorOption?.values.length && !selectedColor) {
@@ -177,7 +181,12 @@ const ProductDetailPage = () => {
     }
   };
 
-  const handleAddToBag = () => {
+  const handleAddToBag = async () => {
+    if (!isAuthenticated) {
+      navigate('/auth', { state: { from: window.location.pathname } });
+      return;
+    }
+
     if (sizeOption && !selectedSize) {
       setSizeValidationShake(true);
       toast({
@@ -189,17 +198,38 @@ const ProductDetailPage = () => {
       return;
     }
 
-    toast({
-      title: "Added to Bag",
-      description: `${product?.title} (Size: ${selectedSize}) added to your bag`,
-    });
+    if (!selectedVariant?.id) {
+      toast({
+        title: "Error",
+        description: "Please select a valid variant",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    console.log('Adding to bag:', {
-      productId: product?.id,
-      variantId: selectedVariant?.id,
-      color: selectedColor,
-      size: selectedSize,
-    });
+    setIsAddingToCart(true);
+    try {
+      await cartService.mutateCart(selectedVariant.id, 1);
+      toast({
+        title: "Added to Bag",
+        description: `${product?.title} ${selectedSize ? `(Size: ${selectedSize})` : ''} added to your bag`,
+      });
+      console.log('Successfully added to cart:', {
+        productId: product?.id,
+        variantId: selectedVariant?.id,
+        color: selectedColor,
+        size: selectedSize,
+      });
+    } catch (error) {
+      console.error('Failed to add to cart:', error);
+      toast({
+        title: "Failed to Add",
+        description: "Could not add item to cart. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   const availableSizes = useMemo(() => {
@@ -351,7 +381,7 @@ const ProductDetailPage = () => {
         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 space-y-3">
           <button
             onClick={toggleWishlist}
-            className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            className="w-12 h-12 bg-white/900 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             aria-label="Add to wishlist"
           >
             <Heart
@@ -361,7 +391,7 @@ const ProductDetailPage = () => {
           </button>
           <button
             onClick={handleShare}
-            className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            className="w-12 h-12 bg-white/900 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             aria-label="Share product"
           >
             <Share size={20} className="text-gray-600" />
@@ -460,14 +490,14 @@ const ProductDetailPage = () => {
         <Button 
           onClick={handleAddToBag}
           className={`px-8 py-3 text-base font-medium transition-all duration-200 ${
-            (!sizeOption || selectedSize)
+            (!sizeOption || selectedSize) && !isAddingToCart
               ? 'bg-black text-white hover:bg-gray-800 hover:scale-105' 
               : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
           }`}
           size="lg"
-          disabled={!!sizeOption && !selectedSize}
+          disabled={!!sizeOption && !selectedSize || isAddingToCart}
         >
-          ADD TO BAG
+          {isAddingToCart ? 'ADDING...' : 'ADD TO BAG'}
         </Button>
       </div>
     </div>

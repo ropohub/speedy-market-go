@@ -1,37 +1,36 @@
 
-import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { CartServiceClient } from "../../protogen/api/common/proto/cartservice/cart_service.client";
-import { GetCartItemsRequest, MutateCartRequest, ItemWithQuantity } from "../../protogen/api/common/proto/cartservice/cart_service";
+import { shopifyClient } from "./shopifyClient";
+import { auth } from "../firebase";
 
-// Create transport with base URL (you'll need to configure this for your backend)
-const transport = new GrpcWebFetchTransport({
-  baseUrl: "http://localhost:8080", // Replace with your actual backend URL
-  format: "binary"
-});
+interface CartItem {
+  product_variant_id: string;
+  quantity: number;
+}
 
-// Create the cart service client
-const cartClient = new CartServiceClient(transport);
+interface CartUpdateResponse {
+  draft_order_id: string;
+  status: string;
+}
 
-// Helper function to get authorization headers
-const getAuthHeaders = () => {
-  // Using dummy authorization for now
-  return {
-    "authorization": "Bearer dummy-jwt-token",
-    "user-id": "dummy-user-123"
-  };
-};
+interface CartGetResponse {
+  items: CartItem[];
+  status: string;
+}
 
 export const cartService = {
   // Fetch cart items
-  async getCartItems() {
+  async getCartItems(): Promise<CartGetResponse> {
     try {
-      const request = GetCartItemsRequest.create({});
-      const response = await cartClient.getCartItems(request, {
-        meta: getAuthHeaders()
-      });
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const token = await user.getIdToken();
+      const response = await shopifyClient.getCart(token);
       
-      console.log("Cart items fetched:", response.response);
-      return response.response;
+      console.log("Cart items fetched:", response);
+      return response;
     } catch (error) {
       console.error("Error fetching cart items:", error);
       throw error;
@@ -39,20 +38,23 @@ export const cartService = {
   },
 
   // Add or update cart item
-  async mutateCart(productVariantId: bigint, quantity: number) {
+  async mutateCart(productVariantId: string, quantity: number): Promise<CartUpdateResponse> {
     try {
-      const item = ItemWithQuantity.create({
-        productVariantId,
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const token = await user.getIdToken();
+      const items = [{
+        product_variant_id: productVariantId,
         quantity
-      });
+      }];
       
-      const request = MutateCartRequest.create({ item });
-      const response = await cartClient.mutateCart(request, {
-        meta: getAuthHeaders()
-      });
+      const response = await shopifyClient.updateCart(token, items);
       
-      console.log("Cart mutated:", response.response);
-      return response.response;
+      console.log("Cart mutated:", response);
+      return response;
     } catch (error) {
       console.error("Error mutating cart:", error);
       throw error;
