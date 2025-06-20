@@ -167,7 +167,7 @@ const Auth: React.FC = () => {
     setIsLoading(true);
     try {
       await confirmationResult.confirm(otp);
-      login(phoneNumber);
+      
       toast({ title: "Login successful!" });
       cleanupRecaptcha();
       navigate(from, { replace: true });
