@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { cartService } from '../api/cartClient';
 import { toast } from "@/hooks/use-toast";
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
-const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
+const SHOPIFY_API_URL = 'https://dripzyy.myshopify.com/api/2024-04/graphql.json';
 
 interface CartItem {
   id: string;
@@ -24,30 +23,38 @@ interface CartItem {
 
 // Function to fetch product variant details from Shopify
 const fetchVariantDetails = async (variantId: string) => {
+  // Clean up the variant ID - remove the gid prefix if present
+  const cleanVariantId = variantId.replace('gid://shopify/ProductVariant/', '');
+  const fullVariantId = `gid://shopify/ProductVariant/${cleanVariantId}`;
+  
   const query = `
     query GetProductVariant($id: ID!) {
-      productVariant(id: $id) {
-        id
-        title
-        price {
-          amount
-          currencyCode
-        }
-        image {
-          url
-          altText
-        }
-        product {
+      node(id: $id) {
+        ... on ProductVariant {
+          id
           title
-          vendor
-        }
-        selectedOptions {
-          name
-          value
+          price {
+            amount
+            currencyCode
+          }
+          image {
+            url
+            altText
+          }
+          product {
+            title
+            vendor
+          }
+          selectedOptions {
+            name
+            value
+          }
         }
       }
     }
   `;
+
+  console.log('Fetching variant with ID:', fullVariantId);
 
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
@@ -57,7 +64,7 @@ const fetchVariantDetails = async (variantId: string) => {
     },
     body: JSON.stringify({
       query,
-      variables: { id: variantId },
+      variables: { id: fullVariantId },
     }),
   });
 
@@ -66,7 +73,14 @@ const fetchVariantDetails = async (variantId: string) => {
   }
 
   const json = await response.json();
-  return json.data?.productVariant;
+  console.log('Shopify API response:', json);
+  
+  if (json.errors) {
+    console.error('Shopify GraphQL errors:', json.errors);
+    return null;
+  }
+  
+  return json.data?.node;
 };
 
 const Cart: React.FC = () => {
@@ -126,28 +140,29 @@ const Cart: React.FC = () => {
               productVariantId: item.product_variant_id
             });
           } else {
-            // Fallback to mock data if variant details not found
+            console.warn('No variant details found for:', item.product_variant_id);
+            // Fallback to basic data
             mappedItems.push({
               id: item.product_variant_id,
               name: 'Product Not Found',
-              price: 999,
+              price: 0,
               image: '/placeholder.svg',
               brand: 'Unknown Brand',
-              selectedSize: 'M',
+              selectedSize: 'Unknown',
               quantity: item.quantity,
               productVariantId: item.product_variant_id
             });
           }
         } catch (variantError) {
           console.error('Failed to fetch variant details:', variantError);
-          // Fallback to mock data on error
+          // Fallback to basic data on error
           mappedItems.push({
             id: item.product_variant_id,
             name: 'Product Error',
-            price: 999,
+            price: 0,
             image: '/placeholder.svg',
             brand: 'Unknown Brand',
-            selectedSize: 'M',
+            selectedSize: 'Unknown',
             quantity: item.quantity,
             productVariantId: item.product_variant_id
           });
