@@ -36,7 +36,7 @@ const Cart: React.FC = () => {
       }
 
       const token = await user.getIdToken(true);
-      const response = await cartService.getCartItems(token); // Your cartService must accept token
+      const response = await cartService.getCartItems(); // Your cartService must accept token
 
       if (response.status === 'empty' || response.items.length === 0) {
         setCartItems([]);
