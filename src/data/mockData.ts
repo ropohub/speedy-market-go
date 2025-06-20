@@ -18,19 +18,55 @@ export const categories = [
 
 export const banners = {
   women: [
-    '/lovable-uploads/08194999-5449-4242-8969-521999ca9391.png',
-    '/lovable-uploads/09919299-1999-4999-b999-999999999999.png',
-    '/lovable-uploads/10023030-0303-4030-b030-303030303030.png'
+    {
+      title: 'New Collection',
+      subtitle: 'Discover the latest trends',
+      image: '/lovable-uploads/08194999-5449-4242-8969-521999ca9391.png'
+    },
+    {
+      title: 'Summer Sale',
+      subtitle: 'Up to 50% off selected items',
+      image: '/lovable-uploads/09919299-1999-4999-b999-999999999999.png'
+    },
+    {
+      title: 'Premium Quality',
+      subtitle: 'Crafted with care and attention',
+      image: '/lovable-uploads/10023030-0303-4030-b030-303030303030.png'
+    }
   ],
   men: [
-    '/lovable-uploads/11147373-7373-4737-b737-737373737373.png',
-    '/lovable-uploads/12269696-9696-4696-b696-969696969696.png',
-    '/lovable-uploads/13391919-1919-4919-b919-191919191919.png'
+    {
+      title: 'Men\'s Collection',
+      subtitle: 'Style meets comfort',
+      image: '/lovable-uploads/11147373-7373-4737-b737-737373737373.png'
+    },
+    {
+      title: 'Casual Wear',
+      subtitle: 'Perfect for everyday style',
+      image: '/lovable-uploads/12269696-9696-4696-b696-969696969696.png'
+    },
+    {
+      title: 'Formal Attire',
+      subtitle: 'Professional and elegant',
+      image: '/lovable-uploads/13391919-1919-4919-b919-191919191919.png'
+    }
   ],
   kids: [
-    '/lovable-uploads/14416262-6262-4262-b262-626262626262.png',
-    '/lovable-uploads/15538585-8585-4585-b585-858585858585.png',
-    '/lovable-uploads/16660909-0909-4909-b909-090909090909.png'
+    {
+      title: 'Kids Fashion',
+      subtitle: 'Fun and comfortable styles',
+      image: '/lovable-uploads/14416262-6262-4262-b262-626262626262.png'
+    },
+    {
+      title: 'Play Time',
+      subtitle: 'Durable and colorful designs',
+      image: '/lovable-uploads/15538585-8585-4585-b585-858585858585.png'
+    },
+    {
+      title: 'School Ready',
+      subtitle: 'Smart and practical choices',
+      image: '/lovable-uploads/16660909-0909-4909-b909-090909090909.png'
+    }
   ]
 };
 
