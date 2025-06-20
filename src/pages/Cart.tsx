@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../firebase';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
 
@@ -19,21 +19,14 @@ interface CartItem {
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
+  const firebaseUser = auth.currentUser;
+
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 🧠 Wait for auth check before doing anything
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
+  // 🧠 Fallback to Auth screen if user is not logged in
+  if (!firebaseUser) {
     return <Auth />;
   }
 
@@ -51,7 +44,7 @@ const Cart: React.FC = () => {
         const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
           id: item.product_variant_id,
           name: `Product ${index + 1}`,
-          price: 999 + (index * 100),
+          price: 999 + index * 100,
           image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`,
           brand: 'Brand Name',
           selectedSize: 'M',
@@ -108,7 +101,7 @@ const Cart: React.FC = () => {
     }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = 99;
   const total = subtotal + deliveryFee;
 
