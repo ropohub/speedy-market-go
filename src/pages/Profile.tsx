@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/Layout';
 import { User, MapPin, Phone, Mail, Package, LogOut } from 'lucide-react';
@@ -7,10 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import Auth from './Auth';
 
 const Profile: React.FC = () => {
-  const { isAuthenticated, userPhone, logout } = useAuth();
+  const { isAuthenticated, isLoading, userPhone, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Show login screen if user is not authenticated
+  // ⏳ Wait for Firebase auth state to load
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" />
+      </div>
+    );
+  }
+
+  // 🔐 If still not authenticated, show login screen
   if (!isAuthenticated) {
     return <Auth />;
   }

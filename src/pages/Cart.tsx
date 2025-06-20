@@ -19,37 +19,42 @@ interface CartItem {
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Show login screen if user is not authenticated
+  // 🧠 Wait for auth check before doing anything
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" />
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return <Auth />;
   }
 
-  // Fetch cart items on component mount
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         setLoading(true);
         const response = await cartService.getCartItems();
-        
+
         if (response.status === 'empty' || response.items.length === 0) {
           setCartItems([]);
           return;
         }
-        
-        // Map REST API response to our cart items format
-        // For now, we'll use dummy data for display since we need product details
+
         const mappedItems: CartItem[] = response.items.map((item, index: number) => ({
           id: item.product_variant_id,
-          name: `Product ${index + 1}`, // Dummy name - you'll need to fetch from product service
-          price: 999 + (index * 100), // Dummy price
-          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`, // Dummy image
-          brand: 'Brand Name', // Dummy brand
-          selectedSize: 'M', // Dummy size
+          name: `Product ${index + 1}`,
+          price: 999 + (index * 100),
+          image: `https://images.unsplash.com/photo-${1595777457583 + index}?w=200&h=200&fit=crop`,
+          brand: 'Brand Name',
+          selectedSize: 'M',
           quantity: item.quantity,
           productVariantId: item.product_variant_id
         }));
@@ -58,7 +63,6 @@ const Cart: React.FC = () => {
       } catch (err) {
         console.error('Failed to fetch cart items:', err);
         setError('Failed to load cart items');
-        // Fallback to empty cart
         setCartItems([]);
       } finally {
         setLoading(false);
@@ -78,17 +82,14 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      // Update via REST API
       await cartService.mutateCart(item.productVariantId, newQuantity);
-      
-      // Update local state
-      setCartItems(cartItems.map(item => 
+
+      setCartItems(cartItems.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
     } catch (error) {
       console.error('Failed to update quantity:', error);
-      // Fallback to local update for now
-      setCartItems(cartItems.map(item => 
+      setCartItems(cartItems.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
     }
@@ -99,14 +100,10 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      // Remove via REST API (set quantity to 0)
       await cartService.mutateCart(item.productVariantId, 0);
-      
-      // Update local state
       setCartItems(cartItems.filter(item => item.id !== id));
     } catch (error) {
       console.error('Failed to remove item:', error);
-      // Fallback to local removal for now
       setCartItems(cartItems.filter(item => item.id !== id));
     }
   };
@@ -124,7 +121,7 @@ const Cart: React.FC = () => {
       <Layout>
         <div className="bg-gray-50 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4" />
             <p className="text-gray-600">Loading cart...</p>
           </div>
         </div>
@@ -138,7 +135,7 @@ const Cart: React.FC = () => {
         <div className="bg-gray-50 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <p className="text-red-600 mb-4">{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
@@ -158,7 +155,7 @@ const Cart: React.FC = () => {
             <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
             <p className="text-gray-600 mb-6">Add some items to get started</p>
-            <button 
+            <button
               onClick={() => navigate('/categories')}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
@@ -173,13 +170,11 @@ const Cart: React.FC = () => {
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
-        {/* Header */}
         <div className="bg-white px-4 py-4 border-b">
           <h1 className="text-xl font-bold text-gray-900">Shopping Cart ({cartItems.length} items)</h1>
         </div>
 
         <div className="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {cartItems.map((item) => (
               <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm">
@@ -203,7 +198,7 @@ const Cart: React.FC = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center gap-3">
                         <button
@@ -228,10 +223,9 @@ const Cart: React.FC = () => {
             ))}
           </div>
 
-          {/* Order Summary */}
           <div className="bg-white rounded-lg p-6 shadow-sm h-fit">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
-            
+
             <div className="space-y-3 mb-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
@@ -249,14 +243,14 @@ const Cart: React.FC = () => {
               </div>
             </div>
 
-            <button 
+            <button
               onClick={handleCheckout}
               className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
               Proceed to Checkout
             </button>
-            
-            <button 
+
+            <button
               onClick={() => navigate('/categories')}
               className="w-full mt-3 border border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
             >

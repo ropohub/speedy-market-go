@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
@@ -22,53 +21,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Restore immediately from localStorage for quick UI hydration
+    const storedAuth = localStorage.getItem('isAuthenticated');
+    const storedPhone = localStorage.getItem('userPhone');
+    const storedCustomerId = localStorage.getItem('shopifyCustomerId');
+
+    if (storedAuth === 'true' && storedPhone && storedCustomerId) {
+      setIsAuthenticated(true);
+      setUserPhone(storedPhone);
+      setShopifyCustomerId(storedCustomerId);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setIsLoading(true);
-      
       if (user && user.phoneNumber) {
         try {
-          // Get Firebase token and call Shopify backend
           const token = await user.getIdToken();
           const shopifyResponse = await shopifyClient.login(token);
-          
-          // Set authenticated state with Shopify customer ID
+
           setIsAuthenticated(true);
-          setUserPhone(user.phoneNumber.replace('+91',''));
+          const phone = user.phoneNumber.replace('+91', '');
+          setUserPhone(phone);
           setShopifyCustomerId(shopifyResponse.shopify_customer_id);
-          
-          // Store in localStorage
+
           localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('userPhone', user.phoneNumber.replace('+91',''));
+          localStorage.setItem('userPhone', phone);
           localStorage.setItem('shopifyCustomerId', shopifyResponse.shopify_customer_id);
-          
-          console.log('Shopify customer ID:', shopifyResponse.shopify_customer_id);
         } catch (error) {
           console.error('Failed to authenticate with Shopify:', error);
-          // Handle Shopify authentication failure
           setIsAuthenticated(false);
           setUserPhone(null);
           setShopifyCustomerId(null);
-          localStorage.removeItem('isAuthenticated');
-          localStorage.removeItem('userPhone');
-          localStorage.removeItem('shopifyCustomerId');
+          localStorage.clear();
         }
       } else {
         setIsAuthenticated(false);
         setUserPhone(null);
         setShopifyCustomerId(null);
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('userPhone');
-        localStorage.removeItem('shopifyCustomerId');
+        localStorage.clear();
       }
-      
+
       setIsLoading(false);
     });
-    
+
     return () => unsubscribe();
   }, []);
 
   const login = (phone: string) => {
-    // No-op: handled by Firebase callback
+    // No-op: Firebase handles login, we just trigger onAuthStateChanged
   };
 
   const logout = async () => {
@@ -76,19 +75,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(false);
     setUserPhone(null);
     setShopifyCustomerId(null);
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userPhone');
-    localStorage.removeItem('shopifyCustomerId');
+    localStorage.clear();
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      userPhone, 
-      shopifyCustomerId, 
-      login, 
-      logout, 
-      isLoading 
+    <AuthContext.Provider value={{
+      isAuthenticated,
+      userPhone,
+      shopifyCustomerId,
+      login,
+      logout,
+      isLoading,
     }}>
       {children}
     </AuthContext.Provider>
