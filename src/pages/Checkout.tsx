@@ -22,6 +22,14 @@ interface CustomerAddress {
   name: string;
 }
 
+interface CartItem {
+  product_variant_id: string;
+  quantity: number;
+  price?: number;
+  title?: string;
+  image_url?: string;
+}
+
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const firebaseUser = auth.currentUser;
@@ -29,7 +37,7 @@ const Checkout: React.FC = () => {
   const [addresses, setAddresses] = useState<CustomerAddress[]>([]);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [placing, setPlacing] = useState(false);
 
   // Fetch addresses and cart items
@@ -115,7 +123,8 @@ const Checkout: React.FC = () => {
   };
 
   const subtotal = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0) : 0;
-  const deliveryFee = 99;
+  const originalDeliveryFee = 49;
+  const deliveryFee = 0; // Free delivery
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = async () => {
@@ -295,10 +304,21 @@ const Checkout: React.FC = () => {
                 <div className="space-y-3">
                   {cartItems.map((item, index) => (
                     <div key={item.product_variant_id || index} className="flex gap-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded"></div>
+                      <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                        {item.image_url ? (
+                          <img 
+                            src={item.image_url} 
+                            alt={item.title || 'Product'} 
+                            className="w-full h-full object-cover rounded"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-300 rounded"></div>
+                        )}
+                      </div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-sm">Cart Item</h3>
+                        <h3 className="font-medium text-sm">{item.title || 'Product Item'}</h3>
                         <p className="text-xs text-gray-500">Qty: {item.quantity || 1}</p>
+                        <p className="text-xs text-gray-500">ID: {item.product_variant_id}</p>
                       </div>
                       <span className="font-medium">₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
                     </div>
@@ -320,7 +340,10 @@ const Checkout: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Delivery Fee</span>
-                  <span className="font-medium">₹{deliveryFee}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400 line-through text-sm">₹{originalDeliveryFee}</span>
+                    <span className="font-medium text-green-600">FREE</span>
+                  </div>
                 </div>
                 <div className="border-t pt-3">
                   <div className="flex justify-between">
