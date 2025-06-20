@@ -24,7 +24,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.address.trim() || !formData.name.trim() || !formData.phone.trim()) {
+    if (!formData.address.trim() || !formData.name.trim()) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
@@ -48,7 +48,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
       await addressService.createAddress({
         address: formData.address,
         name: formData.name,
-        phone: formData.phone,
+        phone: formData.phone || '', // Use empty string if no phone
         latitude: formData.latitude,
         longitude: formData.longitude
       });
@@ -188,21 +188,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
           onChange={(e) => handleInputChange('name', e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           placeholder="Enter recipient's full name"
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-          Phone Number *
-        </label>
-        <input
-          type="tel"
-          id="phone"
-          value={formData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          placeholder="Enter recipient's phone number"
           required
         />
       </div>

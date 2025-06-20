@@ -13,6 +13,9 @@ import { toast } from "@/hooks/use-toast";
 import { auth } from '../firebase';
 import Auth from './Auth';
 
+const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
+const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
+
 interface CustomerAddress {
   id: string;
   address: string;
@@ -23,12 +26,76 @@ interface CustomerAddress {
 }
 
 interface CartItem {
-  product_variant_id: string;
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  brand: string;
+  selectedSize?: string;
   quantity: number;
-  price?: number;
-  title?: string;
-  image_url?: string;
+  productVariantId: string;
 }
+
+// Function to fetch product variant details from Shopify
+const fetchVariantDetails = async (variantId: string) => {
+  const cleanVariantId = variantId.replace('gid://shopify/ProductVariant/', '');
+  const fullVariantId = `gid://shopify/ProductVariant/${cleanVariantId}`;
+  
+  const query = `
+    query GetProductVariant($id: ID!) {
+      node(id: $id) {
+        ... on ProductVariant {
+          id
+          title
+          price {
+            amount
+            currencyCode
+          }
+          image {
+            url
+            altText
+          }
+          product {
+            title
+            vendor
+          }
+          selectedOptions {
+            name
+            value
+          }
+        }
+      }
+    }
+  `;
+
+  console.log('Fetching variant with ID:', fullVariantId);
+
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query,
+      variables: { id: fullVariantId },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch variant details');
+  }
+
+  const json = await response.json();
+  console.log('Shopify API response:', json);
+  
+  if (json.errors) {
+    console.error('Shopify GraphQL errors:', json.errors);
+    return null;
+  }
+  
+  return json.data?.node;
+};
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
@@ -49,21 +116,72 @@ const Checkout: React.FC = () => {
       const addressData = await addressService.getAddresses();
       console.log('Addresses fetched:', addressData);
       
-      // Ensure we always have an array
       const addressArray = Array.isArray(addressData) ? addressData : [];
       setAddresses(addressArray);
       
-      // Set first address as selected if available
       if (addressArray.length > 0 && !selectedAddressId) {
         setSelectedAddressId(addressArray[0].id);
       }
 
-      // Fetch cart items to show in checkout
+      // Fetch cart items and get real product details
       const cartData = await cartService.getCartItems();
       console.log('Cart data fetched:', cartData);
       
       if (cartData && cartData.status !== 'empty' && Array.isArray(cartData.items)) {
-        setCartItems(cartData.items);
+        // Fetch real product details for each cart item
+        const mappedItems: CartItem[] = [];
+        
+        for (const item of cartData.items) {
+          try {
+            console.log('Fetching details for variant:', item.product_variant_id);
+            const variantDetails = await fetchVariantDetails(item.product_variant_id);
+            
+            if (variantDetails) {
+              // Find size from selectedOptions
+              const sizeOption = variantDetails.selectedOptions?.find(
+                (option: any) => option.name.toLowerCase() === 'size'
+              );
+              
+              mappedItems.push({
+                id: item.product_variant_id,
+                name: variantDetails.product?.title || 'Unknown Product',
+                price: Math.round(parseFloat(variantDetails.price?.amount || '0')),
+                image: variantDetails.image?.url || '/placeholder.svg',
+                brand: variantDetails.product?.vendor || 'Unknown Brand',
+                selectedSize: sizeOption?.value || undefined,
+                quantity: item.quantity,
+                productVariantId: item.product_variant_id
+              });
+            } else {
+              console.warn('No variant details found for:', item.product_variant_id);
+              mappedItems.push({
+                id: item.product_variant_id,
+                name: 'Product Not Found',
+                price: 0,
+                image: '/placeholder.svg',
+                brand: 'Unknown Brand',
+                selectedSize: 'Unknown',
+                quantity: item.quantity,
+                productVariantId: item.product_variant_id
+              });
+            }
+          } catch (variantError) {
+            console.error('Failed to fetch variant details:', variantError);
+            mappedItems.push({
+              id: item.product_variant_id,
+              name: 'Product Error',
+              price: 0,
+              image: '/placeholder.svg',
+              brand: 'Unknown Brand',
+              selectedSize: 'Unknown',
+              quantity: item.quantity,
+              productVariantId: item.product_variant_id
+            });
+          }
+        }
+
+        console.log('Mapped cart items with real data:', mappedItems);
+        setCartItems(mappedItems);
       } else {
         setCartItems([]);
       }
@@ -71,7 +189,6 @@ const Checkout: React.FC = () => {
     } catch (error: any) {
       console.error('Failed to fetch data:', error);
       
-      // Set safe defaults on error
       setAddresses([]);
       setCartItems([]);
       
@@ -92,7 +209,7 @@ const Checkout: React.FC = () => {
   }, [firebaseUser]);
 
   const handleAddressAdded = () => {
-    fetchData(); // Refresh addresses
+    fetchData();
     setIsAddressDialogOpen(false);
   };
 
@@ -105,10 +222,8 @@ const Checkout: React.FC = () => {
         description: "Address has been removed successfully"
       });
 
-      // Refresh addresses
       await fetchData();
       
-      // Clear selection if deleted address was selected
       if (selectedAddressId === addressId) {
         setSelectedAddressId('');
       }
@@ -124,7 +239,7 @@ const Checkout: React.FC = () => {
 
   const subtotal = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0) : 0;
   const originalDeliveryFee = 49;
-  const deliveryFee = 0; // Free delivery
+  const deliveryFee = 0;
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = async () => {
@@ -147,7 +262,7 @@ const Checkout: React.FC = () => {
           title: "Order Placed Successfully!",
           description: `Your order ${result.order_id} has been confirmed`
         });
-        navigate('/profile'); // Navigate to profile to see orders
+        navigate('/profile');
       } else {
         throw new Error(result.error || 'Failed to place order');
       }
@@ -303,12 +418,12 @@ const Checkout: React.FC = () => {
               {Array.isArray(cartItems) && cartItems.length > 0 ? (
                 <div className="space-y-3">
                   {cartItems.map((item, index) => (
-                    <div key={item.product_variant_id || index} className="flex gap-3">
+                    <div key={item.productVariantId || index} className="flex gap-3">
                       <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                        {item.image_url ? (
+                        {item.image && item.image !== '/placeholder.svg' ? (
                           <img 
-                            src={item.image_url} 
-                            alt={item.title || 'Product'} 
+                            src={item.image} 
+                            alt={item.name || 'Product'} 
                             className="w-full h-full object-cover rounded"
                           />
                         ) : (
@@ -316,11 +431,14 @@ const Checkout: React.FC = () => {
                         )}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-medium text-sm">{item.title || 'Product Item'}</h3>
-                        <p className="text-xs text-gray-500">Qty: {item.quantity || 1}</p>
-                        <p className="text-xs text-gray-500">ID: {item.product_variant_id}</p>
+                        <h3 className="font-medium text-sm">{item.name}</h3>
+                        <p className="text-xs text-gray-500">{item.brand}</p>
+                        {item.selectedSize && (
+                          <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>
+                        )}
+                        <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                       </div>
-                      <span className="font-medium">₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
+                      <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
