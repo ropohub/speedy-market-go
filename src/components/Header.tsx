@@ -2,11 +2,13 @@ import React from 'react';
 import { ArrowLeft, Search, Heart, ShoppingBag } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../firebase';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
+  const firebaseUser = auth.currentUser;
 
   const handleBackNavigation = () => {
     if (location.pathname === '/products') {
@@ -17,8 +19,8 @@ const Header: React.FC = () => {
   };
 
   const handleCartClick = () => {
-    if (isLoading) return; // block until auth ready
-    if (isAuthenticated) navigate('/cart');
+    if (isLoading) return;
+    if (firebaseUser) navigate('/cart');
     else navigate('/auth');
   };
 
