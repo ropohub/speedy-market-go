@@ -48,8 +48,15 @@ export const cartService = {
 
       console.log('Mutating cart for user:', user.phoneNumber, 'variant:', productVariantId, 'quantity:', quantity);
       const token = await user.getIdToken();
+      
+      // Ensure the variant ID is in the correct format
+      let formattedVariantId = productVariantId;
+      if (!formattedVariantId.startsWith('gid://shopify/ProductVariant/')) {
+        formattedVariantId = `gid://shopify/ProductVariant/${productVariantId}`;
+      }
+      
       const items = [{
-        product_variant_id: productVariantId,
+        product_variant_id: formattedVariantId,
         quantity
       }];
       

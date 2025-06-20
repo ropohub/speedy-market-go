@@ -5,6 +5,8 @@ import { ArrowLeft, ShoppingCart, Heart, Share } from 'lucide-react';
 import ImageCarousel from '../components/ImageCarousel';
 import { Button } from '../components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { auth } from '../firebase';
+import { cartService } from '../api/cartClient';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
@@ -177,7 +179,7 @@ const ProductDetailPage = () => {
     }
   };
 
-  const handleAddToBag = () => {
+  const handleAddToBag = async () => {
     if (sizeOption && !selectedSize) {
       setSizeValidationShake(true);
       toast({
@@ -189,17 +191,36 @@ const ProductDetailPage = () => {
       return;
     }
 
-    toast({
-      title: "Added to Bag",
-      description: `${product?.title} (Size: ${selectedSize}) added to your bag`,
-    });
+    if (!auth.currentUser) {
+      navigate('/auth', { state: { from: window.location.pathname } });
+      return;
+    }
 
-    console.log('Adding to bag:', {
-      productId: product?.id,
-      variantId: selectedVariant?.id,
-      color: selectedColor,
-      size: selectedSize,
-    });
+    try {
+      console.log('Adding to bag:', {
+        productId: product?.id,
+        variantId: selectedVariant?.id,
+        color: selectedColor,
+        size: selectedSize,
+      });
+
+      // Use the selected variant ID or fallback to product ID
+      const variantId = selectedVariant?.id || `gid://shopify/ProductVariant/${productId}`;
+      
+      await cartService.mutateCart(variantId, 1);
+
+      toast({
+        title: "Added to Bag",
+        description: `${product?.title}${selectedSize ? ` (Size: ${selectedSize})` : ''} added to your bag`,
+      });
+    } catch (error: any) {
+      console.error('Failed to add to bag:', error);
+      toast({
+        title: "Add to Bag Failed",
+        description: error.message || "Failed to add item to bag",
+        variant: "destructive"
+      });
+    }
   };
 
   const availableSizes = useMemo(() => {

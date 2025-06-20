@@ -1,6 +1,9 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
+import { cartService } from '../api/cartClient';
+import { toast } from "@/hooks/use-toast";
 import ProductCardImage from './product-card/ProductCardImage';
 import ProductCardInfo from './product-card/ProductCardInfo';
 
@@ -37,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (!firebaseUser) {
@@ -45,7 +48,30 @@ const ProductCard: React.FC<ProductCardProps> = ({
       return;
     }
 
-    onAddToCart(product);
+    try {
+      console.log('Adding product to cart:', product.id);
+      
+      // Use the product ID as variant ID for now
+      // In a real app, you'd need to get the actual variant ID
+      const productVariantId = `gid://shopify/ProductVariant/${product.id}`;
+      
+      await cartService.mutateCart(productVariantId, 1);
+      
+      toast({
+        title: "Added to Bag",
+        description: `${product.name} added to your bag`,
+      });
+
+      // Call the original onAddToCart for any additional logic
+      onAddToCart(product);
+    } catch (error: any) {
+      console.error('Failed to add to cart:', error);
+      toast({
+        title: "Add to Cart Failed",
+        description: error.message || "Failed to add item to cart",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
