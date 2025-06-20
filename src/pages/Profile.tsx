@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { User, MapPin, Phone, Mail, Package, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,29 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { userPhone, isLoading, logout } = useAuth();
   const firebaseUser = auth.currentUser;
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Fetch orders when component mounts
+  const fetchOrders = async () => {
+    try {
+      setLoadingOrders(true);
+      const { orderService } = await import('../api/orderClient');
+      const orderData = await orderService.getOrders();
+      setOrders(orderData.orders || []);
+    } catch (error: any) {
+      console.error('Failed to fetch orders:', error);
+      // Don't show error toast for orders as it's not critical
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
+
+  useEffect(() => {
+    if (firebaseUser) {
+      fetchOrders();
+    }
+  }, [firebaseUser]);
 
   if (isLoading) {
     return (
@@ -27,12 +50,6 @@ const Profile: React.FC = () => {
     logout();
     navigate('/');
   };
-
-  const mockOrders = [
-    { id: 'ORD001', date: '2024-06-10', status: 'Delivered', total: 2999, items: 2 },
-    { id: 'ORD002', date: '2024-06-08', status: 'Delivered', total: 1599, items: 1 },
-    { id: 'ORD003', date: '2024-06-05', status: 'Delivered', total: 4299, items: 3 }
-  ];
 
   return (
     <Layout>
@@ -70,27 +87,50 @@ const Profile: React.FC = () => {
         <div className="bg-white mx-4 rounded-lg p-4 mb-4">
           <div className="flex items-center gap-2 mb-4">
             <Package className="w-5 h-5 text-gray-700" />
-            <h3 className="font-semibold text-gray-900">Past Orders</h3>
+            <h3 className="font-semibold text-gray-900">Your Orders</h3>
+            {loadingOrders && (
+              <div className="w-4 h-4 border border-gray-300 border-t-orange-500 rounded-full animate-spin ml-2" />
+            )}
           </div>
-          <div className="space-y-3">
-            {mockOrders.map((order) => (
-              <div key={order.id} className="border border-gray-200 rounded-lg p-3">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-medium text-gray-900">Order {order.id}</p>
-                    <p className="text-sm text-gray-600">{order.date}</p>
+          
+          {loadingOrders ? (
+            <div className="text-center py-4">
+              <p className="text-gray-500">Loading orders...</p>
+            </div>
+          ) : orders.length > 0 ? (
+            <div className="space-y-3">
+              {orders.map((order) => (
+                <div key={order.order_id} className="border border-gray-200 rounded-lg p-3">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-medium text-gray-900">Order {order.order_name}</p>
+                      <p className="text-sm text-gray-600">{new Date(order.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                      {order.status || 'Confirmed'}
+                    </span>
                   </div>
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                    {order.status}
-                  </span>
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-gray-600">{order.line_items?.length || 0} items</p>
+                    <p className="font-semibold text-gray-900">
+                      {order.currency} {order.total_amount?.toFixed(2)}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-gray-600">{order.items} items</p>
-                  <p className="font-semibold text-gray-900">₹{order.total}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500">No orders yet</p>
+              <button
+                onClick={() => navigate('/categories')}
+                className="mt-3 text-orange-500 hover:text-orange-600 font-medium"
+              >
+                Start Shopping
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="mx-4 mb-8">
