@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
@@ -20,12 +19,21 @@ interface CartItem {
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, userPhone } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('Cart component - Auth state:', { isAuthenticated, authLoading });
+  console.log('Cart component - Auth state:', { 
+    isAuthenticated, 
+    authLoading, 
+    userPhone,
+    localStorage: {
+      isAuthenticated: localStorage.getItem('isAuthenticated'),
+      userPhone: localStorage.getItem('userPhone'),
+      shopifyCustomerId: localStorage.getItem('shopifyCustomerId')
+    }
+  });
 
   // Fetch cart items on component mount when authenticated
   useEffect(() => {
