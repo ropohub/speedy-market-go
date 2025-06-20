@@ -36,10 +36,8 @@ const Auth: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendTimer]);
 
-  // Clean up reCAPTCHA on unmount and when component mounts
+  // Clean up reCAPTCHA only on unmount
   useEffect(() => {
-    // Clean up any existing reCAPTCHA on mount
-    cleanupRecaptcha();
     return () => cleanupRecaptcha();
   }, []);
 
@@ -79,7 +77,13 @@ const Auth: React.FC = () => {
   const setupRecaptcha = async (): Promise<RecaptchaVerifier> => {
     console.log('Setting up reCAPTCHA...');
     
-    // Always clean up first
+    // Check if we already have a working verifier
+    if (window.recaptchaVerifier) {
+      console.log('Using existing recaptchaVerifier');
+      return window.recaptchaVerifier;
+    }
+    
+    // Always clean up first if no existing verifier
     cleanupRecaptcha();
     
     // Wait a bit for cleanup to complete
@@ -207,6 +211,7 @@ const Auth: React.FC = () => {
     try {
       console.log('Verifying OTP...', otp);
       console.log("Confirming OTP with:", otp, confirmationResult);
+      console.log("Verifying with confirmationResult:", confirmationResult);
       
       const result = await confirmationResult.confirm(otp);
       const user = result.user;
