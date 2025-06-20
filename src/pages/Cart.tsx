@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { auth } from '../firebase';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
@@ -341,8 +342,17 @@ const Cart: React.FC = () => {
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
+        {/* Header with Back Button */}
         <div className="bg-white px-4 py-4 border-b">
-          <h1 className="text-xl font-bold text-gray-900">Shopping Cart ({cartItems.length} items)</h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/categories')}
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            <h1 className="text-xl font-bold text-gray-900">Shopping Cart ({cartItems.length} items)</h1>
+          </div>
         </div>
 
         <div className="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">

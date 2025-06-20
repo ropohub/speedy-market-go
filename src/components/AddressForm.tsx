@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { addressService } from '../api/addressClient';
 import { toast } from "@/hooks/use-toast";
 import { MapPin, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface AddressFormProps {
   onClose: () => void;
@@ -11,10 +12,11 @@ interface AddressFormProps {
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) => {
+  const { userPhone } = useAuth();
   const [formData, setFormData] = useState({
     address: '',
     name: '',
-    phone: '', // Adding phone field back as it might be required
+    phone: userPhone ? `+91${userPhone}` : '', // Use authenticated user's phone
     latitude: 0,
     longitude: 0
   });
@@ -48,7 +50,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
       console.log('Sending address data:', {
         address: formData.address,
         name: formData.name,
-        phone: formData.phone || '+911234567890', // Provide default phone if empty
+        phone: formData.phone || `+91${userPhone}` || '+911234567890',
         latitude: formData.latitude,
         longitude: formData.longitude
       });
@@ -56,7 +58,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
       await addressService.createAddress({
         address: formData.address,
         name: formData.name,
-        phone: formData.phone || '+911234567890', // Provide default phone if empty
+        phone: formData.phone || `+91${userPhone}` || '+911234567890',
         latitude: formData.latitude,
         longitude: formData.longitude
       });
@@ -212,20 +214,6 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
           placeholder="Enter complete address including house number, area, city, state, pincode"
           rows={3}
           required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-          Phone Number
-        </label>
-        <input
-          type="tel"
-          id="phone"
-          value={formData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          placeholder="Enter phone number (optional)"
         />
       </div>
 

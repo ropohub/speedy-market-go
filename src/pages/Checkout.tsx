@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Truck, Shield, Trash2 } from 'lucide-react';
+import { MapPin, Truck, Shield, Trash2, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import AddressForm from '../components/AddressForm';
@@ -298,9 +297,17 @@ const Checkout: React.FC = () => {
   return (
     <Layout>
       <div className="bg-gray-50 min-h-screen">
-        {/* Header */}
+        {/* Header with Back Button */}
         <div className="bg-white px-4 py-4 border-b">
-          <h1 className="text-xl font-bold text-gray-900">Checkout</h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/cart')}
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            <h1 className="text-xl font-bold text-gray-900">Checkout</h1>
+          </div>
         </div>
 
         <div className="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
