@@ -23,23 +23,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     console.log('AuthProvider initializing...');
+    console.log("Firebase currentUser on mount:", auth.currentUser);
     
-    // First, restore from localStorage if available
+    // Get stored auth data
     const storedAuth = localStorage.getItem('isAuthenticated');
     const storedPhone = localStorage.getItem('userPhone');
     const storedShopifyId = localStorage.getItem('shopifyCustomerId');
     
     console.log('Stored auth data:', { storedAuth, storedPhone, storedShopifyId });
     
-    if (storedAuth === 'true' && storedPhone && storedShopifyId) {
-      console.log('Restoring authentication from localStorage');
-      setIsAuthenticated(true);
-      setUserPhone(storedPhone);
-      setShopifyCustomerId(storedShopifyId);
+    // If we have stored auth data AND Firebase currentUser exists, re-authenticate with Shopify
+    if (storedAuth === 'true' && storedPhone && storedShopifyId && auth.currentUser) {
+      console.log('Restoring from localStorage AND Firebase currentUser exists');
+      auth.currentUser.getIdToken().then(async (token) => {
+        try {
+          console.log('Re-authenticating with Shopify using stored data...');
+          const shopifyResponse = await shopifyClient.login(token);
+          const cleanPhone = storedPhone;
+          const newShopifyCustomerId = shopifyResponse.shopify_customer_id;
+
+          console.log('Refreshed Shopify login with token, Customer ID:', newShopifyCustomerId);
+
+          setIsAuthenticated(true);
+          setUserPhone(cleanPhone);
+          setShopifyCustomerId(newShopifyCustomerId);
+
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userPhone', cleanPhone);
+          localStorage.setItem('shopifyCustomerId', newShopifyCustomerId);
+        } catch (err) {
+          console.error('Failed to re-auth Shopify after restoring:', err);
+          setIsAuthenticated(false);
+          setUserPhone(null);
+          setShopifyCustomerId(null);
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('userPhone');
+          localStorage.removeItem('shopifyCustomerId');
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }).catch((err) => {
+        console.error('Failed to get Firebase token:', err);
+        setIsLoading(false);
+      });
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       console.log('Firebase auth state changed:', user ? 'User authenticated' : 'User not authenticated');
+      console.log("Firebase currentUser in onAuthStateChanged:", user);
       
       if (user && user.phoneNumber) {
         console.log('Firebase user found with phone:', user.phoneNumber);
@@ -70,31 +102,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('Successfully authenticated with Shopify. Customer ID:', newShopifyCustomerId);
         } catch (error) {
           console.error('Failed to authenticate with Shopify:', error);
-          // Only clear if there's a real error, not if we already have stored auth
-          const hasStoredAuth = localStorage.getItem('isAuthenticated') === 'true';
-          if (!hasStoredAuth) {
-            setIsAuthenticated(false);
-            setUserPhone(null);
-            setShopifyCustomerId(null);
-            localStorage.removeItem('isAuthenticated');
-            localStorage.removeItem('userPhone');
-            localStorage.removeItem('shopifyCustomerId');
-          }
-        }
-      } else {
-        // Only clear state if there's no stored authentication
-        const hasStoredAuth = localStorage.getItem('isAuthenticated') === 'true';
-        if (!hasStoredAuth) {
-          console.log('No Firebase user and no stored auth - clearing state');
           setIsAuthenticated(false);
           setUserPhone(null);
           setShopifyCustomerId(null);
           localStorage.removeItem('isAuthenticated');
           localStorage.removeItem('userPhone');
           localStorage.removeItem('shopifyCustomerId');
-        } else {
-          console.log('No Firebase user but stored auth exists - keeping stored state');
         }
+      } else {
+        console.log('No Firebase user - clearing state');
+        setIsAuthenticated(false);
+        setUserPhone(null);
+        setShopifyCustomerId(null);
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('userPhone');
+        localStorage.removeItem('shopifyCustomerId');
       }
       
       setIsLoading(false);
@@ -104,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const loadingTimeout = setTimeout(() => {
       console.log('Auth loading timeout reached');
       setIsLoading(false);
-    }, 3000);
+    }, 5000);
     
     return () => {
       unsubscribe();
