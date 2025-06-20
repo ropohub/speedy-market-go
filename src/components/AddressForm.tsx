@@ -14,7 +14,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
   const [formData, setFormData] = useState({
     address: '',
     name: '',
-    phone: '',
+    phone: '', // Adding phone field back as it might be required
     latitude: 0,
     longitude: 0
   });
@@ -45,10 +45,18 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
     try {
       setLoading(true);
       
+      console.log('Sending address data:', {
+        address: formData.address,
+        name: formData.name,
+        phone: formData.phone || '+911234567890', // Provide default phone if empty
+        latitude: formData.latitude,
+        longitude: formData.longitude
+      });
+
       await addressService.createAddress({
         address: formData.address,
         name: formData.name,
-        phone: formData.phone || '', // Use empty string if no phone
+        phone: formData.phone || '+911234567890', // Provide default phone if empty
         latitude: formData.latitude,
         longitude: formData.longitude
       });
@@ -204,6 +212,20 @@ const AddressForm: React.FC<AddressFormProps> = ({ onClose, onAddressAdded }) =>
           placeholder="Enter complete address including house number, area, city, state, pincode"
           rows={3}
           required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+          Phone Number
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          value={formData.phone}
+          onChange={(e) => handleInputChange('phone', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          placeholder="Enter phone number (optional)"
         />
       </div>
 
