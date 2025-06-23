@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import SearchBar from '../components/SearchBar';
@@ -33,6 +32,7 @@ const Index: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('women');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isSearchSticky, setIsSearchSticky] = useState(false);
+  const [userLocation, setUserLocation] = useState('Fetching location...');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +42,58 @@ const Index: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchUserLocation = () => {
+      if (!navigator.geolocation) {
+        setUserLocation('Location not supported');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          try {
+            // Use Google Maps Geocoding API to get address
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+            );
+            
+            if (!response.ok) {
+              throw new Error('Failed to fetch address');
+            }
+            
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+              // Get the most specific address (usually the first result)
+              const address = data.results[0].formatted_address;
+              // Truncate if too long for display
+              const truncatedAddress = address.length > 40 ? address.substring(0, 40) + '...' : address;
+              setUserLocation(truncatedAddress);
+            } else {
+              setUserLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+            }
+          } catch (error) {
+            console.error('Geocoding error:', error);
+            setUserLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+          }
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setUserLocation('Location access denied');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    };
+
+    fetchUserLocation();
   }, []);
 
   const handleAddToCart = (product: LegacyProduct) => {
@@ -97,7 +149,7 @@ const Index: React.FC = () => {
                     <span className="text-zinc-950 text-lg font-bold">Home</span>
                     <ChevronDown className="w-4 h-4 text-black" />
                   </div>
-                  <span className="opacity-90 text-zinc-950 font-semibold text-xs">Flat 103, house 288, Medicity, Islam...</span>
+                  <span className="opacity-90 text-zinc-950 font-semibold text-xs">{userLocation}</span>
                 </div>
               </div>
               
