@@ -56,9 +56,18 @@ const Index: React.FC = () => {
           const { latitude, longitude } = position.coords;
           
           try {
+            // Check if Google Maps API key is available
+            const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+            
+            if (!apiKey) {
+              console.warn('Google Maps API key not found, using coordinates');
+              setUserLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+              return;
+            }
+
             // Use Google Maps Geocoding API to get address
             const response = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
             );
             
             if (!response.ok) {
@@ -67,18 +76,19 @@ const Index: React.FC = () => {
             
             const data = await response.json();
             
-            if (data.results && data.results.length > 0) {
+            if (data.status === 'OK' && data.results && data.results.length > 0) {
               // Get the most specific address (usually the first result)
               const address = data.results[0].formatted_address;
               // Truncate if too long for display
               const truncatedAddress = address.length > 40 ? address.substring(0, 40) + '...' : address;
               setUserLocation(truncatedAddress);
             } else {
-              setUserLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+              console.warn('Geocoding failed:', data.status, data.error_message);
+              setUserLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
             }
           } catch (error) {
             console.error('Geocoding error:', error);
-            setUserLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+            setUserLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
           }
         },
         (error) => {
