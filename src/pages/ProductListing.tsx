@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -134,11 +133,12 @@ interface ShopifyCollectionResponse {
         };
         edges: ShopifyProductEdge[];
       };
-    };
+    } | null;
   };
 }
 
 const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: string | null }) => {
+  console.log('Fetching all products from Shopify...');
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -176,6 +176,7 @@ const fetchCollectionProductsFromShopify = async ({
   pageParam?: string | null;
   collectionHandle: string;
 }) => {
+  console.log(`Fetching products from collection: "${collectionHandle}"`);
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -185,7 +186,7 @@ const fetchCollectionProductsFromShopify = async ({
     body: JSON.stringify({
       query: getCollectionProductsQuery,
       variables: {
-        handle: collectionHandle.toLowerCase(),
+        handle: collectionHandle,
         first: 10,
         after: pageParam,
       },
@@ -199,12 +200,20 @@ const fetchCollectionProductsFromShopify = async ({
   }
 
   const json: ShopifyCollectionResponse = await response.json();
+  console.log('Collection API Response:', json);
+  
   if (json.data?.collectionByHandle?.products) {
+      console.log(`Found ${json.data.collectionByHandle.products.edges.length} products in collection`);
       return json.data.collectionByHandle.products;
   }
   
+  if (json.data?.collectionByHandle === null) {
+    console.error(`Collection "${collectionHandle}" not found in Shopify`);
+    throw new Error(`Collection "${collectionHandle}" not found`);
+  }
+  
   console.error("Unexpected Shopify Collection API response structure:", json);
-  throw new Error("Collection not found or unexpected response structure from Shopify");
+  throw new Error("Unexpected response structure from Shopify");
 };
 
 const ProductListPage = () => {
@@ -212,6 +221,7 @@ const ProductListPage = () => {
   const collection = searchParams.get('collection');
   
   console.log('ProductListPage - Collection parameter:', collection);
+  console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
 
   const {
     data,
@@ -268,10 +278,18 @@ const ProductListPage = () => {
     };
   })) ?? [];
 
+  console.log('ProductListPage - Products count:', products.length);
+
   if (error) {
+    console.error('ProductListPage - Error:', error);
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Error: {error.message}</p>
+        <div className="text-center">
+          <p className="text-red-500 mb-2">Error: {error.message}</p>
+          {collection && (
+            <p className="text-gray-600">Collection: {collection}</p>
+          )}
+        </div>
       </div>
     );
   }
@@ -281,6 +299,11 @@ const ProductListPage = () => {
       <Header />
       <NavigationBar />
       <FilterBar />
+      {collection && (
+        <div className="px-4 py-2 bg-blue-50">
+          <p className="text-sm text-blue-600">Showing products from collection: {collection}</p>
+        </div>
+      )}
       <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
       
       {/* This invisible div will trigger loading more products */}

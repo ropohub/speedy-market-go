@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,8 +24,10 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ categories }) =
     // Check if the category has a collection mapping
     if (category.collection) {
       console.log('FeaturedCategories - Navigating to collection:', category.collection);
+      console.log('FeaturedCategories - Full URL:', `/products?collection=${category.collection}`);
       navigate(`/products?collection=${category.collection}`);
     } else {
+      console.log('FeaturedCategories - No collection found, using default navigation');
       // Default navigation for categories without collection mapping
       navigate(`/products/women/${category.id}`);
     }
