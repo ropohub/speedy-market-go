@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -223,6 +224,11 @@ const ProductListPage = () => {
   console.log('ProductListPage - Collection parameter:', collection);
   console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const {
     data,
     error,
@@ -299,11 +305,6 @@ const ProductListPage = () => {
       <Header />
       <NavigationBar />
       <FilterBar />
-      {collection && (
-        <div className="px-4 py-2 bg-blue-50">
-          <p className="text-sm text-blue-600">Showing products from collection: {collection}</p>
-        </div>
-      )}
       <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
       
       {/* This invisible div will trigger loading more products */}
