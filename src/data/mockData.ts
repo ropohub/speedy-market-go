@@ -145,7 +145,8 @@ export const featuredCategories = {
     {
       id: 'tops-women',
       name: 'TOPS',
-      image: '/lovable-uploads/b99f6ddd-7e0e-4350-8ad7-cf9871803b27.png'
+      image: '/lovable-uploads/b99f6ddd-7e0e-4350-8ad7-cf9871803b27.png',
+      collection: 'tops' // This maps to the Shopify "Tops" collection
     },
     {
       id: 'jeans-women',

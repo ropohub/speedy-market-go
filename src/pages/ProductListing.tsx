@@ -1,5 +1,7 @@
+
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import NavigationBar from '../components/NavigationBar';
 import FilterBar from '../components/FilterBar';
@@ -33,6 +35,44 @@ const getProductsQuery = `
               node {
                 url
                 altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const getCollectionProductsQuery = `
+  query GetCollectionProducts($handle: String!, $first: Int!, $after: String) {
+    collectionByHandle(handle: $handle) {
+      id
+      title
+      products(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        edges {
+          cursor
+          node {
+            id
+            title
+            handle
+            vendor
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
               }
             }
           }
@@ -82,6 +122,22 @@ interface ShopifyResponse {
   };
 }
 
+interface ShopifyCollectionResponse {
+  data: {
+    collectionByHandle: {
+      id: string;
+      title: string;
+      products: {
+        pageInfo: {
+          hasNextPage: boolean;
+          endCursor: string | null;
+        };
+        edges: ShopifyProductEdge[];
+      };
+    };
+  };
+}
+
 const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: string | null }) => {
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
@@ -113,7 +169,50 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
   throw new Error("Unexpected response structure from Shopify");
 };
 
+const fetchCollectionProductsFromShopify = async ({ 
+  pageParam = null, 
+  collectionHandle 
+}: { 
+  pageParam?: string | null;
+  collectionHandle: string;
+}) => {
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query: getCollectionProductsQuery,
+      variables: {
+        handle: collectionHandle.toLowerCase(),
+        first: 10,
+        after: pageParam,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error("Shopify Collection API Error:", errorBody);
+    throw new Error('Failed to fetch collection products from Shopify.');
+  }
+
+  const json: ShopifyCollectionResponse = await response.json();
+  if (json.data?.collectionByHandle?.products) {
+      return json.data.collectionByHandle.products;
+  }
+  
+  console.error("Unexpected Shopify Collection API response structure:", json);
+  throw new Error("Collection not found or unexpected response structure from Shopify");
+};
+
 const ProductListPage = () => {
+  const [searchParams] = useSearchParams();
+  const collection = searchParams.get('collection');
+  
+  console.log('ProductListPage - Collection parameter:', collection);
+
   const {
     data,
     error,
@@ -122,8 +221,10 @@ const ProductListPage = () => {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ['shopifyProducts'],
-    queryFn: fetchProductsFromShopify,
+    queryKey: collection ? ['shopifyCollectionProducts', collection] : ['shopifyProducts'],
+    queryFn: collection 
+      ? ({ pageParam }) => fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection })
+      : fetchProductsFromShopify,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => {
       return lastPage.pageInfo.hasNextPage ? lastPage.pageInfo.endCursor : undefined;
@@ -140,7 +241,7 @@ const ProductListPage = () => {
         }
       },
       {
-        rootMargin: '0px', // Trigger fetch only when element is in view
+        rootMargin: '0px',
       }
     );
 

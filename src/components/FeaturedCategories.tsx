@@ -9,6 +9,7 @@ interface FeaturedCategory {
   image: string;
   isDeal?: boolean;
   isPriceCategory?: boolean;
+  collection?: string; // Add collection property
 }
 
 interface FeaturedCategoriesProps {
@@ -19,8 +20,16 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ categories }) =
   const navigate = useNavigate();
 
   const handleCategoryClick = (category: FeaturedCategory) => {
-    // Navigate to product listing page
-    navigate(`/products/men/${category.id}`);
+    console.log('FeaturedCategories - Category clicked:', category);
+    
+    // Check if the category has a collection mapping
+    if (category.collection) {
+      console.log('FeaturedCategories - Navigating to collection:', category.collection);
+      navigate(`/products?collection=${category.collection}`);
+    } else {
+      // Default navigation for categories without collection mapping
+      navigate(`/products/women/${category.id}`);
+    }
   };
 
   // Limit to 9 categories, handling cases where categories might be undefined.
