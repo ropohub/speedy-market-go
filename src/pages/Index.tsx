@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import SearchBar from '../components/SearchBar';
 import CategorySelector from '../components/CategorySelector';
-import YellowBanner from '../components/YellowBanner';
+import GreenBanner from '../components/YellowBanner';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import MovingBanner from '../components/MovingBanner';
 import FeaturedCategories from '../components/FeaturedCategories';
@@ -171,7 +172,7 @@ const Index: React.FC = () => {
                   <ShoppingCart className="w-5 h-5 text-black" />
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
                 </button>
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold text-sm">B</span>
                 </div>
               </div>
@@ -191,8 +192,8 @@ const Index: React.FC = () => {
 
         {/* Scrollable Content - No gap, attached to background */}
         <div className="bg-gray-50">
-          {/* Yellow Banner */}
-          <YellowBanner />
+          {/* Green Banner */}
+          <GreenBanner />
           
           <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
           

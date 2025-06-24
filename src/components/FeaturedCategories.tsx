@@ -64,7 +64,7 @@ const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({ categories }) =
                 {category.subtitle && (
                   <p className={`text-xs md:text-sm font-bold ${
                     category.isPriceCategory 
-                      ? 'text-yellow-400 text-sm md:text-lg' 
+                      ? 'text-green-400 text-sm md:text-lg' 
                       : category.isDeal 
                         ? 'text-white text-xs' 
                         : 'text-gray-200'

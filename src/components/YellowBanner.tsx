@@ -2,9 +2,9 @@
 import React from 'react';
 import { Zap, Eye, RotateCcw } from 'lucide-react';
 
-const YellowBanner: React.FC = () => {
+const GreenBanner: React.FC = () => {
   return (
-    <div className="bg-yellow-400 px-2 py-2 md:px-4 md:py-3">
+    <div className="bg-green-400 px-2 py-2 md:px-4 md:py-3">
       <div className="flex items-center justify-between gap-2">
         {/* Lightning-Fast Delivery */}
         <div className="flex items-center gap-1 flex-1 justify-start">
@@ -28,4 +28,4 @@ const YellowBanner: React.FC = () => {
   );
 };
 
-export default YellowBanner;
+export default GreenBanner;
