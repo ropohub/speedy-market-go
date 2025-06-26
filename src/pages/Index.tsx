@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import { useNavigate } from 'react-router-dom';
-
 interface LegacyProduct {
   id: string;
   name: string;
@@ -17,7 +16,6 @@ interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
-
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -170,104 +168,42 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Promotional Text Section with Darker Gradient */}
-          <div 
-            className="px-4 py-6" 
-            style={{
-              background: 'linear-gradient(135deg, #D4915A 0%, #C17A3A 50%, #A86430 100%)'
-            }}
-          >
+          {/* Promotional Text Section */}
+          <div className="px-4 py-3">
             <div className="max-w-md mx-auto">
-              {/* Main promotional content with enhanced layout */}
-              <div className="flex items-center gap-6 mb-4">
-                {/* Left model image - larger size */}
-                <div className="w-32 h-40 flex-shrink-0 overflow-hidden">
-                  <img src="/lovable-uploads/d069bc9e-46cb-4e11-81fe-359d9a5baead.png" alt="Fashion Models" className="w-full h-full object-cover" />
+              {/* Main promotional content with model images */}
+              <div className="flex items-center justify-between mb-2">
+                {/* Left model image - removed border styling */}
+                <div className="w-20 h-24 overflow-hidden">
+                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
                 
-                {/* Right text content with enhanced 3D effects */}
-                <div className="flex-1">
-                  <div className="mb-3">
-                    <h2 
-                      className="text-3xl font-black leading-tight mb-1"
-                      style={{
-                        background: 'linear-gradient(135deg, #FF4500 0%, #FF6B35 25%, #FF8E53 50%, #FFB366 75%, #FFA07A 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        textShadow: '3px 3px 6px rgba(255, 69, 0, 0.4), 1px 1px 3px rgba(255, 107, 53, 0.3), 0 0 15px rgba(255, 107, 53, 0.2)',
-                        filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2)) drop-shadow(0 0 8px rgba(255,107,53,0.3))',
-                        transform: 'perspective(500px) rotateX(5deg)',
-                        letterSpacing: '0.5px'
-                      }}
-                    >
-                      From Basic
-                    </h2>
-                    <h2 
-                      className="text-3xl font-black leading-tight mb-3"
-                      style={{
-                        background: 'linear-gradient(135deg, #FF4500 0%, #FF6B35 25%, #FF8E53 50%, #FFB366 75%, #FFA07A 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        textShadow: '3px 3px 6px rgba(255, 69, 0, 0.4), 1px 1px 3px rgba(255, 107, 53, 0.3), 0 0 15px rgba(255, 107, 53, 0.2)',
-                        filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2)) drop-shadow(0 0 8px rgba(255,107,53,0.3))',
-                        transform: 'perspective(500px) rotateX(5deg)',
-                        letterSpacing: '0.5px'
-                      }}
-                    >
-                      To Wow
-                    </h2>
-                    
-                    {/* Decorative lines for 3D effect */}
-                    <div className="relative">
-                      <div 
-                        className="absolute -left-2 top-0 w-1 h-full opacity-30"
-                        style={{
-                          background: 'linear-gradient(180deg, #FF6B35 0%, transparent 100%)',
-                          transform: 'skewY(-15deg)'
-                        }}
-                      />
-                      <div 
-                        className="absolute -right-2 top-0 w-1 h-full opacity-20"
-                        style={{
-                          background: 'linear-gradient(180deg, transparent 0%, #FF8E53 100%)',
-                          transform: 'skewY(15deg)'
-                        }}
-                      />
-                    </div>
-                  </div>
-                  
-                  <p 
-                    className="text-white text-base mb-4 font-bold"
-                    style={{
-                      textShadow: '1px 1px 2px rgba(0,0,0,0.3), 0 0 8px rgba(255,255,255,0.2)',
-                      filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.2))'
-                    }}
-                  >
-                    Superfast With M-Now!
+                {/* Center text content */}
+                <div className="text-center">
+                  <EverydayFashionTitle />
+                  <p className="text-gray-700 text-xs mb-0.5 font-semibold">
+                    Top Styles & Delivered More Fast
                   </p>
-                  
-                  <button 
-                    className="bg-white px-8 py-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-orange-200 text-base text-zinc-950 font-bold transform hover:scale-105"
-                    style={{
-                      boxShadow: '0 8px 25px rgba(0,0,0,0.15), 0 0 20px rgba(255,107,53,0.2), inset 0 1px 3px rgba(255,255,255,0.5)',
-                    }}
-                  >
+                  <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
                     SHOP NOW
                   </button>
+                </div>
+                
+                {/* Right model image - replaced with new image */}
+                <div className="w-20 h-24 overflow-hidden">
+                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
               
               {/* Main Category Squares - Larger size matching reference */}
-              <div className="grid grid-cols-4 gap-3 mt-4">
+              <div className="grid grid-cols-4 gap-3 mt-2">
                 {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
                       <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-2xl" />
                       </div>
                     </div>
-                    <span className="text-xs text-white mt-2 text-center font-medium leading-tight drop-shadow-sm">
+                    <span className="text-xs text-gray-700 mt-2 text-center font-medium leading-tight">
                       {category.name}
                     </span>
                   </div>)}
@@ -281,5 +217,4 @@ const Index: React.FC = () => {
       </div>
     </Layout>;
 };
-
 export default Index;
