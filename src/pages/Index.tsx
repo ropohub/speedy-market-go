@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
-import HeaderPromoBanner from '../components/HeaderPromoBanner';
-import EverydayEssentials from '../components/EverydayEssentials';
+import CategorySelector from '../components/CategorySelector';
 import YellowBanner from '../components/YellowBanner';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import MovingBanner from '../components/MovingBanner';
@@ -88,15 +87,7 @@ const Index: React.FC = () => {
           <div className="bg-gray-50">
             <YellowBanner />
             
-            {/* New Header Promo Banner */}
-            <HeaderPromoBanner 
-              categories={categories} 
-              selectedCategory={selectedCategory} 
-              onCategoryChange={setSelectedCategory} 
-            />
-            
-            {/* New Everyday Essentials Section */}
-            <EverydayEssentials />
+            <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
             
             <div className="pt-3">
               <AutoSlidingBanner banners={currentBanners} />
