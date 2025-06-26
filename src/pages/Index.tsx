@@ -70,39 +70,42 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Hero Section - Compact mobile-friendly banner */}
-        <div className="px-4 py-1" style={{ backgroundColor: '#FFEFE4' }}>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto transform scale-[0.525]">
-            <img 
-              src="/lovable-uploads/c4c70c9e-d20d-422d-8b8b-68dd068b5f87.png" 
-              alt="Hero Banner" 
-              className="w-full h-auto object-contain"
-            />
+        {/* Main content with top padding to account for fixed header */}
+        <div className="pt-24">
+          {/* Hero Section - Compact mobile-friendly banner */}
+          <div className="px-4 py-1" style={{ backgroundColor: '#FFEFE4' }}>
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto transform scale-[0.525]">
+              <img 
+                src="/lovable-uploads/c4c70c9e-d20d-422d-8b8b-68dd068b5f87.png" 
+                alt="Hero Banner" 
+                className="w-full h-auto object-contain"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Scrollable Content */}
-        <div className="bg-gray-50">
-          <YellowBanner />
-          
-          <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-          
-          <div className="pt-3">
-            <AutoSlidingBanner banners={currentBanners} />
-          </div>
-          
-          <div className="my-4">
-            <MovingBanner text="FLAT 10% OFF ON YOUR FIRST ORDER" />
-          </div>
-          
-          <div className="bg-white">
-            <FeaturedCategories categories={currentFeaturedCategories} />
+          {/* Scrollable Content */}
+          <div className="bg-gray-50">
+            <YellowBanner />
             
-            <EthnicCollection />
+            <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
             
-            <TopSellingProducts category={selectedCategory} />
+            <div className="pt-3">
+              <AutoSlidingBanner banners={currentBanners} />
+            </div>
             
-            <ProductYouCantMiss category={selectedCategory} />
+            <div className="my-4">
+              <MovingBanner text="FLAT 10% OFF ON YOUR FIRST ORDER" />
+            </div>
+            
+            <div className="bg-white">
+              <FeaturedCategories categories={currentFeaturedCategories} />
+              
+              <EthnicCollection />
+              
+              <TopSellingProducts category={selectedCategory} />
+              
+              <ProductYouCantMiss category={selectedCategory} />
+            </div>
           </div>
         </div>
       </div>
