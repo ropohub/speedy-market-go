@@ -72,14 +72,19 @@ const Index: React.FC = () => {
         
         {/* Main content with top padding to account for fixed header */}
         <div className="pt-24">
-          {/* Hero Section - Compact mobile-friendly banner */}
-          <div className="px-4 py-1" style={{ backgroundColor: '#FFEFE4' }}>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto transform scale-[0.525]">
-              <img 
-                src="/lovable-uploads/c4c70c9e-d20d-422d-8b8b-68dd068b5f87.png" 
-                alt="Hero Banner" 
-                className="w-full h-auto object-contain"
-              />
+          {/* Hero Section - Updated with new image and rotated border */}
+          <div className="px-4 py-4" style={{ backgroundColor: '#FFEFE4' }}>
+            <div className="relative max-w-md mx-auto">
+              {/* Rotated border container */}
+              <div className="relative transform rotate-1 bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
+                <div className="transform -rotate-1 bg-white rounded-lg overflow-hidden">
+                  <img 
+                    src="/lovable-uploads/6e7aed1d-8f43-43ab-92e4-b887da7f7884.png" 
+                    alt="Introducing Fashion Delivery" 
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
