@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -96,13 +97,13 @@ const Index: React.FC = () => {
         <div className="pt-20" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
       }}>
-          {/* Hero Section - Directly below search bar with no extra spacing */}
+          {/* Hero Section - Using the new banner image */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
               {/* Ultra-thin transparent border container */}
               <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-xl p-0.5 shadow-sm">
                 <div className="bg-white rounded-lg overflow-hidden">
-                  <img src="/lovable-uploads/d6cc1603-91ea-4759-a968-14623a0024c8.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain" />
+                  <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain" />
                 </div>
               </div>
             </div>
