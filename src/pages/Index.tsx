@@ -71,10 +71,10 @@ const Index: React.FC = () => {
         <Header />
         
         {/* Hero Section - Compact mobile-friendly banner */}
-        <div className="px-4 py-3" style={{ backgroundColor: '#FFEFE4' }}>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto transform scale-75">
+        <div className="px-4 py-1" style={{ backgroundColor: '#FFEFE4' }}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto transform scale-[0.525]">
             <img 
-              src="/lovable-uploads/830272f8-d80f-4f3c-b69a-08f3b0962cda.png" 
+              src="/lovable-uploads/c4c70c9e-d20d-422d-8b8b-68dd068b5f87.png" 
               alt="Hero Banner" 
               className="w-full h-auto object-contain"
             />
