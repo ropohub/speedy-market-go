@@ -64,6 +64,15 @@ const Index: React.FC = () => {
   const currentBanners = banners[selectedCategory as keyof typeof banners];
   const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
 
+  // Category squares data
+  const categorySquares = [
+    { name: 'Women', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=150&fit=crop&crop=face' },
+    { name: 'Men', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face' },
+    { name: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop' },
+    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop' },
+    { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop' }
+  ];
+
   return (
     <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
@@ -84,6 +93,28 @@ const Index: React.FC = () => {
                     className="w-full h-auto object-contain"
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Squares Section */}
+          <div className="px-4 py-6 bg-white">
+            <div className="max-w-md mx-auto">
+              <div className="grid grid-cols-5 gap-4">
+                {categorySquares.map((category, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
+                      <img 
+                        src={category.image} 
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="text-xs text-gray-700 mt-2 text-center font-medium">
+                      {category.name}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
