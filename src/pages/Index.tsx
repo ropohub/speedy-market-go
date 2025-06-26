@@ -170,11 +170,11 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Promotional Text Section with Darker Background */}
+          {/* Promotional Text Section with Darker Gradient */}
           <div 
             className="px-4 py-6" 
             style={{
-              background: 'linear-gradient(135deg, #E8B882 0%, #D4915A 50%, #C17A3A 100%)'
+              background: 'linear-gradient(135deg, #D4915A 0%, #C17A3A 50%, #A86430 100%)'
             }}
           >
             <div className="max-w-md mx-auto">
