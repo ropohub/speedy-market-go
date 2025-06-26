@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -71,14 +70,13 @@ const Index: React.FC = () => {
         <Header />
         
         {/* Hero Section - Pink background with centered image */}
-        <div className="relative flex items-center justify-center" style={{
-          height: '55vh',
+        <div className="relative flex items-center justify-center py-2" style={{
           backgroundColor: '#FFEFE4'
         }}>
           <img 
             src="/lovable-uploads/830272f8-d80f-4f3c-b69a-08f3b0962cda.png" 
             alt="Hero Banner" 
-            className="max-w-full max-h-full object-contain px-4"
+            className="max-w-full h-auto object-contain px-2"
           />
         </div>
 

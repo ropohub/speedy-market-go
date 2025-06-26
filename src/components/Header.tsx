@@ -103,7 +103,7 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200" style={{backgroundColor: '#FFEFE4'}}>
       {/* First row: Delivery info */}
-      <div className="px-4 py-2 flex items-center gap-3">
+      <div className="px-4 py-1 flex items-center gap-3">
         <DeliveryTimeBox timeInMinutes={deliveryTime} />
         <DeliveryAddressInfo 
           fullAddress={userLocation.fullAddress}
@@ -112,7 +112,7 @@ const Header: React.FC = () => {
       </div>
       
       {/* Second row: Search and icons */}
-      <div className="px-4 py-2 flex items-center gap-4">
+      <div className="px-4 py-1 flex items-center gap-4">
         {/* Search bar takes most space */}
         <div className="flex-1">
           <SearchBarWithLogo />
