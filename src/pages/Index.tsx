@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import { useNavigate } from 'react-router-dom';
+
 interface LegacyProduct {
   id: string;
   name: string;
@@ -16,6 +17,7 @@ interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
+
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -168,30 +170,52 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Promotional Text Section */}
+          {/* Promotional Text Section - New Layout with Left Image and Right Text */}
           <div className="px-4 py-3">
             <div className="max-w-md mx-auto">
-              {/* Main promotional content with model images */}
-              <div className="flex items-center justify-between mb-2">
-                {/* Left model image - removed border styling */}
-                <div className="w-20 h-24 overflow-hidden">
+              {/* Main promotional content with new layout */}
+              <div className="flex items-center gap-4 mb-2">
+                {/* Left model image */}
+                <div className="w-24 h-28 flex-shrink-0 overflow-hidden">
                   <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
                 
-                {/* Center text content */}
-                <div className="text-center">
-                  <EverydayFashionTitle />
-                  <p className="text-gray-700 text-xs mb-0.5 font-semibold">
-                    Top Styles & Delivered More Fast
+                {/* Right text content with 3D effects */}
+                <div className="flex-1">
+                  <div className="mb-2">
+                    <h2 
+                      className="text-2xl font-bold leading-tight mb-1"
+                      style={{
+                        background: 'linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFA07A 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        textShadow: '2px 2px 4px rgba(255, 107, 53, 0.3), 0 0 10px rgba(255, 107, 53, 0.2)',
+                        filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))'
+                      }}
+                    >
+                      From Basic
+                    </h2>
+                    <h2 
+                      className="text-2xl font-bold leading-tight mb-2"
+                      style={{
+                        background: 'linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFA07A 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        textShadow: '2px 2px 4px rgba(255, 107, 53, 0.3), 0 0 10px rgba(255, 107, 53, 0.2)',
+                        filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))'
+                      }}
+                    >
+                      To Wow
+                    </h2>
+                  </div>
+                  <p className="text-gray-700 text-sm mb-3 font-semibold">
+                    Superfast With M-Now!
                   </p>
-                  <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
+                  <button className="bg-white px-6 py-2 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-sm text-zinc-950 font-semibold">
                     SHOP NOW
                   </button>
-                </div>
-                
-                {/* Right model image - replaced with new image */}
-                <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
               
@@ -217,4 +241,5 @@ const Index: React.FC = () => {
       </div>
     </Layout>;
 };
+
 export default Index;
