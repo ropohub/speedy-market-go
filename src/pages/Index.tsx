@@ -1,11 +1,17 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
+import CategorySelector from '../components/CategorySelector';
 import YellowBanner from '../components/YellowBanner';
+import AutoSlidingBanner from '../components/AutoSlidingBanner';
+import MovingBanner from '../components/MovingBanner';
+import FeaturedCategories from '../components/FeaturedCategories';
 import EthnicCollection from '../components/EthnicCollection';
 import TopSellingProducts from '../components/TopSellingProducts';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
+import { categories, banners, featuredCategories, heroImages } from '../data/mockData';
 
 interface LegacyProduct {
   id: string;
@@ -23,6 +29,7 @@ interface CartItem extends LegacyProduct {
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState('women');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const handleAddToCart = (product: LegacyProduct) => {
@@ -54,15 +61,18 @@ const Index: React.FC = () => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
 
+  const currentBanners = banners[selectedCategory as keyof typeof banners];
+  const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
+
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [
-    { name: 'Women', image: '/lovable-uploads/b95e5ab2-e9a2-4f49-9aa0-8ac2e55fd137.png', route: '/category/women' },
-    { name: 'Men', image: '/lovable-uploads/9a9a6676-d328-415f-8f18-d8475bb4a342.png', route: '/category/men' },
-    { name: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop', route: '/category/beauty' },
-    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop', route: '/category/accessories' },
-    { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop', route: '/category/footwear' },
-    { name: 'Home', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=150&h=150&fit=crop', route: '/category/home' },
-    { name: 'Kids', image: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=150&h=150&fit=crop', route: '/category/kids' }
+    { name: 'Women', image: '/lovable-uploads/b95e5ab2-e9a2-4f49-9aa0-8ac2e55fd137.png' },
+    { name: 'Men', image: '/lovable-uploads/9a9a6676-d328-415f-8f18-d8475bb4a342.png' },
+    { name: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop' },
+    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop' },
+    { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop' },
+    { name: 'Home', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=150&h=150&fit=crop' },
+    { name: 'Kids', image: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=150&h=150&fit=crop' }
   ];
 
   // Main category squares data for the promotional section with appropriate images
@@ -73,18 +83,11 @@ const Index: React.FC = () => {
     { name: 'Comfy Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop' }
   ];
 
-  const handleCategoryClick = (category: any) => {
-    navigate(category.route);
-  };
-
   return (
     <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
         {/* Header Component */}
         <Header />
-        
-        {/* Yellow Banner */}
-        <YellowBanner />
         
         {/* Main content with gradient background that matches hero banner */}
         <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'}}>
@@ -109,7 +112,7 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categorySquares.map((category, index) => (
-                  <div key={index} className="flex flex-col items-center flex-shrink-0 cursor-pointer" onClick={() => handleCategoryClick(category)}>
+                  <div key={index} className="flex flex-col items-center flex-shrink-0">
                     <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
                       <img 
                         src={category.image} 
@@ -190,12 +193,26 @@ const Index: React.FC = () => {
 
           {/* Scrollable Content */}
           <div className="bg-gray-50">
+            <YellowBanner />
+            
+            <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+            
+            <div className="pt-3">
+              <AutoSlidingBanner banners={currentBanners} />
+            </div>
+            
+            <div className="my-4">
+              <MovingBanner text="FLAT 10% OFF ON YOUR FIRST ORDER" />
+            </div>
+            
             <div className="bg-white">
+              <FeaturedCategories categories={currentFeaturedCategories} />
+              
               <EthnicCollection />
               
-              <TopSellingProducts category="women" />
+              <TopSellingProducts category={selectedCategory} />
               
-              <ProductYouCantMiss category="women" />
+              <ProductYouCantMiss category={selectedCategory} />
             </div>
           </div>
         </div>
