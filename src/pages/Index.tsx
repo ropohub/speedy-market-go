@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import { useNavigate } from 'react-router-dom';
-
 interface LegacyProduct {
   id: string;
   name: string;
@@ -17,11 +16,9 @@ interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
-
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  
   const handleAddToCart = (product: LegacyProduct) => {
     const existingItem = cartItems.find(item => item.id === product.id);
     if (existingItem) {
@@ -99,40 +96,12 @@ const Index: React.FC = () => {
         <div className="pt-20" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
       }}>
-          {/* Hero Section - Enhanced with 3D room effect */}
+          {/* Hero Section - Using the new banner image */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Enhanced gradient background with 3D room effect */}
-              <div 
-                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm"
-                style={{
-                  background: `
-                    linear-gradient(180deg, #F5E6D3 0%, #E8D5B7 30%, #D4A574 70%, #C8956A 100%),
-                    radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, transparent 60%)
-                  `,
-                }}
-              >
-                {/* Spotlight lines for 3D room effect */}
-                <div 
-                  className="absolute inset-0 rounded-3xl"
-                  style={{
-                    background: `
-                      linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
-                      linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
-                      linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)
-                    `
-                  }}
-                />
-                
-                {/* Center radial glow behind banner */}
-                <div 
-                  className="absolute inset-0 rounded-3xl"
-                  style={{
-                    background: 'radial-gradient(ellipse 200px 150px at center, rgba(255,248,240,0.6) 0%, rgba(255,248,240,0.3) 40%, transparent 70%)'
-                  }}
-                />
-
-                <div className="bg-white rounded-2xl overflow-hidden relative z-10">
+              {/* Ultra-thin transparent border container with more rounded edges */}
+              <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm">
+                <div className="bg-white rounded-2xl overflow-hidden">
                   <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain" />
                 </div>
               </div>
@@ -155,44 +124,34 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Promotional Text Section - Reverted to simpler background */}
-          <div className="px-4 py-3 relative">
-            <div className="max-w-md mx-auto relative">
-              {/* Simple gradient background */}
-              <div 
-                className="absolute inset-0 rounded-3xl overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
-                }}
-              />
-
+          {/* Promotional Text Section */}
+          <div className="px-4 py-3">
+            <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
-              <div className="relative flex items-center justify-between mb-2 py-4">
-                {/* Left model image */}
-                <div className="w-20 h-24 overflow-hidden relative z-10">
-                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain drop-shadow-lg" />
+              <div className="flex items-center justify-between mb-2">
+                {/* Left model image - removed border styling */}
+                <div className="w-20 h-24 overflow-hidden">
+                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
                 
                 {/* Center text content */}
-                <div className="text-center relative z-10">
+                <div className="text-center">
                   <EverydayFashionTitle />
-                  <p className="text-gray-800 text-xs mb-0.5 font-semibold drop-shadow-sm">
+                  <p className="text-gray-700 text-xs mb-0.5 font-semibold">
                     Top Styles & Delivered More Fast
                   </p>
-                  <button className="bg-white px-4 py-1.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 text-xs text-zinc-950 font-semibold hover:scale-105">
+                  <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
                     SHOP NOW
                   </button>
                 </div>
                 
-                {/* Right model image */}
-                <div className="w-20 h-24 overflow-hidden relative z-10">
-                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain drop-shadow-lg" />
+                {/* Right model image - replaced with new image */}
+                <div className="w-20 h-24 overflow-hidden">
+                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
-            </div>
-            
-            {/* Main Category Squares - Outside the enhanced background */}
-            <div className="max-w-md mx-auto">
+              
+              {/* Main Category Squares - Larger size matching reference */}
               <div className="grid grid-cols-4 gap-3 mt-2">
                 {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
@@ -214,5 +173,4 @@ const Index: React.FC = () => {
       </div>
     </Layout>;
 };
-
 export default Index;
