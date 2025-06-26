@@ -70,13 +70,16 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Hero Section - Background image */}
-        <div className="relative" style={{
+        {/* Hero Section - Pink background with centered image */}
+        <div className="relative flex items-center justify-center" style={{
           height: '55vh',
-          backgroundImage: 'url(/lovable-uploads/3d5567e9-bee1-49b1-846c-a831ff5e4325.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundColor: '#FFEFE4'
         }}>
+          <img 
+            src="/lovable-uploads/830272f8-d80f-4f3c-b69a-08f3b0962cda.png" 
+            alt="Hero Banner" 
+            className="max-w-full max-h-full object-contain px-4"
+          />
         </div>
 
         {/* Scrollable Content */}
