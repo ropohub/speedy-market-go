@@ -96,13 +96,57 @@ const Index: React.FC = () => {
         <div className="pt-20" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
       }}>
-          {/* Hero Section - Using the new banner image */}
+          {/* Hero Section - Enhanced with intense gradient and 3D effects */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Ultra-thin transparent border container with more rounded edges */}
-              <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm">
-                <div className="bg-white rounded-2xl overflow-hidden">
-                  <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain" />
+              {/* Ultra-thin transparent border container with more rounded edges and enhanced effects */}
+              <div 
+                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm"
+                style={{
+                  background: 'linear-gradient(180deg, #F5E6D3 0%, #E8B882 50%, #D4915A 100%)',
+                }}
+              >
+                {/* Spotlight lines for 3D room effect */}
+                <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                  {/* Top spotlight lines */}
+                  <div 
+                    className="absolute top-0 left-1/4 w-px h-full opacity-20"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
+                    }}
+                  />
+                  <div 
+                    className="absolute top-0 right-1/4 w-px h-full opacity-20"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
+                    }}
+                  />
+                  
+                  {/* Side spotlight lines */}
+                  <div 
+                    className="absolute left-0 top-1/4 w-full h-px opacity-15"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
+                    }}
+                  />
+                  <div 
+                    className="absolute left-0 bottom-1/4 w-full h-px opacity-15"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
+                    }}
+                  />
+                </div>
+                
+                {/* Radial glow behind the image */}
+                <div 
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    background: 'radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 40%, transparent 70%)'
+                  }}
+                />
+                
+                <div className="bg-white rounded-2xl overflow-hidden relative">
+                  <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain relative z-10" />
                 </div>
               </div>
             </div>
