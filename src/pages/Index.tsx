@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import CategorySelector from '../components/CategorySelector';
-import IntroducingBanner from '../components/IntroducingBanner';
+import GreenBanner from '../components/YellowBanner';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import MovingBanner from '../components/MovingBanner';
 import FeaturedCategories from '../components/FeaturedCategories';
@@ -81,7 +81,7 @@ const Index: React.FC = () => {
 
         {/* Scrollable Content */}
         <div className="bg-gray-50">
-          <IntroducingBanner />
+          <GreenBanner />
           
           <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
           
