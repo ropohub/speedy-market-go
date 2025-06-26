@@ -112,7 +112,7 @@ const Header: React.FC = () => {
       </div>
       
       {/* Second row: Search and icons */}
-      <div className="px-4 py-1 flex items-center gap-4">
+      <div className="px-4 py-1 flex items-center gap-2">
         {/* Search bar takes most space */}
         <div className="flex-1">
           <SearchBarWithLogo />

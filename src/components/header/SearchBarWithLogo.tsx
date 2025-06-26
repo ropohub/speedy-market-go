@@ -21,9 +21,9 @@ const SearchBarWithLogo: React.FC = () => {
   };
 
   return (
-    <div className="relative flex-1 max-w-lg">
+    <div className="relative flex-1 max-w-xl">
       <img 
-        src="/lovable-uploads/cfd38c46-012b-4b42-ab0f-dcd5228d6194.png" 
+        src="/lovable-uploads/5b5065a5-f1ae-4a07-b255-830e99cd26fc.png" 
         alt="Dripzy Logo" 
         className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 object-contain" 
       />
