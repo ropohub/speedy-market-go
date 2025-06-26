@@ -19,7 +19,13 @@ const CategoryPage: React.FC = () => {
         { name: 'Bottoms', image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=200&h=200&fit=crop' },
         { name: 'Ethnic Wear', image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=200&h=200&fit=crop' },
         { name: 'Activewear', image: 'https://images.unsplash.com/photo-1506629905853-fb2faec7bb69?w=200&h=200&fit=crop' },
-        { name: 'Lingerie', image: 'https://images.unsplash.com/photo-1571513722275-4b41940f54b8?w=200&h=200&fit=crop' }
+        { name: 'Lingerie', image: 'https://images.unsplash.com/photo-1571513722275-4b41940f54b8?w=200&h=200&fit=crop' },
+        { name: 'Jackets', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&h=200&fit=crop' },
+        { name: 'Shoes', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop' },
+        { name: 'Handbags', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop' },
+        { name: 'Jewelry', image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=200&fit=crop' },
+        { name: 'Sunglasses', image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop' },
+        { name: 'Watches', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=200&h=200&fit=crop' }
       ]
     },
     men: {
@@ -32,7 +38,13 @@ const CategoryPage: React.FC = () => {
         { name: 'Jeans & Pants', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=200&h=200&fit=crop' },
         { name: 'Jackets', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&h=200&fit=crop' },
         { name: 'Activewear', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop' },
-        { name: 'Accessories', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop' }
+        { name: 'Accessories', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop' },
+        { name: 'Shoes', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop' },
+        { name: 'Suits', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop' },
+        { name: 'Watches', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=200&h=200&fit=crop' },
+        { name: 'Bags', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop' },
+        { name: 'Sunglasses', image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop' },
+        { name: 'Grooming', image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=200&h=200&fit=crop' }
       ]
     },
     beauty: {
@@ -43,7 +55,15 @@ const CategoryPage: React.FC = () => {
         { name: 'Skincare', image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=200&h=200&fit=crop' },
         { name: 'Makeup', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop' },
         { name: 'Hair Care', image: 'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=200&h=200&fit=crop' },
-        { name: 'Fragrance', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop' }
+        { name: 'Fragrance', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&h=200&fit=crop' },
+        { name: 'Body Care', image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=200&fit=crop' },
+        { name: 'Nail Care', image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop' },
+        { name: 'Tools & Brushes', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop' },
+        { name: 'Men\'s Grooming', image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=200&h=200&fit=crop' },
+        { name: 'Wellness', image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=200&fit=crop' },
+        { name: 'Oral Care', image: 'https://images.unsplash.com/photo-1559956974-c721fa5fe15c?w=200&h=200&fit=crop' },
+        { name: 'Bath & Body', image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&h=200&fit=crop' },
+        { name: 'Gift Sets', image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=200&h=200&fit=crop' }
       ]
     }
   };
@@ -118,39 +138,31 @@ const CategoryPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Subcategories Grid */}
+        {/* Subcategories Grid - Modern design with square cards */}
         <div className="px-4 pb-8">
           <div className="max-w-md mx-auto">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Shop by Category</h3>
             
-            <div className="grid grid-cols-2 gap-4">
+            {/* 4 columns, 3 rows grid layout like homepage */}
+            <div className="grid grid-cols-4 gap-3">
               {currentCategory.subcategories.map((subcategory, index) => (
                 <div
                   key={index}
                   onClick={() => handleSubcategoryClick(subcategory.name)}
-                  className="relative overflow-hidden rounded-2xl aspect-[4/5] cursor-pointer group bg-white shadow-md hover:shadow-lg transition-all"
+                  className="flex flex-col items-center cursor-pointer group"
                 >
-                  <img
-                    src={subcategory.image}
-                    alt={subcategory.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  
-                  {/* Category name */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h4 className="font-bold text-white text-lg mb-1">
-                      {subcategory.name}
-                    </h4>
-                    <p className="text-gray-200 text-sm">
-                      Explore collection
-                    </p>
+                  <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2 group-hover:shadow-xl transition-shadow">
+                    <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
+                      <img 
+                        src={subcategory.image} 
+                        alt={subcategory.name}
+                        className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                   </div>
-
-                  {/* Hover effect */}
-                  <div className="absolute inset-0 bg-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <span className="text-xs text-gray-700 mt-2 text-center font-medium leading-tight">
+                    {subcategory.name}
+                  </span>
                 </div>
               ))}
             </div>

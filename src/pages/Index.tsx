@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
+import YellowBanner from '../components/YellowBanner';
 import EthnicCollection from '../components/EthnicCollection';
 import TopSellingProducts from '../components/TopSellingProducts';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
@@ -82,6 +82,9 @@ const Index: React.FC = () => {
       <div className="bg-white min-h-screen">
         {/* Header Component */}
         <Header />
+        
+        {/* Yellow Banner */}
+        <YellowBanner />
         
         {/* Main content with gradient background that matches hero banner */}
         <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'}}>
