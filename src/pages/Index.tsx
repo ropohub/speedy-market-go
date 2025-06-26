@@ -75,12 +75,12 @@ const Index: React.FC = () => {
     { name: 'Kids', image: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=150&h=150&fit=crop' }
   ];
 
-  // Main category squares data for the promotional section
+  // Main category squares data for the promotional section with appropriate images
   const mainCategorySquares = [
-    { name: 'Personal Care', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
-    { name: 'Wardrobe Basics', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
-    { name: 'Home Finds', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
-    { name: 'Comfy Footwear', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' }
+    { name: 'Personal Care', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop' },
+    { name: 'Wardrobe Basics', image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=200&h=200&fit=crop' },
+    { name: 'Home Finds', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=200&fit=crop' },
+    { name: 'Comfy Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop' }
   ];
 
   return (
@@ -89,8 +89,8 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Main content with reduced top padding to account for smaller fixed header */}
-        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
+        {/* Main content with gradient background that matches hero banner */}
+        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'}}>
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
@@ -134,12 +134,12 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
               <div className="flex items-center justify-between mb-6">
-                {/* Left model image */}
+                {/* Left model image - fixed to fill completely */}
                 <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
                 
@@ -159,12 +159,12 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image */}
+                {/* Right model image - fixed to fill completely */}
                 <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
               </div>
@@ -178,7 +178,7 @@ const Index: React.FC = () => {
                         <img 
                           src={category.image} 
                           alt={category.name}
-                          className="w-12 h-12 object-contain"
+                          className="w-full h-full object-cover rounded-2xl"
                         />
                       </div>
                     </div>
