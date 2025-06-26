@@ -81,10 +81,10 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Main content with top padding to account for fixed header */}
-        <div className="pt-24">
-          {/* Hero Section - Directly below search bar */}
-          <div className="px-4 py-3" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
+        {/* Main content with reduced top padding to account for smaller fixed header */}
+        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
+          {/* Hero Section - Directly below search bar with no extra spacing */}
+          <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
               {/* Equal border container */}
               <div className="relative bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
@@ -99,8 +99,8 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Category Squares Section - Horizontally scrollable */}
-          <div className="px-4 py-4" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
+          {/* Category Squares Section - Reduced padding */}
+          <div className="px-4 py-2">
             <div className="max-w-md mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categorySquares.map((category, index) => (

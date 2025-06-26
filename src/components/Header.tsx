@@ -14,8 +14,8 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200" style={{backgroundColor: '#FFEFE4'}}>
-      {/* First row: Single line location */}
-      <div className="px-4 py-2 flex items-center gap-2">
+      {/* First row: Single line location - reduced padding */}
+      <div className="px-4 py-1 flex items-center gap-2">
         <MapPin className="w-4 h-4 text-gray-700" />
         <span className="text-sm text-gray-900 truncate">
           <span className="font-normal">Deliver to </span>
