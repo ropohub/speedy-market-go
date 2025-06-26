@@ -82,7 +82,7 @@ const Index: React.FC = () => {
         {/* Main content with top padding to account for fixed header */}
         <div className="pt-24">
           {/* Hero Section - Updated with new image and equal border */}
-          <div className="px-4 py-4 bg-gradient-to-r from-orange-100 via-pink-50 to-yellow-50">
+          <div className="px-4 py-4" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
             <div className="relative max-w-md mx-auto">
               {/* Equal border container */}
               <div className="relative bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
@@ -98,12 +98,12 @@ const Index: React.FC = () => {
           </div>
 
           {/* Category Squares Section */}
-          <div className="px-4 py-6 bg-white">
+          <div className="px-4 py-6" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFE4CC 50%, #FFDAB9 100%)'}}>
             <div className="max-w-md mx-auto">
               <div className="grid grid-cols-5 gap-4">
                 {categorySquares.map((category, index) => (
                   <div key={index} className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
+                    <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
                       <img 
                         src={category.image} 
                         alt={category.name}
