@@ -121,6 +121,21 @@ const Index: React.FC = () => {
             </div>
           </div>
 
+          {/* Promotional Text Section */}
+          <div className="px-4 py-3">
+            <div className="max-w-md mx-auto text-center">
+              <h2 className="text-2xl font-bold text-purple-600 mb-1">
+                Everyday Fashion
+              </h2>
+              <p className="text-gray-700 text-sm mb-4">
+                Top Styles & Delivered More Fast
+              </p>
+              <button className="bg-white text-gray-800 px-6 py-2 rounded-full font-medium text-sm shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+                SHOP NOW
+              </button>
+            </div>
+          </div>
+
           {/* Scrollable Content */}
           <div className="bg-gray-50">
             <YellowBanner />
