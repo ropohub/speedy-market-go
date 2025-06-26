@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     : hardcodedAddress;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/20 backdrop-blur-sm" style={{backgroundColor: 'transparent'}}>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200" style={{backgroundColor: '#FFEFE4'}}>
       {/* First row: Single line location - reduced bottom padding only */}
       <div className="px-4 pt-2 pb-0.5 flex items-center gap-2">
         <MapPin className="w-4 h-4 text-gray-700" />

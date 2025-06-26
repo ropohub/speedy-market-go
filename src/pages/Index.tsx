@@ -86,19 +86,17 @@ const Index: React.FC = () => {
   return (
     <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
-        {/* Header Component with matching gradient background */}
-        <div style={{background: 'linear-gradient(135deg, #F8BBD0 0%, #E1BEE7 50%, #F3E5F5 100%)'}}>
-          <Header />
-        </div>
+        {/* Header Component */}
+        <Header />
         
-        {/* Main content with pink-purple minimalist gradient background */}
-        <div className="pt-20" style={{background: 'linear-gradient(135deg, #F8BBD0 0%, #E1BEE7 50%, #F3E5F5 100%)'}}>
+        {/* Main content with gradient background that matches hero banner */}
+        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'}}>
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Transparent border container for hero banner */}
-              <div className="relative bg-gradient-to-r from-white/20 to-purple-100/20 rounded-xl p-1 shadow-lg backdrop-blur-sm">
-                <div className="bg-white/90 rounded-lg overflow-hidden backdrop-blur-sm border border-white/30">
+              {/* Ultra-thin transparent border container */}
+              <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-xl p-0.5 shadow-sm">
+                <div className="bg-white rounded-lg overflow-hidden">
                   <img 
                     src="/lovable-uploads/4632bf3b-7c9b-4a5a-b65f-a5ae71242b6b.png" 
                     alt="Introducing Fashion Delivery" 
@@ -136,12 +134,12 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
               <div className="flex items-center justify-between mb-6">
-                {/* Left model image - fixed to contain the entire image without zoom */}
-                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm bg-gray-100">
+                {/* Left model image - fixed to fill completely */}
+                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
                 
@@ -161,12 +159,12 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image - fixed to contain the entire image without zoom */}
-                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm bg-gray-100">
+                {/* Right model image - fixed to fill completely */}
+                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
               </div>
