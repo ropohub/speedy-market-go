@@ -134,12 +134,12 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
               <div className="flex items-center justify-between mb-6">
-                {/* Left model image - fixed to fill completely */}
+                {/* Left model image - fixed to contain whole image */}
                 <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 
@@ -159,12 +159,12 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image - fixed to fill completely */}
+                {/* Right model image - fixed to contain whole image */}
                 <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
                     src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" 
                     alt="Fashion Model"
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               </div>
