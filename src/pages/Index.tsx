@@ -72,14 +72,14 @@ const Index: React.FC = () => {
         
         {/* Main content with top padding to account for fixed header */}
         <div className="pt-24">
-          {/* Hero Section - Updated with new image and rotated border */}
-          <div className="px-4 py-4" style={{ backgroundColor: '#FFEFE4' }}>
+          {/* Hero Section - Updated with new image and equal border */}
+          <div className="px-4 py-4 bg-gradient-to-r from-orange-100 via-pink-50 to-yellow-50">
             <div className="relative max-w-md mx-auto">
-              {/* Rotated border container */}
-              <div className="relative transform rotate-1 bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
-                <div className="transform -rotate-1 bg-white rounded-lg overflow-hidden">
+              {/* Equal border container */}
+              <div className="relative bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
+                <div className="bg-white rounded-lg overflow-hidden">
                   <img 
-                    src="/lovable-uploads/f72b9fbc-96c0-44e9-8218-3897153cdb33.png" 
+                    src="/lovable-uploads/4632bf3b-7c9b-4a5a-b65f-a5ae71242b6b.png" 
                     alt="Introducing Fashion Delivery" 
                     className="w-full h-auto object-contain"
                   />
