@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -69,15 +70,15 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Hero Section - Pink background with centered image */}
-        <div className="relative flex items-center justify-center py-2" style={{
-          backgroundColor: '#FFEFE4'
-        }}>
-          <img 
-            src="/lovable-uploads/830272f8-d80f-4f3c-b69a-08f3b0962cda.png" 
-            alt="Hero Banner" 
-            className="max-w-full h-auto object-contain px-2"
-          />
+        {/* Hero Section - Compact mobile-friendly banner */}
+        <div className="px-4 py-3" style={{ backgroundColor: '#FFEFE4' }}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden max-w-sm mx-auto">
+            <img 
+              src="/lovable-uploads/830272f8-d80f-4f3c-b69a-08f3b0962cda.png" 
+              alt="Hero Banner" 
+              className="w-full h-auto object-contain"
+            />
+          </div>
         </div>
 
         {/* Scrollable Content */}
