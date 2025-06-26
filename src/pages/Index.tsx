@@ -1,13 +1,10 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
-import FeaturedCategories from '../components/FeaturedCategories';
-import EthnicCollection from '../components/EthnicCollection';
-import TopSellingProducts from '../components/TopSellingProducts';
-import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
-import { featuredCategories } from '../data/mockData';
+
 interface LegacyProduct {
   id: string;
   name: string;
@@ -16,14 +13,16 @@ interface LegacyProduct {
   brand: string;
   originalPrice?: number;
 }
+
 interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
+
 const Index: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('women');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
   const handleAddToCart = (product: LegacyProduct) => {
     const existingItem = cartItems.find(item => item.id === product.id);
     if (existingItem) {
@@ -41,19 +40,21 @@ const Index: React.FC = () => {
     }
     console.log('Added to cart:', product);
   };
+
   const handleUpdateCartQuantity = (id: string, quantity: number) => {
     setCartItems(cartItems.map(item => item.id === id ? {
       ...item,
       quantity
     } : item));
   };
+
   const handleRemoveCartItem = (id: string) => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
+
   const handleCategoryClick = (categoryName: string) => {
     navigate(`/category/${categoryName.toLowerCase()}`);
   };
-  const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
 
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [{
@@ -93,15 +94,17 @@ const Index: React.FC = () => {
     name: 'Comfy Footwear',
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'
   }];
-  return <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
+
+  return (
+    <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
         {/* Header Component */}
         <Header />
         
         {/* Main content with gradient background that matches hero banner */}
         <div className="pt-20" style={{
-        background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'
-      }}>
+          background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'
+        }}>
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
@@ -118,14 +121,16 @@ const Index: React.FC = () => {
           <div className="px-4 py-1">
             <div className="max-w-md mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-                {categorySquares.map((category, index) => <div key={index} className="flex flex-col items-center flex-shrink-0 cursor-pointer" onClick={() => handleCategoryClick(category.name)}>
+                {categorySquares.map((category, index) => (
+                  <div key={index} className="flex flex-col items-center flex-shrink-0 cursor-pointer" onClick={() => handleCategoryClick(category.name)}>
                     <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
                       <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
                     </div>
                     <span className="text-xs text-gray-700 mt-1 text-center font-medium">
                       {category.name}
                     </span>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -134,7 +139,7 @@ const Index: React.FC = () => {
           <div className="px-4 py-3">
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-2">
                 {/* Left model image - removed border styling */}
                 <div className="w-20 h-24 overflow-hidden">
                   <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
@@ -142,13 +147,17 @@ const Index: React.FC = () => {
                 
                 {/* Center text content */}
                 <div className="text-center">
-                  <h2 className="text-lg font-bold text-purple-600 leading-tight" style={{
-                  textShadow: '2px 2px 4px rgba(0,0,0,0.1), 0 0 8px rgba(147,51,234,0.2)'
-                }}>
+                  <h2 className="text-xl font-bold leading-tight mb-1" style={{
+                    background: 'linear-gradient(135deg, #C084FC 0%, #E879F9 50%, #F0ABFC 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    textShadow: '0 2px 4px rgba(192, 132, 252, 0.3)'
+                  }}>
                     <div>Everyday</div>
-                    <div>Fashion</div>
+                    <div>Essentials</div>
                   </h2>
-                  <p className="text-gray-700 text-xs mb-3 mt-1 font-semibold">
+                  <p className="text-gray-700 text-xs mb-1 font-semibold">
                     Top Styles & Delivered More Fast
                   </p>
                   <button className="bg-white text-gray-800 px-4 py-1.5 rounded-full font-medium text-xs shadow-md hover:shadow-lg transition-shadow border border-gray-200">
@@ -164,7 +173,8 @@ const Index: React.FC = () => {
               
               {/* Main Category Squares - Larger size matching reference */}
               <div className="grid grid-cols-4 gap-3">
-                {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
+                {mainCategorySquares.map((category, index) => (
+                  <div key={index} className="flex flex-col items-center">
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
                       <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-2xl" />
@@ -173,28 +183,18 @@ const Index: React.FC = () => {
                     <span className="text-xs text-gray-700 mt-2 text-center font-medium leading-tight">
                       {category.name}
                     </span>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
           {/* Yellow Banner */}
           <YellowBanner />
-
-          {/* Scrollable Content */}
-          <div className="bg-gray-50">
-            <div className="bg-white">
-              <FeaturedCategories categories={currentFeaturedCategories} />
-              
-              <EthnicCollection />
-              
-              <TopSellingProducts category={selectedCategory} />
-              
-              <ProductYouCantMiss category={selectedCategory} />
-            </div>
-          </div>
         </div>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default Index;
