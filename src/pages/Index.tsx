@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -91,9 +92,9 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Main content with gradient background that matches hero banner */}
+        {/* Main content with minimalist gradient background */}
         <div className="pt-20" style={{
-        background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'
+        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
       }}>
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
@@ -135,7 +136,7 @@ const Index: React.FC = () => {
                 
                 {/* Center text content */}
                 <div className="text-center">
-                  <h2 className="text-xl font-bold leading-tight mb-1" style={{
+                  <h2 className="text-xl font-bold leading-none mb-0" style={{
                   background: 'linear-gradient(135deg, #C084FC 0%, #E879F9 50%, #F0ABFC 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -143,9 +144,9 @@ const Index: React.FC = () => {
                   textShadow: '0 2px 4px rgba(192, 132, 252, 0.3)'
                 }}>
                     <div>Everyday</div>
-                    <div>Essentials</div>
+                    <div style={{ marginTop: '-0.25rem' }}>Fashion</div>
                   </h2>
-                  <p className="text-gray-700 text-xs mb-1 font-semibold">
+                  <p className="text-gray-700 text-xs mb-0.5 font-semibold">
                     Top Styles & Delivered More Fast
                   </p>
                   <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
@@ -153,14 +154,14 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image - removed border styling */}
+                {/* Right model image - replaced with new image */}
                 <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
               
               {/* Main Category Squares - Larger size matching reference */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-3 mt-2">
                 {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
                       <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
