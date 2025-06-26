@@ -21,6 +21,7 @@ interface CartItem extends LegacyProduct {
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  
   const handleAddToCart = (product: LegacyProduct) => {
     const existingItem = cartItems.find(item => item.id === product.id);
     if (existingItem) {
@@ -98,12 +99,40 @@ const Index: React.FC = () => {
         <div className="pt-20" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
       }}>
-          {/* Hero Section - Using the new banner image */}
+          {/* Hero Section - Enhanced with 3D room effect */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Ultra-thin transparent border container with more rounded edges */}
-              <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm">
-                <div className="bg-white rounded-2xl overflow-hidden">
+              {/* Enhanced gradient background with 3D room effect */}
+              <div 
+                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm"
+                style={{
+                  background: `
+                    linear-gradient(180deg, #F5E6D3 0%, #E8D5B7 30%, #D4A574 70%, #C8956A 100%),
+                    radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, transparent 60%)
+                  `,
+                }}
+              >
+                {/* Spotlight lines for 3D room effect */}
+                <div 
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    background: `
+                      linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
+                      linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
+                      linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)
+                    `
+                  }}
+                />
+                
+                {/* Center radial glow behind banner */}
+                <div 
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    background: 'radial-gradient(ellipse 200px 150px at center, rgba(255,248,240,0.6) 0%, rgba(255,248,240,0.3) 40%, transparent 70%)'
+                  }}
+                />
+
+                <div className="bg-white rounded-2xl overflow-hidden relative z-10">
                   <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain" />
                 </div>
               </div>
@@ -126,39 +155,16 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Enhanced Promotional Text Section with 3D Room Effect */}
+          {/* Promotional Text Section - Reverted to simpler background */}
           <div className="px-4 py-3 relative">
             <div className="max-w-md mx-auto relative">
-              {/* Enhanced gradient background with 3D room effect */}
+              {/* Simple gradient background */}
               <div 
                 className="absolute inset-0 rounded-3xl overflow-hidden"
                 style={{
-                  background: `
-                    linear-gradient(180deg, #F5E6D3 0%, #E8D5B7 30%, #D4A574 70%, #C8956A 100%),
-                    radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, transparent 60%)
-                  `,
+                  background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
                 }}
-              >
-                {/* Spotlight lines for 3D room effect */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    background: `
-                      linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
-                      linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
-                      linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)
-                    `
-                  }}
-                />
-                
-                {/* Center radial glow behind models */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    background: 'radial-gradient(ellipse 200px 150px at center, rgba(255,248,240,0.6) 0%, rgba(255,248,240,0.3) 40%, transparent 70%)'
-                  }}
-                />
-              </div>
+              />
 
               {/* Main promotional content with model images */}
               <div className="relative flex items-center justify-between mb-2 py-4">
