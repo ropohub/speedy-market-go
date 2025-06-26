@@ -8,16 +8,16 @@ import CartIcon from './header/CartIcon';
 
 const Header: React.FC = () => {
   const [userLocation, setUserLocation] = useState({
-    fullAddress: 'Fetching location...',
-    shortAddress: 'Location...'
+    fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+    shortAddress: 'Gurgaon'
   });
 
   useEffect(() => {
     const fetchUserLocation = () => {
       if (!navigator.geolocation) {
         setUserLocation({
-          fullAddress: 'Location not supported',
-          shortAddress: 'Location not available'
+          fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+          shortAddress: 'Gurgaon'
         });
         return;
       }
@@ -30,10 +30,10 @@ const Header: React.FC = () => {
             const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
             
             if (!apiKey) {
-              console.warn('Google Maps API key not found, using coordinates');
+              console.warn('Google Maps API key not found, using hardcoded address');
               setUserLocation({
-                fullAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
-                shortAddress: 'Current Location'
+                fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+                shortAddress: 'Gurgaon'
               });
               return;
             }
@@ -68,23 +68,23 @@ const Header: React.FC = () => {
             } else {
               console.warn('Geocoding failed:', data.status, data.error_message);
               setUserLocation({
-                fullAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
-                shortAddress: 'Current Location'
+                fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+                shortAddress: 'Gurgaon'
               });
             }
           } catch (error) {
             console.error('Geocoding error:', error);
             setUserLocation({
-              fullAddress: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
-              shortAddress: 'Current Location'
+              fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+              shortAddress: 'Gurgaon'
             });
           }
         },
         (error) => {
           console.error('Geolocation error:', error);
           setUserLocation({
-            fullAddress: 'Location access denied',
-            shortAddress: 'Location denied'
+            fullAddress: '288, Sector 38, Medicity, Gurgaon..',
+            shortAddress: 'Gurgaon'
           });
         },
         {
