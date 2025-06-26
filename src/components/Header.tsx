@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import DeliveryTimeBox from './header/DeliveryTimeBox';
-import DeliveryAddressInfo from './header/DeliveryAddressInfo';
+import { MapPin, ChevronDown } from 'lucide-react';
 import SearchBarWithLogo from './header/SearchBarWithLogo';
 import NotificationIconWithBadge from './header/NotificationIconWithBadge';
 import WishlistIcon from './header/WishlistIcon';
@@ -12,7 +11,6 @@ const Header: React.FC = () => {
     fullAddress: 'Fetching location...',
     shortAddress: 'Location...'
   });
-  const [deliveryTime] = useState(33); // This could be dynamic based on location
 
   useEffect(() => {
     const fetchUserLocation = () => {
@@ -102,13 +100,13 @@ const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200" style={{backgroundColor: '#FFEFE4'}}>
-      {/* First row: Delivery info */}
-      <div className="px-4 py-1 flex items-center gap-3">
-        <DeliveryTimeBox timeInMinutes={deliveryTime} />
-        <DeliveryAddressInfo 
-          fullAddress={userLocation.fullAddress}
-          shortAddress={userLocation.shortAddress}
-        />
+      {/* First row: Single line location */}
+      <div className="px-4 py-2 flex items-center gap-2">
+        <MapPin className="w-4 h-4 text-gray-700" />
+        <span className="text-sm font-medium text-gray-900 truncate">
+          Deliver to {userLocation.fullAddress}
+        </span>
+        <ChevronDown className="w-4 h-4 text-gray-600 flex-shrink-0" />
       </div>
       
       {/* Second row: Search and icons */}
