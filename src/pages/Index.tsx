@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
-import SearchBar from '../components/SearchBar';
 import CategorySelector from '../components/CategorySelector';
 import GreenBanner from '../components/YellowBanner';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
@@ -31,17 +31,6 @@ const Index: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('women');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isSearchSticky, setIsSearchSticky] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Get the header height to determine when to show sticky search
-      const headerHeight = 72;
-      setIsSearchSticky(window.scrollY >= headerHeight);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleAddToCart = (product: LegacyProduct) => {
     const existingItem = cartItems.find(item => item.id === product.id);
@@ -74,12 +63,11 @@ const Index: React.FC = () => {
 
   const currentBanners = banners[selectedCategory as keyof typeof banners];
   const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
-  const currentHeroImages = heroImages[selectedCategory as keyof typeof heroImages];
 
   return (
     <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
-        {/* New Header Component */}
+        {/* Header Component */}
         <Header />
         
         {/* Hero Section - Background image */}
@@ -89,15 +77,6 @@ const Index: React.FC = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}>
-          {/* Search Bar - Positioned over background */}
-          <div className={`absolute top-4 left-0 right-0 z-10 ${isSearchSticky ? 'invisible' : 'visible'}`}>
-            <SearchBar />
-          </div>
-        </div>
-
-        {/* Sticky Search Bar */}
-        <div className={`fixed top-16 left-0 right-0 z-50 bg-black shadow-md transition-transform duration-300 ${isSearchSticky ? 'translate-y-0' : '-translate-y-full'}`}>
-          <SearchBar />
         </div>
 
         {/* Scrollable Content */}
