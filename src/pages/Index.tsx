@@ -75,6 +75,14 @@ const Index: React.FC = () => {
     { name: 'Kids', image: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=150&h=150&fit=crop' }
   ];
 
+  // Main category squares data for the promotional section
+  const mainCategorySquares = [
+    { name: 'Inner Wear', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=120&h=120&fit=crop' },
+    { name: 'Tops', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=120&h=120&fit=crop' },
+    { name: 'Dresses', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=120&h=120&fit=crop' },
+    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=120&h=120&fit=crop' }
+  ];
+
   return (
     <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
@@ -123,16 +131,59 @@ const Index: React.FC = () => {
 
           {/* Promotional Text Section */}
           <div className="px-4 py-3">
-            <div className="max-w-md mx-auto text-center">
-              <h2 className="text-2xl font-bold text-purple-600 mb-1">
-                Everyday Fashion
-              </h2>
-              <p className="text-gray-700 text-sm mb-4">
-                Top Styles & Delivered More Fast
-              </p>
-              <button className="bg-white text-gray-800 px-6 py-2 rounded-full font-medium text-sm shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-                SHOP NOW
-              </button>
+            <div className="max-w-md mx-auto">
+              {/* Main promotional content with model images */}
+              <div className="flex items-center justify-between mb-4">
+                {/* Left model image */}
+                <div className="w-16 h-20 rounded-lg overflow-hidden shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=80&h=100&fit=crop&crop=face" 
+                    alt="Fashion Model"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                {/* Center text content */}
+                <div className="text-center">
+                  <h2 className="text-lg font-bold text-purple-600 leading-tight">
+                    <div>Everyday</div>
+                    <div>Fashion</div>
+                  </h2>
+                  <p className="text-gray-700 text-xs mb-3 mt-1">
+                    Top Styles & Delivered More Fast
+                  </p>
+                  <button className="bg-white text-gray-800 px-4 py-1.5 rounded-full font-medium text-xs shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+                    SHOP NOW
+                  </button>
+                </div>
+                
+                {/* Right model image */}
+                <div className="w-16 h-20 rounded-lg overflow-hidden shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=80&h=100&fit=crop&crop=face" 
+                    alt="Fashion Model"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              
+              {/* Main Category Squares */}
+              <div className="flex justify-center gap-4">
+                {mainCategorySquares.map((category, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
+                      <img 
+                        src={category.image} 
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="text-xs text-gray-700 mt-1 text-center font-medium">
+                      {category.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
