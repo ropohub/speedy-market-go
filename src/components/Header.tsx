@@ -101,21 +101,24 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3">
-      <div className="flex items-center gap-4">
-        {/* Left section: Delivery info */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <DeliveryTimeBox timeInMinutes={deliveryTime} />
-          <DeliveryAddressInfo 
-            fullAddress={userLocation.fullAddress}
-            shortAddress={userLocation.shortAddress}
-          />
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      {/* First row: Delivery info */}
+      <div className="px-4 py-2 flex items-center gap-3">
+        <DeliveryTimeBox timeInMinutes={deliveryTime} />
+        <DeliveryAddressInfo 
+          fullAddress={userLocation.fullAddress}
+          shortAddress={userLocation.shortAddress}
+        />
+      </div>
+      
+      {/* Second row: Search and icons */}
+      <div className="px-4 py-2 flex items-center gap-4">
+        {/* Search bar takes most space */}
+        <div className="flex-1">
+          <SearchBarWithLogo />
         </div>
         
-        {/* Center section: Logo + Search */}
-        <SearchBarWithLogo />
-        
-        {/* Right section: Icons */}
+        {/* Right side icons */}
         <div className="flex items-center gap-1">
           <NotificationIconWithBadge badgeCount={2} />
           <WishlistIcon />
