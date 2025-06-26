@@ -77,10 +77,10 @@ const Index: React.FC = () => {
 
   // Main category squares data for the promotional section
   const mainCategorySquares = [
-    { name: 'Inner Wear', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=120&h=120&fit=crop' },
-    { name: 'Tops', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=120&h=120&fit=crop' },
-    { name: 'Dresses', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=120&h=120&fit=crop' },
-    { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=120&h=120&fit=crop' }
+    { name: 'Personal Care', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
+    { name: 'Wardrobe Basics', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
+    { name: 'Home Finds', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' },
+    { name: 'Comfy Footwear', image: '/lovable-uploads/f0d31d00-1ced-4459-8300-08266dae98bf.png' }
   ];
 
   return (
@@ -133,11 +133,11 @@ const Index: React.FC = () => {
           <div className="px-4 py-3">
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-6">
                 {/* Left model image */}
-                <div className="w-16 h-20 rounded-lg overflow-hidden shadow-sm">
+                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
-                    src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=80&h=100&fit=crop&crop=face" 
+                    src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
                     alt="Fashion Model"
                     className="w-full h-full object-cover"
                   />
@@ -145,7 +145,9 @@ const Index: React.FC = () => {
                 
                 {/* Center text content */}
                 <div className="text-center">
-                  <h2 className="text-lg font-bold text-purple-600 leading-tight">
+                  <h2 className="text-lg font-bold text-purple-600 leading-tight" style={{
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.1), 0 0 8px rgba(147,51,234,0.2)'
+                  }}>
                     <div>Everyday</div>
                     <div>Fashion</div>
                   </h2>
@@ -158,27 +160,29 @@ const Index: React.FC = () => {
                 </div>
                 
                 {/* Right model image */}
-                <div className="w-16 h-20 rounded-lg overflow-hidden shadow-sm">
+                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
                   <img 
-                    src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=80&h=100&fit=crop&crop=face" 
+                    src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" 
                     alt="Fashion Model"
                     className="w-full h-full object-cover"
                   />
                 </div>
               </div>
               
-              {/* Main Category Squares */}
-              <div className="flex justify-center gap-4">
+              {/* Main Category Squares - Larger size matching reference */}
+              <div className="grid grid-cols-4 gap-3">
                 {mainCategorySquares.map((category, index) => (
                   <div key={index} className="flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
-                      <img 
-                        src={category.image} 
-                        alt={category.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
+                      <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
+                        <img 
+                          src={category.image} 
+                          alt={category.name}
+                          className="w-12 h-12 object-contain"
+                        />
+                      </div>
                     </div>
-                    <span className="text-xs text-gray-700 mt-1 text-center font-medium">
+                    <span className="text-xs text-gray-700 mt-2 text-center font-medium leading-tight">
                       {category.name}
                     </span>
                   </div>
