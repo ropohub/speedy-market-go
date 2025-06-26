@@ -86,8 +86,8 @@ const Index: React.FC = () => {
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Equal border container */}
-              <div className="relative bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
+              {/* Ultra-thin transparent border container */}
+              <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-xl p-0.5 shadow-sm">
                 <div className="bg-white rounded-lg overflow-hidden">
                   <img 
                     src="/lovable-uploads/4632bf3b-7c9b-4a5a-b65f-a5ae71242b6b.png" 
@@ -99,8 +99,8 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Category Squares Section - Reduced padding */}
-          <div className="px-4 py-2">
+          {/* Category Squares Section - Half the spacing from hero banner */}
+          <div className="px-4 py-1">
             <div className="max-w-md mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categorySquares.map((category, index) => (
