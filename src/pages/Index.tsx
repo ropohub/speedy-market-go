@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import { useNavigate } from 'react-router-dom';
+
 interface LegacyProduct {
   id: string;
   name: string;
@@ -16,6 +17,7 @@ interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
+
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -124,34 +126,67 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Promotional Text Section */}
-          <div className="px-4 py-3">
-            <div className="max-w-md mx-auto">
+          {/* Enhanced Promotional Text Section with 3D Room Effect */}
+          <div className="px-4 py-3 relative">
+            <div className="max-w-md mx-auto relative">
+              {/* Enhanced gradient background with 3D room effect */}
+              <div 
+                className="absolute inset-0 rounded-3xl overflow-hidden"
+                style={{
+                  background: `
+                    linear-gradient(180deg, #F5E6D3 0%, #E8D5B7 30%, #D4A574 70%, #C8956A 100%),
+                    radial-gradient(ellipse at center, rgba(255,255,255,0.3) 0%, transparent 60%)
+                  `,
+                }}
+              >
+                {/* Spotlight lines for 3D room effect */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: `
+                      linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
+                      linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.1) 49%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.1) 51%, transparent 52%),
+                      linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)
+                    `
+                  }}
+                />
+                
+                {/* Center radial glow behind models */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: 'radial-gradient(ellipse 200px 150px at center, rgba(255,248,240,0.6) 0%, rgba(255,248,240,0.3) 40%, transparent 70%)'
+                  }}
+                />
+              </div>
+
               {/* Main promotional content with model images */}
-              <div className="flex items-center justify-between mb-2">
-                {/* Left model image - removed border styling */}
-                <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
+              <div className="relative flex items-center justify-between mb-2 py-4">
+                {/* Left model image */}
+                <div className="w-20 h-24 overflow-hidden relative z-10">
+                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain drop-shadow-lg" />
                 </div>
                 
                 {/* Center text content */}
-                <div className="text-center">
+                <div className="text-center relative z-10">
                   <EverydayFashionTitle />
-                  <p className="text-gray-700 text-xs mb-0.5 font-semibold">
+                  <p className="text-gray-800 text-xs mb-0.5 font-semibold drop-shadow-sm">
                     Top Styles & Delivered More Fast
                   </p>
-                  <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
+                  <button className="bg-white px-4 py-1.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 text-xs text-zinc-950 font-semibold hover:scale-105">
                     SHOP NOW
                   </button>
                 </div>
                 
-                {/* Right model image - replaced with new image */}
-                <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                {/* Right model image */}
+                <div className="w-20 h-24 overflow-hidden relative z-10">
+                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain drop-shadow-lg" />
                 </div>
               </div>
-              
-              {/* Main Category Squares - Larger size matching reference */}
+            </div>
+            
+            {/* Main Category Squares - Outside the enhanced background */}
+            <div className="max-w-md mx-auto">
               <div className="grid grid-cols-4 gap-3 mt-2">
                 {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
@@ -173,4 +208,5 @@ const Index: React.FC = () => {
       </div>
     </Layout>;
 };
+
 export default Index;
