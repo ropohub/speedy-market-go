@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
+import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import { useNavigate } from 'react-router-dom';
 interface LegacyProduct {
   id: string;
@@ -136,16 +136,7 @@ const Index: React.FC = () => {
                 
                 {/* Center text content */}
                 <div className="text-center">
-                  <h2 className="text-xl font-bold leading-none mb-0" style={{
-                  background: 'linear-gradient(135deg, #C084FC 0%, #E879F9 50%, #F0ABFC 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: '0 2px 4px rgba(192, 132, 252, 0.3)'
-                }}>
-                    <div>Everyday</div>
-                    <div style={{ marginTop: '-0.25rem' }}>Fashion</div>
-                  </h2>
+                  <EverydayFashionTitle />
                   <p className="text-gray-700 text-xs mb-0.5 font-semibold">
                     Top Styles & Delivered More Fast
                   </p>
