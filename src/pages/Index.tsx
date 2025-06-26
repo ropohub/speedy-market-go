@@ -2,16 +2,13 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
-import CategorySelector from '../components/CategorySelector';
 import YellowBanner from '../components/YellowBanner';
-import AutoSlidingBanner from '../components/AutoSlidingBanner';
-import MovingBanner from '../components/MovingBanner';
 import FeaturedCategories from '../components/FeaturedCategories';
 import EthnicCollection from '../components/EthnicCollection';
 import TopSellingProducts from '../components/TopSellingProducts';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
-import { categories, banners, featuredCategories, heroImages } from '../data/mockData';
+import { featuredCategories } from '../data/mockData';
 
 interface LegacyProduct {
   id: string;
@@ -61,7 +58,10 @@ const Index: React.FC = () => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
 
-  const currentBanners = banners[selectedCategory as keyof typeof banners];
+  const handleCategoryClick = (categoryName: string) => {
+    navigate(`/category/${categoryName.toLowerCase()}`);
+  };
+
   const currentFeaturedCategories = featuredCategories[selectedCategory as keyof typeof featuredCategories];
 
   // Category squares data with 7 categories for horizontal scroll
@@ -112,7 +112,11 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categorySquares.map((category, index) => (
-                  <div key={index} className="flex flex-col items-center flex-shrink-0">
+                  <div 
+                    key={index} 
+                    className="flex flex-col items-center flex-shrink-0 cursor-pointer"
+                    onClick={() => handleCategoryClick(category.name)}
+                  >
                     <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-sm bg-gray-100">
                       <img 
                         src={category.image} 
@@ -191,20 +195,11 @@ const Index: React.FC = () => {
             </div>
           </div>
 
+          {/* Yellow Banner */}
+          <YellowBanner />
+
           {/* Scrollable Content */}
           <div className="bg-gray-50">
-            <YellowBanner />
-            
-            <CategorySelector categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-            
-            <div className="pt-3">
-              <AutoSlidingBanner banners={currentBanners} />
-            </div>
-            
-            <div className="my-4">
-              <MovingBanner text="FLAT 10% OFF ON YOUR FIRST ORDER" />
-            </div>
-            
             <div className="bg-white">
               <FeaturedCategories categories={currentFeaturedCategories} />
               
