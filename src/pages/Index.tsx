@@ -79,7 +79,7 @@ const Index: React.FC = () => {
               <div className="relative transform rotate-1 bg-gradient-to-r from-purple-300 to-pink-300 rounded-xl p-1 shadow-lg">
                 <div className="transform -rotate-1 bg-white rounded-lg overflow-hidden">
                   <img 
-                    src="/lovable-uploads/6e7aed1d-8f43-43ab-92e4-b887da7f7884.png" 
+                    src="/lovable-uploads/f72b9fbc-96c0-44e9-8218-3897153cdb33.png" 
                     alt="Introducing Fashion Delivery" 
                     className="w-full h-auto object-contain"
                   />
