@@ -98,7 +98,7 @@ const Index: React.FC = () => {
               <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-xl p-0.5 shadow-sm">
                 <div className="bg-white rounded-lg overflow-hidden">
                   <img 
-                    src="/lovable-uploads/d4e67336-45de-4114-880c-2bce412327c7.png" 
+                    src="/lovable-uploads/d6cc1603-91ea-4759-a968-14623a0024c8.png" 
                     alt="Introducing Dripzy Fashion Delivery" 
                     className="w-full h-auto object-contain"
                   />
@@ -134,8 +134,8 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
               <div className="flex items-center justify-between mb-6">
-                {/* Left model image - fixed to contain whole image */}
-                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
+                {/* Left model image - removed border styling */}
+                <div className="w-20 h-24 overflow-hidden">
                   <img 
                     src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
                     alt="Fashion Model"
@@ -159,8 +159,8 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image - fixed to contain whole image */}
-                <div className="w-20 h-24 rounded-lg overflow-hidden shadow-sm">
+                {/* Right model image - removed border styling */}
+                <div className="w-20 h-24 overflow-hidden">
                   <img 
                     src="/lovable-uploads/836e88f1-6dd2-4066-84df-99c47ced081d.png" 
                     alt="Fashion Model"
