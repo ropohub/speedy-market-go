@@ -101,7 +101,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200" style={{ backgroundColor: '#FFEFE4' }}>
       {/* First row: Delivery info */}
       <div className="px-4 py-2 flex items-center gap-3">
         <DeliveryTimeBox timeInMinutes={deliveryTime} />
