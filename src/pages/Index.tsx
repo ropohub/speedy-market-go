@@ -89,8 +89,8 @@ const Index: React.FC = () => {
         {/* Header Component */}
         <Header />
         
-        {/* Main content with gradient background that matches hero banner */}
-        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF5F0 0%, #FFEDE0 50%, #FFE6D3 100%)'}}>
+        {/* Main content with minimalist gradient background */}
+        <div className="pt-20" style={{background: 'linear-gradient(135deg, #FFF9C4 0%, #FFE0B2 25%, #F8BBD0 50%, #E1BEE7 75%, #F3E5F5 100%)'}}>
           {/* Hero Section - Directly below search bar with no extra spacing */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
