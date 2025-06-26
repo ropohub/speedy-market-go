@@ -66,8 +66,8 @@ const Index: React.FC = () => {
 
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [
-    { name: 'Women', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=150&fit=crop&crop=face' },
-    { name: 'Men', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face' },
+    { name: 'Women', image: '/lovable-uploads/b95e5ab2-e9a2-4f49-9aa0-8ac2e55fd137.png' },
+    { name: 'Men', image: '/lovable-uploads/9a9a6676-d328-415f-8f18-d8475bb4a342.png' },
     { name: 'Beauty', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop' },
     { name: 'Accessories', image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop' },
     { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop' },
@@ -98,8 +98,8 @@ const Index: React.FC = () => {
               <div className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-xl p-0.5 shadow-sm">
                 <div className="bg-white rounded-lg overflow-hidden">
                   <img 
-                    src="/lovable-uploads/4632bf3b-7c9b-4a5a-b65f-a5ae71242b6b.png" 
-                    alt="Introducing Fashion Delivery" 
+                    src="/lovable-uploads/d4e67336-45de-4114-880c-2bce412327c7.png" 
+                    alt="Introducing Dripzy Fashion Delivery" 
                     className="w-full h-auto object-contain"
                   />
                 </div>

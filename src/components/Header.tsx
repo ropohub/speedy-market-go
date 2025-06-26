@@ -8,8 +8,8 @@ import CartIcon from './header/CartIcon';
 
 const Header: React.FC = () => {
   const hardcodedAddress = "288, Sector 38, Medicity, Gurgaon..";
-  const truncatedAddress = hardcodedAddress.length > 25 
-    ? hardcodedAddress.substring(0, 25) + "..." 
+  const truncatedAddress = hardcodedAddress.length > 29 
+    ? hardcodedAddress.substring(0, 29) + "..." 
     : hardcodedAddress;
 
   return (
