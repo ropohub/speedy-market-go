@@ -112,7 +112,7 @@ const BrandsOnDemand: React.FC = () => {
             Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="aspect-square bg-gradient-to-br from-white/90 to-gray-100/80 backdrop-blur-sm rounded-2xl shadow-sm animate-pulse"
+                className="w-full h-0 pb-[100%] relative bg-gradient-to-br from-white/90 to-gray-100/80 backdrop-blur-sm rounded-2xl shadow-sm animate-pulse"
               />
             ))
           ) : error ? (
@@ -123,28 +123,30 @@ const BrandsOnDemand: React.FC = () => {
             allBrands.map((brand, index) => (
               <div
                 key={brand.name + index}
-                className="aspect-square bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group p-2.5 flex items-center justify-center border border-white/50"
+                className="w-full h-0 pb-[100%] relative bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group border border-white/50"
               >
-                {brand.imageUrl ? (
-                  <img
-                    src={brand.imageUrl}
-                    alt={brand.name}
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      // Fallback to text if image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      if (target.nextSibling) {
-                        (target.nextSibling as HTMLElement).style.display = 'flex';
-                      }
-                    }}
-                  />
-                ) : null}
-                <div 
-                  className="w-full h-full flex items-center justify-center text-gray-800 font-bold text-xs text-center leading-tight p-1"
-                  style={{ display: brand.imageUrl ? 'none' : 'flex' }}
-                >
-                  {brand.name}
+                <div className="absolute inset-0 p-2.5 flex items-center justify-center">
+                  {brand.imageUrl ? (
+                    <img
+                      src={brand.imageUrl}
+                      alt={brand.name}
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        // Fallback to text if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        if (target.nextSibling) {
+                          (target.nextSibling as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <div 
+                    className="w-full h-full flex items-center justify-center text-gray-800 font-bold text-xs text-center leading-tight p-1"
+                    style={{ display: brand.imageUrl ? 'none' : 'flex' }}
+                  >
+                    {brand.name}
+                  </div>
                 </div>
               </div>
             ))

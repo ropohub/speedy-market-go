@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
@@ -9,6 +9,11 @@ import { ChevronRight } from 'lucide-react';
 const Categories: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('women');
   const navigate = useNavigate();
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/products/${selectedCategory}/${categoryId}`);
