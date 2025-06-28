@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import EthnicCollection from '../components/EthnicCollection';
+import TopSellingRightNow from '../components/TopSellingRightNow';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
 
@@ -221,6 +222,9 @@ const Index: React.FC = () => {
 
         {/* Featured Brands Section */}
         <EthnicCollection />
+
+        {/* Top-Selling Right Now Section */}
+        <TopSellingRightNow />
 
         {/* Products You Can't Miss Section */}
         <ProductYouCantMiss category="women" />

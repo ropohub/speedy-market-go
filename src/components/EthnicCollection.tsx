@@ -118,14 +118,14 @@ const EthnicCollection: React.FC = () => {
             
             <button
               onClick={handleShopNow}
-              className="bg-white text-black px-6 py-3 rounded-lg font-bold text-sm hover:bg-gray-100 transition-colors shadow-md"
+              className="bg-white text-black px-4 py-2 rounded-lg font-bold text-xs hover:bg-gray-100 transition-colors shadow-md"
             >
               SHOP NOW
             </button>
           </div>
 
-          {/* Couple image - visible on mobile */}
-          <div className="md:hidden absolute right-4 top-4 bottom-4 w-32 flex items-center">
+          {/* Couple image - visible on mobile, increased size and shifted right */}
+          <div className="md:hidden absolute right-0 top-0 bottom-0 w-40 flex items-center">
             <img 
               src="/lovable-uploads/cdd76210-ece1-48bb-983e-733973d49c1e.png" 
               alt="Fashion Couple" 
