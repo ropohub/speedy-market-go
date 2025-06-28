@@ -5,9 +5,11 @@ import SearchBar from '../components/SearchBar';
 import { categories } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
+
 const Categories: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('women');
   const navigate = useNavigate();
+
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/products/${selectedCategory}/${categoryId}`);
   };
@@ -412,9 +414,11 @@ const Categories: React.FC = () => {
       }]
     }
   };
+
   const handleSidebarCategoryChange = (categoryId: string) => {
     setSelectedCategory(categoryId);
   };
+
   const getCategoryTitle = (categoryId: string) => {
     const categoryMap: {
       [key: string]: string;
@@ -428,12 +432,15 @@ const Categories: React.FC = () => {
     };
     return categoryMap[categoryId] || 'Fashion';
   };
+
   const currentCategoryOptions = categoryOptions[selectedCategory as keyof typeof categoryOptions] || categoryOptions.women;
-  return <Layout>
+
+  return (
+    <Layout>
       {/* Unified gradient background throughout the entire page */}
       <div className="min-h-screen" style={{
-      background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 50%, #FFB3D1 70%, #F3E8FF 100%)'
-    }}>
+        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 50%, #FFB3D1 70%, #F3E8FF 100%)'
+      }}>
         {/* Header */}
         <Header />
         
@@ -443,19 +450,40 @@ const Categories: React.FC = () => {
             {/* Vertical Sidebar - increased width */}
             <div className="w-28 min-h-screen">
               <div className="py-2 space-y-4">
-                {sidebarCategories.map(category => <div key={category.id} onClick={() => handleSidebarCategoryChange(category.id)} className={`mx-2 cursor-pointer transition-all ${selectedCategory === category.id ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` : 'hover:bg-white/20 backdrop-blur-sm'} rounded-xl p-2`}>
+                {sidebarCategories.map(category => (
+                  <div
+                    key={category.id}
+                    onClick={() => handleSidebarCategoryChange(category.id)}
+                    className={`mx-2 cursor-pointer transition-all ${
+                      selectedCategory === category.id 
+                        ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
+                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-gray-200/50'
+                    } rounded-xl p-2`}
+                  >
                     <div className="flex flex-col items-center">
-                      {/* Use custom image for women and men, icon for others */}
-                      {category.image ? <div className="w-8 h-8 mb-1 rounded-full overflow-hidden">
-                          <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
-                        </div> : <div className="text-2xl mb-1">{category.icon}</div>}
-                      <span className={`text-xs font-medium text-center leading-tight ${selectedCategory === category.id ? category.textColor : 'text-gray-600'}`} style={{
-                    whiteSpace: 'pre-line'
-                  }}>
+                      {/* Use custom image for women and men, icon for others - increased size */}
+                      {category.image ? (
+                        <div className="w-10 h-10 mb-1 rounded-full overflow-hidden">
+                          <img 
+                            src={category.image} 
+                            alt={category.name} 
+                            className="w-full h-full object-cover" 
+                          />
+                        </div>
+                      ) : (
+                        <div className="text-3xl mb-1">{category.icon}</div>
+                      )}
+                      <span 
+                        className={`text-xs font-medium text-center leading-tight ${
+                          selectedCategory === category.id ? category.textColor : 'text-gray-600'
+                        }`}
+                        style={{ whiteSpace: 'pre-line' }}
+                      >
                         {category.name}
                       </span>
                     </div>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -469,7 +497,11 @@ const Categories: React.FC = () => {
                       <h2 className="font-bold text-gray-900 mb-1 text-base">{getCategoryTitle(selectedCategory)}</h2>
                     </div>
                     <div className="flex items-center">
-                      <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=80&fit=crop" alt="Fashion Banner" className="w-20 h-12 rounded-lg object-cover mr-2 shadow-sm" />
+                      <img 
+                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=80&fit=crop" 
+                        alt="Fashion Banner" 
+                        className="w-20 h-12 rounded-lg object-cover mr-2 shadow-sm" 
+                      />
                       <ChevronRight className="w-5 h-5 text-gray-600" />
                     </div>
                   </div>
@@ -479,24 +511,38 @@ const Categories: React.FC = () => {
               {/* Main Content Container */}
               <div className="bg-white/30 backdrop-blur-sm rounded-t-3xl mx-2 mt-1 shadow-sm border border-white/20">
                 {/* Category Sections */}
-                {currentCategoryOptions.sections.map((section, sectionIndex) => <div key={sectionIndex} className="px-4 py-3">
+                {currentCategoryOptions.sections.map((section, sectionIndex) => (
+                  <div key={sectionIndex} className="px-4 py-3">
                     <h3 className="text-sm font-bold text-gray-900 mb-3">{section.title}</h3>
                     <div className="grid grid-cols-3 gap-3">
-                      {section.items.map(item => <div key={item.id} onClick={() => handleCategoryClick(item.id)} className="flex flex-col items-center cursor-pointer">
+                      {section.items.map(item => (
+                        <div
+                          key={item.id}
+                          onClick={() => handleCategoryClick(item.id)}
+                          className="flex flex-col items-center cursor-pointer"
+                        >
                           <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            <img 
+                              src={item.image} 
+                              alt={item.name} 
+                              className="w-full h-full object-cover" 
+                            />
                           </div>
                           <span className="text-xs font-medium text-gray-700 text-center max-w-16 leading-tight">
                             {item.name}
                           </span>
-                        </div>)}
+                        </div>
+                      ))}
                     </div>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default Categories;
