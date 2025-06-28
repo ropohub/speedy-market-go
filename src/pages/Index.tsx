@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
-import EthnicCollection from '../components/EthnicCollection';
+import BrandsOnDemand from '../components/BrandsOnDemand';
 import TopSellingRightNow from '../components/TopSellingRightNow';
 import TrendingRightNow from '../components/TrendingRightNow';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
@@ -224,8 +224,8 @@ const Index: React.FC = () => {
         {/* Trending Right Now Section */}
         <TrendingRightNow />
 
-        {/* Featured Brands Section */}
-        <EthnicCollection />
+        {/* Brands On Demand Section - Replaces Featured Brands */}
+        <BrandsOnDemand />
 
         {/* Top-Selling Right Now Section */}
         <TopSellingRightNow />
