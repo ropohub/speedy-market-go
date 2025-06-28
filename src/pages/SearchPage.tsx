@@ -26,22 +26,20 @@ const SearchPage: React.FC = () => {
     suggestion.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Recent searches (mock data)
-  const recentSearches = [
-    'summer dresses',
-    'running shoes',
-    'formal wear',
-    'casual tops'
-  ];
-
-  // Trending searches
+  // Updated trending searches with fashion-specific items
   const trendingSearches = [
-    'winter collection',
-    'party wear',
-    'office wear',
-    'ethnic dresses',
-    'sports shoes',
-    'handbags'
+    'mini dresses',
+    'oversized tee',
+    'bra',
+    'crop tops',
+    'skinny jeans',
+    'sneakers',
+    'handbags',
+    'maxi dress',
+    'polo shirt',
+    'cargo pants',
+    'tank tops',
+    'floral dress'
   ];
 
   // Expanded popular categories (4x4 grid)
@@ -124,27 +122,6 @@ const SearchPage: React.FC = () => {
 
       {/* Content */}
       <div className="p-3 space-y-4">
-        {/* Recent Searches */}
-        {recentSearches.length > 0 && (
-          <div>
-            <div className="flex items-center gap-1.5 mb-2">
-              <Clock className="w-3.5 h-3.5 text-gray-500" />
-              <h2 className="text-base font-semibold text-gray-900">Recent Searches</h2>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {recentSearches.map((search, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestionClick(search)}
-                  className="px-2.5 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs hover:bg-gray-200 transition-colors"
-                >
-                  {search}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Trending Searches */}
         <div>
           <div className="flex items-center gap-1.5 mb-2">
