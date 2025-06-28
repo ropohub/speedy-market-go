@@ -38,23 +38,24 @@ const AutoSlidingBanner: React.FC<AutoSlidingBannerProps> = ({
   const currentBanner = banners[currentIndex];
 
   return (
-    <div className="relative">
-      <div className="relative mx-4 mb-2 rounded-2xl overflow-hidden h-64 bg-gradient-to-r from-gray-900 to-gray-700">
-        <BannerImage 
-          image={currentBanner.image} 
-          alt="Banner" 
-        />
-        <BannerContent 
-          title={currentBanner.title}
-          subtitle={currentBanner.subtitle}
+    <div className="relative w-full h-full">
+      <BannerImage 
+        image={currentBanner.image} 
+        alt="Banner" 
+      />
+      <BannerContent 
+        title={currentBanner.title}
+        subtitle={currentBanner.subtitle}
+      />
+      
+      {/* Dots positioned at bottom */}
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+        <BannerDots 
+          totalBanners={banners.length}
+          currentIndex={currentIndex}
+          onDotClick={setCurrentIndex}
         />
       </div>
-
-      <BannerDots 
-        totalBanners={banners.length}
-        currentIndex={currentIndex}
-        onDotClick={setCurrentIndex}
-      />
     </div>
   );
 };
