@@ -105,14 +105,14 @@ const BrandsOnDemand: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Tiles Grid - 2 rows x 4 columns */}
+        {/* Brand Tiles Grid - 2 rows x 4 columns with square aspect ratio and gradients */}
         <div className="grid grid-cols-4 gap-3">
           {isLoading ? (
             // Loading skeleton - 8 tiles
             Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="aspect-square bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm animate-pulse"
+                className="aspect-square bg-gradient-to-br from-white/90 to-gray-100/80 backdrop-blur-sm rounded-2xl shadow-sm animate-pulse"
               />
             ))
           ) : error ? (
@@ -123,7 +123,7 @@ const BrandsOnDemand: React.FC = () => {
             allBrands.map((brand, index) => (
               <div
                 key={brand.name + index}
-                className="aspect-square bg-white/90 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group p-3 flex items-center justify-center"
+                className="aspect-square bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group p-3 flex items-center justify-center border border-white/50"
               >
                 {brand.imageUrl ? (
                   <img
@@ -154,6 +154,20 @@ const BrandsOnDemand: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Curvy line separator at the bottom */}
+      <div className="absolute -bottom-4 left-0 w-full h-8 overflow-hidden">
+        <svg
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          className="w-full h-full"
+        >
+          <path
+            d="M0,96L40,101.3C80,107,160,117,240,117.3C320,117,400,107,480,96C560,85,640,75,720,74.7C800,75,880,85,960,85.3C1040,85,1120,75,1160,69.3L1200,64V120H1160C1120,120,1040,120,960,120C880,120,800,120,720,120C640,120,560,120,480,120C400,120,320,120,240,120C160,120,80,120,40,120H0V96Z"
+            fill="white"
+          />
+        </svg>
       </div>
     </div>
   );

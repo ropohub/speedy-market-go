@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -198,23 +199,23 @@ const CategoryPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Category Cards Section - reduced size of scrollable cards */}
+          {/* Category Cards Section - updated to square shape with increased width */}
           <div className="px-4 pb-4">
             <div className="max-w-md mx-auto">
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categoryItems.map((item, index) => (
                   <div 
                     key={index} 
                     className="flex flex-col items-center flex-shrink-0 cursor-pointer group"
                   >
-                    <div className="w-12 h-16 rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
+                    <div className="w-16 aspect-square rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
                       <img 
                         src={item.image} 
                         alt={item.name} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                       />
                     </div>
-                    <span className="text-xs text-gray-900 mt-1 text-center font-medium leading-tight w-12">
+                    <span className="text-xs text-gray-900 mt-1 text-center font-medium leading-tight w-16">
                       {item.name}
                     </span>
                   </div>
