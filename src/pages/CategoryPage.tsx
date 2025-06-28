@@ -3,6 +3,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CategoryHeader from '../components/category/CategoryHeader';
+import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import { categoryData } from '../data/categoryData';
 
 const CategoryPage: React.FC = () => {
@@ -20,6 +21,25 @@ const CategoryPage: React.FC = () => {
     { name: 'Dresses', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=150&h=200&fit=crop' },
   ];
 
+  // Auto-sliding banners data
+  const slidingBanners = [
+    {
+      title: "NO TIME FOR LAUNDRY?",
+      subtitle: "Shop Basics In Just A Click.",
+      image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=300&fit=crop"
+    },
+    {
+      title: "NEW ARRIVALS",
+      subtitle: "Discover Latest Fashion Trends",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop"
+    },
+    {
+      title: "SUMMER COLLECTION",
+      subtitle: "Stay Cool & Stylish",
+      image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=300&fit=crop"
+    }
+  ];
+
   return (
     <Layout>
       <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
@@ -27,10 +47,10 @@ const CategoryPage: React.FC = () => {
         
         {/* Main content with top padding for fixed header */}
         <div className="pt-16">
-          {/* Hero Section - Enhanced with intense gradient and 3D effects like home page */}
+          {/* Hero Banner Section with 3D Effects */}
           <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Ultra-thin transparent border container with more rounded edges and enhanced effects */}
+              {/* Ultra-thin transparent border container with 3D effects */}
               <div 
                 className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm"
                 style={{
@@ -77,72 +97,25 @@ const CategoryPage: React.FC = () => {
                 />
                 
                 <div className="bg-white rounded-2xl overflow-hidden relative">
-                  {/* Top promotional text - smaller size */}
-                  <div className="text-center p-3">
-                    <h1 className="text-lg font-bold text-gray-900 mb-1">INTRODUCING</h1>
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      <img 
-                        src="/lovable-uploads/5b5065a5-f1ae-4a07-b255-830e99cd26fc.png" 
-                        alt="Dripzy Logo" 
-                        className="w-6 h-6 object-contain" 
-                      />
-                      <span className="text-lg font-bold text-pink-500">MEOW</span>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-900">Delivery Starting From</p>
-                      <p className="text-lg font-bold text-gray-900">30 MINUTES</p>
-                    </div>
-                    <p className="text-xs text-gray-700 mt-1">
-                      15K Styles | Widest Fashion Range | Easy Returns & Exchange
-                    </p>
-                  </div>
-
-                  {/* Hero Banner Card - smaller size */}
-                  <div className="bg-gradient-to-r from-blue-100 to-blue-200 rounded-3xl p-4 m-3 mb-3 relative overflow-hidden">
-                    <div className="flex items-center justify-between">
-                      {/* Left side - Model image */}
-                      <div className="w-24 h-32 flex-shrink-0">
-                        <img 
-                          src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=300&fit=crop" 
-                          alt="Fashion Model" 
-                          className="w-full h-full object-cover rounded-2xl" 
-                        />
-                      </div>
-                      
-                      {/* Right side - Text content */}
-                      <div className="flex-1 pl-3 text-right">
-                        <h2 className="text-sm font-bold text-gray-900 mb-1">NO TIME FOR LAUNDRY?</h2>
-                        <h3 className="text-lg font-bold text-blue-600 mb-3">
-                          Shop Basics In<br />Just A Click.
-                        </h3>
-                        <div className="mb-3">
-                          <p className="text-sm font-bold text-gray-900">Shop Daily</p>
-                          <p className="text-sm font-bold text-gray-900">Essentials</p>
-                        </div>
-                        <div className="flex justify-end">
-                          <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm">→</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Dots indicator */}
-                    <div className="flex justify-center gap-1 mt-3">
-                      {Array.from({ length: 7 }).map((_, index) => (
-                        <div 
-                          key={index} 
-                          className={`w-1.5 h-1.5 rounded-full ${index === 0 ? 'bg-gray-800' : 'bg-gray-400'}`} 
-                        />
-                      ))}
-                    </div>
+                  {/* Hero Banner using the uploaded image */}
+                  <div className="relative">
+                    <img 
+                      src="/lovable-uploads/1cec3785-d3cc-4a5d-a083-90b75fbb7503.png" 
+                      alt="Hero Banner" 
+                      className="w-full h-auto object-cover" 
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Category Cards Section - smaller size */}
+          {/* Auto-sliding Banners Section */}
+          <div className="px-4 py-2">
+            <AutoSlidingBanner banners={slidingBanners} autoSlideInterval={3000} />
+          </div>
+
+          {/* Category Cards Section */}
           <div className="px-4 pb-4">
             <div className="max-w-md mx-auto">
               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
