@@ -451,8 +451,8 @@ const Categories: React.FC = () => {
         {/* Use the same Header component as Home page */}
         <Header />
         
-        {/* Add top padding to account for fixed header */}
-        <div className="pt-28">
+        {/* Remove extra padding and space - adjust top padding to match header height exactly */}
+        <div className="pt-24">
           <div className="flex">
             {/* Vertical Sidebar - increased width */}
             <div className="w-32 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
@@ -484,8 +484,8 @@ const Categories: React.FC = () => {
 
             {/* Main Content */}
             <div className="flex-1 bg-white/70 backdrop-blur-sm overflow-x-hidden">
-              {/* Dynamic Content Based on Selected Category */}
-              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm pt-4">
+              {/* Dynamic Content Based on Selected Category - remove extra padding */}
+              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm pt-2">
                 {renderContent()}
               </div>
             </div>
