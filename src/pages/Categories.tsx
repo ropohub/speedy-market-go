@@ -68,8 +68,8 @@ const Categories: React.FC = () => {
         
         {/* Main content - no space between header and content */}
         <div className="pt-24">
-          <div className="flex">
-            {/* Vertical Sidebar - increased width and unified theme */}
+          <div className="flex gap-2">
+            {/* Vertical Sidebar - reduced gap */}
             <div className="w-24 min-h-screen">
               <div className="py-4 space-y-4">
                 {sidebarCategories.map((category) => (
@@ -97,10 +97,10 @@ const Categories: React.FC = () => {
               </div>
             </div>
 
-            {/* Main Content - unified with same gradient background */}
+            {/* Main Content - reduced gap */}
             <div className="flex-1 overflow-x-hidden">
-              {/* Fashion Header with Banner */}
-              <div className="p-4">
+              {/* Fashion Header with Banner - reduced padding */}
+              <div className="p-2">
                 <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-white/30">
                   <div className="flex justify-between items-center">
                     <div>
@@ -118,11 +118,11 @@ const Categories: React.FC = () => {
                 </div>
               </div>
 
-              {/* Main Content Container */}
-              <div className="bg-white/30 backdrop-blur-sm rounded-t-3xl mx-4 shadow-sm border border-white/20">
-                {/* In the Spotlight Section */}
-                <div className="px-4 py-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">In the Spotlight</h3>
+              {/* Main Content Container - reduced margin */}
+              <div className="bg-white/30 backdrop-blur-sm rounded-t-3xl mx-2 shadow-sm border border-white/20">
+                {/* In the Spotlight Section - reduced padding */}
+                <div className="px-4 py-3">
+                  <h3 className="text-sm font-bold text-gray-900 mb-3">In the Spotlight</h3>
                   <div className="flex gap-4 overflow-x-auto pb-2">
                     {spotlightItems.map((item) => (
                       <div
@@ -130,14 +130,14 @@ const Categories: React.FC = () => {
                         onClick={() => handleCategoryClick(item.id)}
                         className="flex flex-col items-center cursor-pointer flex-shrink-0"
                       >
-                        <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
+                        <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                           <img
                             src={item.image}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="text-xs font-medium text-gray-700 text-center max-w-20 leading-tight">
+                        <span className="text-xs font-medium text-gray-700 text-center max-w-16 leading-tight">
                           {item.name}
                         </span>
                       </div>
@@ -145,11 +145,11 @@ const Categories: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Top Trends Section */}
-                <div className="px-4 py-4">
+                {/* Top Trends Section - reduced padding */}
+                <div className="px-4 py-2">
                   <div className="flex gap-4 justify-center">
                     <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
+                      <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                         <img
                           src="https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=150&h=150&fit=crop"
                           alt="Top Trends Him"
@@ -163,24 +163,24 @@ const Categories: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Trends in Focus Section */}
-                <div className="px-4 py-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Trends in focus</h3>
-                  <div className="grid grid-cols-3 gap-4">
+                {/* Trends in Focus Section - reduced padding */}
+                <div className="px-4 py-3">
+                  <h3 className="text-sm font-bold text-gray-900 mb-3">Trends in focus</h3>
+                  <div className="grid grid-cols-3 gap-3">
                     {trendsInFocus.map((item) => (
                       <div
                         key={item.id}
                         onClick={() => handleCategoryClick(item.id)}
                         className="flex flex-col items-center cursor-pointer"
                       >
-                        <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
+                        <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                           <img
                             src={item.image}
                             alt={item.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="text-xs font-medium text-gray-700 text-center max-w-20 leading-tight">
+                        <span className="text-xs font-medium text-gray-700 text-center max-w-16 leading-tight">
                           {item.name}
                         </span>
                       </div>
