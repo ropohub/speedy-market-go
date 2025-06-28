@@ -168,20 +168,20 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = ({ category }) => 
     <div 
       className="relative py-8 overflow-hidden"
       style={{
-        backgroundImage: 'url(/lovable-uploads/3e0072ef-aa44-4339-87df-0ff671c2f3b2.png)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=400&fit=crop)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
       {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black bg-opacity-20" />
+      <div className="absolute inset-0 bg-black bg-opacity-30" />
       
       {/* Content container */}
       <div className="relative z-10 px-4 max-w-md mx-auto">
         {/* Section heading - above the products */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+          <h2 className="text-2xl font-bold text-white leading-tight drop-shadow-lg">
             Products You Can't Miss
           </h2>
         </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { brandService } from '../api/brandClient';
@@ -144,15 +143,15 @@ const EthnicCollection: React.FC = () => {
             <span className="text-xs text-orange-600">Using fallback data</span>
           )}
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {brands.map((brand) => (
             <div
               key={brand.id}
               onClick={() => handleBrandClick(brand.id)}
-              className="flex-shrink-0 w-64 h-96 cursor-pointer group"
+              className="flex-shrink-0 w-40 h-56 cursor-pointer group"
             >
-              {/* Card matching the exact reference design */}
-              <div className="relative w-full h-full bg-white rounded-3xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 border-4 border-green-500">
+              {/* Smaller card - reduced from w-64 h-96 to w-40 h-56 */}
+              <div className="relative w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 border-2 border-green-500">
                 {/* Background image */}
                 <div className="absolute inset-0">
                   <img 
@@ -165,25 +164,25 @@ const EthnicCollection: React.FC = () => {
                 </div>
                 
                 {/* Content overlay */}
-                <div className="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+                <div className="relative z-10 p-3 h-full flex flex-col justify-between text-white">
                   {/* Top content - Offer text */}
-                  <div className="pt-4">
-                    <h3 className="text-3xl font-bold mb-2 text-white drop-shadow-lg">{brand.offerText}</h3>
-                    <p className="text-lg text-white opacity-90 drop-shadow-md">{brand.description}</p>
+                  <div className="pt-2">
+                    <h3 className="text-lg font-bold mb-1 text-white drop-shadow-lg">{brand.offerText}</h3>
+                    <p className="text-sm text-white opacity-90 drop-shadow-md">{brand.description}</p>
                   </div>
                   
                   {/* Bottom content - Brand logos area */}
-                  <div className="bg-white rounded-2xl p-4 flex items-center justify-center gap-4 min-h-[80px]">
+                  <div className="bg-white rounded-xl p-2 flex items-center justify-center gap-2 min-h-[50px]">
                     {brand.brandLogo ? (
                       <div className="flex items-center justify-center w-full">
                         <img 
                           src={brand.brandLogo} 
                           alt={brand.name}
-                          className="max-h-12 max-w-full object-contain"
+                          className="max-h-8 max-w-full object-contain"
                         />
                       </div>
                     ) : (
-                      <span className="text-gray-900 font-bold text-lg">{brand.name}</span>
+                      <span className="text-gray-900 font-bold text-sm">{brand.name}</span>
                     )}
                   </div>
                 </div>
