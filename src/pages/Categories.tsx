@@ -15,21 +15,23 @@ const Categories: React.FC = () => {
     navigate(`/products/${selectedCategory}/${categoryId}`);
   };
 
-  // Vertical sidebar categories
+  // Vertical sidebar categories with increased width and custom images
   const sidebarCategories = [{
     id: 'women',
     name: "Women's\nWear",
     icon: '👗',
     bgColor: 'bg-pink-100',
     textColor: 'text-pink-600',
-    borderColor: 'border-pink-200'
+    borderColor: 'border-pink-200',
+    image: '/lovable-uploads/048b4d5d-3911-4fee-9d33-1b49a08709cd.png'
   }, {
     id: 'men',
     name: "Men's\nWear",
     icon: '👔',
     bgColor: 'bg-blue-100',
     textColor: 'text-blue-600',
-    borderColor: 'border-blue-200'
+    borderColor: 'border-blue-200',
+    image: '/lovable-uploads/051f17ef-b214-4367-baf2-6a8cdf323caf.png'
   }, {
     id: 'footwear',
     name: 'Footwear',
@@ -269,8 +271,8 @@ const Categories: React.FC = () => {
         {/* Main content - small padding top for space below header */}
         <div className="pt-20">
           <div className="flex gap-0">
-            {/* Vertical Sidebar - same width */}
-            <div className="w-20 min-h-screen">
+            {/* Vertical Sidebar - increased width */}
+            <div className="w-28 min-h-screen">
               <div className="py-2 space-y-4">
                 {sidebarCategories.map(category => (
                   <div
@@ -283,7 +285,18 @@ const Categories: React.FC = () => {
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
-                      <div className="text-2xl mb-1">{category.icon}</div>
+                      {/* Use custom image for women and men, icon for others */}
+                      {category.image ? (
+                        <div className="w-8 h-8 mb-1 rounded-full overflow-hidden">
+                          <img 
+                            src={category.image} 
+                            alt={category.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="text-2xl mb-1">{category.icon}</div>
+                      )}
                       <span 
                         className={`text-xs font-medium text-center leading-tight ${
                           selectedCategory === category.id ? category.textColor : 'text-gray-600'
