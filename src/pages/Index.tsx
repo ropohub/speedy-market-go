@@ -221,16 +221,14 @@ const Index: React.FC = () => {
           <YellowBanner />
         </div>
 
-        {/* Trending Right Now Section */}
-        <TrendingRightNow />
-
-        {/* Gradient Transition Section */}
+        {/* Trending Right Now Section with gradient transition */}
         <div 
-          className="h-16" 
           style={{
-            background: 'linear-gradient(180deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
+            background: 'linear-gradient(180deg, #FFEFE4 0%, #FFD8B1 20%, #FDE8E8 60%, #F3E8FF 100%)'
           }}
-        />
+        >
+          <TrendingRightNow />
+        </div>
 
         {/* Brands On Demand Section - Replaces Featured Brands */}
         <BrandsOnDemand />
