@@ -224,6 +224,14 @@ const Index: React.FC = () => {
         {/* Trending Right Now Section */}
         <TrendingRightNow />
 
+        {/* Gradient Transition Section */}
+        <div 
+          className="h-16" 
+          style={{
+            background: 'linear-gradient(180deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
+          }}
+        />
+
         {/* Brands On Demand Section - Replaces Featured Brands */}
         <BrandsOnDemand />
 
