@@ -5,6 +5,7 @@ import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import EthnicCollection from '../components/EthnicCollection';
 import TopSellingRightNow from '../components/TopSellingRightNow';
+import TrendingRightNow from '../components/TrendingRightNow';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
 
@@ -219,6 +220,9 @@ const Index: React.FC = () => {
           {/* Yellow Banner */}
           <YellowBanner />
         </div>
+
+        {/* Trending Right Now Section */}
+        <TrendingRightNow />
 
         {/* Featured Brands Section */}
         <EthnicCollection />
