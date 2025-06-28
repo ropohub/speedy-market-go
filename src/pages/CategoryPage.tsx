@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CategoryHeader from '../components/category/CategoryHeader';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
+import FeaturedCategories from '../components/FeaturedCategories';
 import { categoryData } from '../data/categoryData';
 
 const CategoryPage: React.FC = () => {
@@ -37,6 +38,82 @@ const CategoryPage: React.FC = () => {
       title: "SUMMER COLLECTION",
       subtitle: "Stay Cool & Stylish",
       image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=300&fit=crop"
+    }
+  ];
+
+  // Featured categories data for 4x3 grid
+  const featuredCategories = [
+    {
+      id: 'dresses',
+      name: 'Dresses',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop',
+      collection: 'dresses'
+    },
+    {
+      id: 'tops',
+      name: 'Tops',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      collection: 'tops'
+    },
+    {
+      id: 'jeans',
+      name: 'Jeans',
+      image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=400&fit=crop',
+      collection: 'jeans'
+    },
+    {
+      id: 'shoes',
+      name: 'Shoes',
+      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=400&fit=crop',
+      collection: 'shoes'
+    },
+    {
+      id: 'bags',
+      name: 'Bags',
+      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=400&fit=crop',
+      collection: 'bags'
+    },
+    {
+      id: 'accessories',
+      name: 'Accessories',
+      image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=300&h=400&fit=crop',
+      collection: 'accessories'
+    },
+    {
+      id: 'activewear',
+      name: 'Activewear',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      collection: 'activewear'
+    },
+    {
+      id: 'ethnic',
+      name: 'Ethnic Wear',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      collection: 'ethnic-wear'
+    },
+    {
+      id: 'lingerie',
+      name: 'Lingerie',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      collection: 'lingerie'
+    },
+    {
+      id: 'winterwear',
+      name: 'Winter Wear',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop',
+      collection: 'winter-wear'
+    },
+    {
+      id: 'sleepwear',
+      name: 'Sleep Wear',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      collection: 'sleepwear'
+    },
+    {
+      id: 'swimwear',
+      name: 'Swimwear',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      collection: 'swimwear'
     }
   ];
 
@@ -97,10 +174,10 @@ const CategoryPage: React.FC = () => {
                 />
                 
                 <div className="bg-white rounded-2xl overflow-hidden relative">
-                  {/* Hero Banner using the uploaded image */}
+                  {/* Hero Banner using the new uploaded image */}
                   <div className="relative">
                     <img 
-                      src="/lovable-uploads/1cec3785-d3cc-4a5d-a083-90b75fbb7503.png" 
+                      src="/lovable-uploads/f97d0699-d478-48c9-ae97-a3fdf89b8fd7.png" 
                       alt="Hero Banner" 
                       className="w-full h-auto object-cover" 
                     />
@@ -138,6 +215,11 @@ const CategoryPage: React.FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Featured Categories Section */}
+          <div className="bg-white">
+            <FeaturedCategories categories={featuredCategories} />
           </div>
         </div>
       </div>
