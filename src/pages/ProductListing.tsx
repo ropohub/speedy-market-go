@@ -1,10 +1,8 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import NavigationBar from '../components/NavigationBar';
-import FilterBar from '../components/FilterBar';
 import ProductGrid from '../components/ProductGrid';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
@@ -304,7 +302,6 @@ const ProductListPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <NavigationBar />
-      <FilterBar />
       <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
       
       {/* This invisible div will trigger loading more products */}
