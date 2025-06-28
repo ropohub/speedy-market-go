@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -12,6 +11,28 @@ const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
   
   const currentCategory = categoryData[categoryName || 'women'] || categoryData.women;
+
+  // Category-specific gradient backgrounds
+  const getGradientBackground = (category: string) => {
+    switch(category?.toLowerCase()) {
+      case 'women':
+        return 'linear-gradient(135deg, #F3E8FF 0%, #E879F9 30%, #C084FC 60%, #A855F7 100%)';
+      case 'men':
+        return 'linear-gradient(135deg, #DBEAFE 0%, #3B82F6 30%, #1D4ED8 60%, #1E40AF 100%)';
+      case 'beauty':
+        return 'linear-gradient(135deg, #FECACA 0%, #F87171 30%, #EF4444 60%, #DC2626 100%)';
+      case 'accessories':
+        return 'linear-gradient(135deg, #FEF3C7 0%, #F59E0B 30%, #D97706 60%, #B45309 100%)';
+      case 'footwear':
+        return 'linear-gradient(135deg, #D1FAE5 0%, #10B981 30%, #059669 60%, #047857 100%)';
+      case 'home':
+        return 'linear-gradient(135deg, #FEE2E2 0%, #FB7185 30%, #E11D48 60%, #BE185D 100%)';
+      case 'kids':
+        return 'linear-gradient(135deg, #FFEDD5 0%, #FB923C 30%, #EA580C 60%, #C2410C 100%)';
+      default:
+        return 'linear-gradient(135deg, #F3E8FF 0%, #E879F9 30%, #C084FC 60%, #A855F7 100%)';
+    }
+  };
 
   // Category items for the bottom section - added 6 more cards
   const categoryItems = [
@@ -127,7 +148,7 @@ const CategoryPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 50%, #FFB3BA 100%)'}}>
+      <div className="min-h-screen" style={{background: getGradientBackground(categoryName || 'women')}}>
         <CategoryHeader title={currentCategory.title} />
         
         {/* Main content with top padding for fixed header - reduced padding */}
