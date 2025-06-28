@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, ChevronDown } from 'lucide-react';
 import SearchBarWithLogo from './header/SearchBarWithLogo';
 import NotificationIconWithBadge from './header/NotificationIconWithBadge';
-import WishlistIcon from './header/WishlistIcon';
 import CartIcon from './header/CartIcon';
 
 const Header: React.FC = () => {
@@ -31,10 +30,9 @@ const Header: React.FC = () => {
           <SearchBarWithLogo />
         </div>
         
-        {/* Right side icons */}
+        {/* Right side icons - removed WishlistIcon */}
         <div className="flex items-center gap-1">
           <NotificationIconWithBadge badgeCount={2} />
-          <WishlistIcon />
           <CartIcon />
         </div>
       </div>
@@ -43,3 +41,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
