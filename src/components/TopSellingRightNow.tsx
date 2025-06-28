@@ -44,39 +44,42 @@ const TopSellingRightNow: React.FC = () => {
   return (
     <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
       <div className="max-w-md mx-auto">
-        {/* Topic Heading */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Top-Selling Right Now</h2>
-          <p className="text-sm text-gray-600">Must-Haves Coming Your Way</p>
-        </div>
+        {/* Single Row Layout - Heading Left, Cards Right */}
+        <div className="flex items-center gap-4">
+          {/* Left Side - Heading */}
+          <div className="flex-shrink-0">
+            <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">Top-Selling</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">Right Now</h2>
+            <p className="text-xs text-gray-600 mb-1">Must-Haves</p>
+            <p className="text-xs text-gray-600">Coming Your Way</p>
+            <ChevronRight className="text-gray-400 w-5 h-5 mt-2" />
+          </div>
 
-        {/* Horizontal Cards Layout */}
-        <div className="grid grid-cols-2 gap-4">
-          {topSellingItems.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => handleItemClick(item)}
-              className="cursor-pointer group"
-            >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 p-4">
-                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-gray-50">
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                  />
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-semibold text-gray-900 leading-tight">
-                    {item.name}
-                  </p>
-                  <p className="text-xs text-orange-600 font-medium mt-1">
-                    {item.category}
-                  </p>
+          {/* Right Side - Horizontally Scrollable Small Cards */}
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide flex-1">
+            {topSellingItems.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => handleItemClick(item)}
+                className="flex-shrink-0 cursor-pointer group"
+              >
+                <div className="bg-white rounded-xl overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 p-2 w-20">
+                  <div className="w-full h-16 rounded-lg overflow-hidden mb-2 bg-gray-50">
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-gray-900 leading-tight line-clamp-2">
+                      {item.name}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
