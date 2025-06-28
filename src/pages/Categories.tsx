@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -99,7 +98,7 @@ const Categories: React.FC = () => {
       skincare: [
         { id: 'moisturizer', name: 'Moisturizer', image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=150&h=150&fit=crop' },
         { id: 'cleanser', name: 'Cleanser', image: 'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=150&h=150&fit=crop' },
-        { id: 'serum', name: 'Serum', image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=150&h=150&fit=crop' }
+        { id: 'serum', name: 'Serum', image: 'https://images.unsplash.com/photo-1602874801006-98cc0c840850?w=150&h=150&fit=crop' }
       ]
     },
     kids: {
@@ -446,19 +445,18 @@ const Categories: React.FC = () => {
 
   return (
     <Layout>
+      {/* Unified gradient background throughout the entire page */}
       <div className="min-h-screen" style={{
-        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
+        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 50%, #FFB3D1 70%, #F3E8FF 100%)'
       }}>
         {/* Header */}
         <Header />
         
-        {/* No space between header and content - removed pt-28 */}
+        {/* Main content - no space between header and content */}
         <div className="pt-24">
           <div className="flex">
-            {/* Vertical Sidebar with gradient theme */}
-            <div className="w-20 min-h-screen shadow-sm" style={{
-              background: 'linear-gradient(180deg, rgba(255,239,228,0.9) 0%, rgba(255,216,177,0.8) 30%, rgba(253,232,232,0.8) 70%, rgba(243,232,255,0.9) 100%)'
-            }}>
+            {/* Vertical Sidebar - increased width and unified theme */}
+            <div className="w-24 min-h-screen">
               <div className="py-4 space-y-4">
                 {sidebarCategories.map((category) => (
                   <div
@@ -485,13 +483,11 @@ const Categories: React.FC = () => {
               </div>
             </div>
 
-            {/* Main Content with gradient theme */}
-            <div className="flex-1 overflow-x-hidden" style={{
-              background: 'linear-gradient(135deg, rgba(255,239,228,0.6) 0%, rgba(255,216,177,0.5) 30%, rgba(253,232,232,0.5) 70%, rgba(243,232,255,0.6) 100%)'
-            }}>
-              {/* Banner with pink accent */}
+            {/* Main Content - unified with same gradient background */}
+            <div className="flex-1 overflow-x-hidden">
+              {/* Banner - unified styling */}
               <div className="p-4">
-                <div className="bg-gradient-to-r from-purple-100/90 to-pink-200/90 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-pink-100/50">
+                <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-white/30">
                   <div className="flex justify-between items-center">
                     <div>
                       <h2 className="text-lg font-bold text-purple-800 mb-1">{currentContent.banner.title}</h2>
@@ -508,10 +504,8 @@ const Categories: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dynamic Content with gradient background */}
-              <div className="backdrop-blur-sm rounded-t-3xl shadow-sm" style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,240,245,0.4) 50%, rgba(255,228,225,0.4) 100%)'
-              }}>
+              {/* Dynamic Content - unified background */}
+              <div className="bg-white/30 backdrop-blur-sm rounded-t-3xl mx-4 shadow-sm border border-white/20">
                 {renderContent()}
               </div>
             </div>
