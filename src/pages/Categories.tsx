@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -456,7 +455,7 @@ const Categories: React.FC = () => {
         <div className="pt-28">
           <div className="flex">
             {/* Vertical Sidebar - increased width */}
-            <div className="w-28 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
+            <div className="w-32 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
               <div className="py-4 space-y-4">
                 {sidebarCategories.map((category) => (
                   <div
@@ -485,27 +484,8 @@ const Categories: React.FC = () => {
 
             {/* Main Content */}
             <div className="flex-1 bg-white/70 backdrop-blur-sm overflow-x-hidden">
-              {/* Banner */}
-              <div className="p-4">
-                <div className="bg-gradient-to-r from-purple-100/80 to-purple-200/80 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h2 className="text-sm font-bold text-purple-800 mb-1">{currentContent.banner.title}</h2>
-                    </div>
-                    <div className="flex items-center">
-                      <img
-                        src={currentContent.banner.image}
-                        alt="Fashion"
-                        className="w-12 h-12 rounded-lg object-cover mr-2 shadow-sm"
-                      />
-                      <ChevronRight className="w-4 h-4 text-purple-600" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Dynamic Content Based on Selected Category */}
-              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm">
+              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm pt-4">
                 {renderContent()}
               </div>
             </div>
