@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,7 +7,7 @@ import ProductGrid from '../components/ProductGrid';
 import { Skeleton } from '../components/ui/skeleton';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
-const SHOPIFY_API_URL = 'https://dripzyy.com/api/2024-04/graphql.json';
+const SHOPIFY_API_URL = 'https://dripzyy.com/admin/api/2024-04/graphql.json';
 
 const searchProductsQuery = `
   query SearchProducts($searchQuery: String!) {
