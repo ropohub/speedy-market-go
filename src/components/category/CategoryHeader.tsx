@@ -2,7 +2,8 @@
 import React from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Heart, ShoppingBag } from 'lucide-react';
+import { Search, ShoppingBag } from 'lucide-react';
+import NotificationIconWithBadge from '../header/NotificationIconWithBadge';
 
 interface CategoryHeaderProps {
   title: string;
@@ -34,13 +35,13 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
         </div>
         
         {/* Right side - Icons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Search className="w-6 h-6 text-gray-900" />
-          <Heart className="w-6 h-6 text-gray-900" />
+          <NotificationIconWithBadge badgeCount={2} />
           <div className="relative">
             <ShoppingBag className="w-6 h-6 text-gray-900" />
             <div className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              5
+              0
             </div>
           </div>
         </div>

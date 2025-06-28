@@ -30,7 +30,7 @@ const Header: React.FC = () => {
           <SearchBarWithLogo />
         </div>
         
-        {/* Right side icons - removed WishlistIcon */}
+        {/* Right side icons */}
         <div className="flex items-center gap-1">
           <NotificationIconWithBadge badgeCount={2} />
           <CartIcon />
@@ -41,4 +41,3 @@ const Header: React.FC = () => {
 };
 
 export default Header;
-
