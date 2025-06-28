@@ -120,10 +120,10 @@ const TrendingRightNow: React.FC = () => {
           />
         </div>
 
-        {/* Categories Grid - Two Scrollable Rows */}
+        {/* Categories Grid - Two Scrollable Rows with hidden scrollbars */}
         <div className="space-y-4">
           {/* First Row */}
-          <ScrollArea className="w-full">
+          <div className="w-full overflow-x-auto scrollbar-hide">
             <div className="flex gap-3 pb-2">
               {firstRowCategories.map((category) => (
                 <div
@@ -144,11 +144,10 @@ const TrendingRightNow: React.FC = () => {
                 </div>
               ))}
             </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          </div>
 
           {/* Second Row */}
-          <ScrollArea className="w-full">
+          <div className="w-full overflow-x-auto scrollbar-hide">
             <div className="flex gap-3 pb-2">
               {secondRowCategories.map((category) => (
                 <div
@@ -169,8 +168,7 @@ const TrendingRightNow: React.FC = () => {
                 </div>
               ))}
             </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          </div>
         </div>
       </div>
     </div>
