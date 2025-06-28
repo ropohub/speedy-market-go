@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
+import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import { categories } from '../data/mockData';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, MapPin, ChevronDown, ShoppingCart } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 const Categories: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('women');
@@ -444,88 +445,69 @@ const Categories: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-50 min-h-screen overflow-x-hidden">
-        {/* Top Bar - Matching Home Page Style */}
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-black" />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1 py-0">
-                  <span className="text-zinc-950 text-lg font-bold">Home</span>
-                  <ChevronDown className="w-4 h-4 text-black" />
-                </div>
-                <span className="opacity-90 text-zinc-950 font-semibold text-xs">Flat 103, house 288, Medicity, Islam...</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <ShoppingCart className="w-5 h-5 text-black" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-              </div>
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">B</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Search Bar - Using the same SearchBar component as homepage */}
-        <SearchBar />
-
-        <div className="flex">
-          {/* Vertical Sidebar */}
-          <div className="w-20 bg-white border-r border-gray-200 min-h-screen">
-            <div className="py-4 space-y-4">
-              {sidebarCategories.map((category) => (
-                <div
-                  key={category.id}
-                  onClick={() => handleSidebarCategoryChange(category.id)}
-                  className={`mx-2 cursor-pointer transition-all ${
-                    selectedCategory === category.id 
-                      ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
-                      : 'hover:bg-gray-50'
-                  } rounded-xl p-2`}
-                >
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl mb-1">{category.icon}</div>
-                    <span className={`text-xs font-medium text-center leading-tight ${
+      <div className="min-h-screen" style={{
+        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
+      }}>
+        {/* Use the same Header component as Home page */}
+        <Header />
+        
+        {/* Add top padding to account for fixed header */}
+        <div className="pt-28">
+          <div className="flex">
+            {/* Vertical Sidebar */}
+            <div className="w-20 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
+              <div className="py-4 space-y-4">
+                {sidebarCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    onClick={() => handleSidebarCategoryChange(category.id)}
+                    className={`mx-2 cursor-pointer transition-all ${
                       selectedCategory === category.id 
-                        ? category.textColor 
-                        : 'text-gray-600'
-                    }`} style={{ whiteSpace: 'pre-line' }}>
-                      {category.name}
-                    </span>
+                        ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
+                        : 'hover:bg-gray-50'
+                    } rounded-xl p-2`}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="text-2xl mb-1">{category.icon}</div>
+                      <span className={`text-xs font-medium text-center leading-tight ${
+                        selectedCategory === category.id 
+                          ? category.textColor 
+                          : 'text-gray-600'
+                      }`} style={{ whiteSpace: 'pre-line' }}>
+                        {category.name}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 bg-white overflow-x-hidden">
-            {/* Banner */}
-            <div className="p-4">
-              <div className="bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl p-4 relative overflow-hidden">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-lg font-bold text-purple-800 mb-1">{currentContent.banner.title}</h2>
-                  </div>
-                  <div className="flex items-center">
-                    <img
-                      src={currentContent.banner.image}
-                      alt="Fashion"
-                      className="w-16 h-16 rounded-lg object-cover mr-2"
-                    />
-                    <ChevronRight className="w-5 h-5 text-purple-600" />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Dynamic Content Based on Selected Category */}
-            {renderContent()}
+            {/* Main Content */}
+            <div className="flex-1 bg-white/70 backdrop-blur-sm overflow-x-hidden">
+              {/* Banner */}
+              <div className="p-4">
+                <div className="bg-gradient-to-r from-purple-100/80 to-purple-200/80 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-lg font-bold text-purple-800 mb-1">{currentContent.banner.title}</h2>
+                    </div>
+                    <div className="flex items-center">
+                      <img
+                        src={currentContent.banner.image}
+                        alt="Fashion"
+                        className="w-16 h-16 rounded-lg object-cover mr-2 shadow-sm"
+                      />
+                      <ChevronRight className="w-5 h-5 text-purple-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dynamic Content Based on Selected Category */}
+              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm">
+                {renderContent()}
+              </div>
+            </div>
           </div>
         </div>
       </div>
