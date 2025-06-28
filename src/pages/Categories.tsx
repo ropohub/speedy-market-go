@@ -129,8 +129,8 @@ const Categories: React.FC = () => {
         {/* Header */}
         <Header />
         
-        {/* Main content - moved closer to header with minimal gap */}
-        <div className="pt-16">
+        {/* Main content - small padding top for space below header */}
+        <div className="pt-20">
           <div className="flex gap-1">
             {/* Vertical Sidebar - same width */}
             <div className="w-20 min-h-screen">
@@ -161,9 +161,9 @@ const Categories: React.FC = () => {
               </div>
             </div>
 
-            {/* Main Content - moved closer to sidebar */}
+            {/* Main Content */}
             <div className="flex-1 overflow-x-hidden">
-              {/* Fashion Header with Banner - no padding top */}
+              {/* Fashion Header with Banner */}
               <div className="px-2">
                 <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-white/30">
                   <div className="flex justify-between items-center">
@@ -182,7 +182,7 @@ const Categories: React.FC = () => {
                 </div>
               </div>
 
-              {/* Main Content Container - minimal margin */}
+              {/* Main Content Container */}
               <div className="bg-white/30 backdrop-blur-sm rounded-t-3xl mx-2 mt-1 shadow-sm border border-white/20">
                 {/* In the Spotlight Section */}
                 <div className="px-4 py-3">
