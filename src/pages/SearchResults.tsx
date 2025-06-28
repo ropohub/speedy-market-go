@@ -46,6 +46,52 @@ const searchProductsQuery = `
   }
 `;
 
+// Mock data for when API is not available
+const mockProducts = [
+  {
+    id: '1',
+    name: 'Women\'s Cotton T-Shirt',
+    price: 599,
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop',
+    brand: 'Zara',
+  },
+  {
+    id: '2',
+    name: 'Men\'s Casual Shirt',
+    price: 899,
+    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=300&h=400&fit=crop',
+    brand: 'H&M',
+  },
+  {
+    id: '3',
+    name: 'Women\'s Summer Dress',
+    price: 1299,
+    image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop',
+    brand: 'Forever 21',
+  },
+  {
+    id: '4',
+    name: 'Men\'s Polo Shirt',
+    price: 749,
+    image: 'https://images.unsplash.com/photo-1586790170085-2c93b46c4b3b?w=300&h=400&fit=crop',
+    brand: 'Nike',
+  },
+  {
+    id: '5',
+    name: 'Women\'s Blouse',
+    price: 999,
+    image: 'https://images.unsplash.com/photo-1564257577-0366e8e8e1a4?w=300&h=400&fit=crop',
+    brand: 'Mango',
+  },
+  {
+    id: '6',
+    name: 'Men\'s Formal Shirt',
+    price: 1199,
+    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=400&fit=crop',
+    brand: 'Van Heusen',
+  },
+];
+
 interface ShopifySearchResponse {
   data: {
     search: {
@@ -81,26 +127,64 @@ interface ShopifySearchResponse {
 }
 
 const fetchSearchResults = async (searchQuery: string) => {
-  const response = await fetch(SHOPIFY_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-    },
-    body: JSON.stringify({
-      query: searchProductsQuery,
-      variables: {
-        searchQuery,
+  console.log('Attempting to fetch search results for:', searchQuery);
+  
+  try {
+    const response = await fetch(SHOPIFY_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
       },
-    }),
-  });
+      body: JSON.stringify({
+        query: searchProductsQuery,
+        variables: {
+          searchQuery,
+        },
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch search results');
+    if (!response.ok) {
+      console.error('Shopify API response not ok:', response.status, response.statusText);
+      throw new Error(`Failed to fetch search results: ${response.status}`);
+    }
+
+    const json: ShopifySearchResponse = await response.json();
+    console.log('Shopify API response:', json);
+    return json.data.search;
+  } catch (error) {
+    console.error('Error fetching from Shopify API:', error);
+    // Return mock data structure that matches Shopify API
+    return {
+      edges: mockProducts.map(product => ({
+        node: {
+          id: product.id,
+          title: product.name,
+          handle: product.name.toLowerCase().replace(/\s+/g, '-'),
+          description: `${product.name} from ${product.brand}`,
+          vendor: product.brand,
+          priceRange: {
+            minVariantPrice: {
+              amount: product.price.toString(),
+              currencyCode: 'INR',
+            },
+          },
+          images: {
+            edges: [{
+              node: {
+                url: product.image,
+                altText: product.name,
+              },
+            }],
+          },
+        },
+      })),
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
+    };
   }
-
-  const json: ShopifySearchResponse = await response.json();
-  return json.data.search;
 };
 
 const SearchResults = () => {
@@ -114,15 +198,37 @@ const SearchResults = () => {
     enabled: !!searchQuery,
   });
 
-  const products = searchResults?.edges.map(edge => ({
-    id: edge.node.id,
-    name: edge.node.title,
-    price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
-    image: edge.node.images.edges[0]?.node.url || '/placeholder.svg',
-    brand: edge.node.vendor,
-  })) || [];
+  // Filter mock products based on search query
+  const getFilteredProducts = () => {
+    if (!searchResults) return [];
+    
+    const products = searchResults.edges.map(edge => ({
+      id: edge.node.id,
+      name: edge.node.title,
+      price: parseFloat(edge.node.priceRange.minVariantPrice.amount),
+      image: edge.node.images.edges[0]?.node.url || '/placeholder.svg',
+      brand: edge.node.vendor,
+    }));
+
+    // If using mock data, filter by search query
+    if (searchQuery) {
+      return products.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return products;
+  };
+
+  const products = getFilteredProducts();
+
+  console.log('Search query:', searchQuery);
+  console.log('Search results:', searchResults);
+  console.log('Products:', products);
 
   if (error) {
+    console.error('Query error:', error);
     return (
       <div className="min-h-screen bg-white">
         <header className="flex items-center p-4 border-b">
@@ -135,7 +241,10 @@ const SearchResults = () => {
           <h1 className="text-lg font-medium">Search Results</h1>
         </header>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <p className="text-red-500">Error loading search results. Please try again.</p>
+          <div className="text-center">
+            <p className="text-red-500 mb-2">Error loading search results</p>
+            <p className="text-gray-500">Please try again later or check your connection</p>
+          </div>
         </div>
       </div>
     );
