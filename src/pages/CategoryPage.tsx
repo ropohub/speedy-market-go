@@ -130,10 +130,10 @@ const CategoryPage: React.FC = () => {
       <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 50%, #FFB3BA 100%)'}}>
         <CategoryHeader title={currentCategory.title} />
         
-        {/* Main content with top padding for fixed header */}
+        {/* Main content with top padding for fixed header - reduced padding */}
         <div className="pt-16">
-          {/* Hero Banner Section - matching exact home page size */}
-          <div className="px-4 py-2">
+          {/* Hero Banner Section - minimal space above */}
+          <div className="px-4 pt-1 pb-2">
             <div className="relative max-w-md mx-auto">
               {/* Ultra-thin transparent border container with 3D effects - matching home page */}
               <div 
@@ -192,30 +192,30 @@ const CategoryPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Auto-sliding Banners Section - removed gap with hero banner */}
+          {/* Auto-sliding Banners Section - reduced height by 10% */}
           <div className="px-4">
-            <div className="relative mx-2 mb-4 rounded-xl overflow-hidden h-50 bg-gradient-to-r from-gray-900 to-gray-700">
+            <div className="relative mx-2 mb-4 rounded-xl overflow-hidden h-44 bg-gradient-to-r from-gray-900 to-gray-700">
               <AutoSlidingBanner banners={slidingBanners} autoSlideInterval={3000} />
             </div>
           </div>
 
-          {/* Category Cards Section - updated to square shape with increased width */}
+          {/* Category Cards Section - smaller square cards */}
           <div className="px-4 pb-4">
             <div className="max-w-md mx-auto">
-              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
                 {categoryItems.map((item, index) => (
                   <div 
                     key={index} 
                     className="flex flex-col items-center flex-shrink-0 cursor-pointer group"
                   >
-                    <div className="w-16 aspect-square rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
+                    <div className="w-12 aspect-square rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
                       <img 
                         src={item.image} 
                         alt={item.name} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                       />
                     </div>
-                    <span className="text-xs text-gray-900 mt-1 text-center font-medium leading-tight w-16">
+                    <span className="text-xs text-gray-900 mt-1 text-center font-medium leading-tight w-12">
                       {item.name}
                     </span>
                   </div>

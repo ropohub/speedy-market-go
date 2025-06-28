@@ -105,8 +105,8 @@ const BrandsOnDemand: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Tiles Grid - 2 rows x 4 columns with square aspect ratio and gradients */}
-        <div className="grid grid-cols-4 gap-3">
+        {/* Brand Tiles Grid - 2 rows x 4 columns with perfect square aspect ratio and gradients */}
+        <div className="grid grid-cols-4 gap-2.5">
           {isLoading ? (
             // Loading skeleton - 8 tiles
             Array.from({ length: 8 }).map((_, index) => (
@@ -123,7 +123,7 @@ const BrandsOnDemand: React.FC = () => {
             allBrands.map((brand, index) => (
               <div
                 key={brand.name + index}
-                className="aspect-square bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group p-3 flex items-center justify-center border border-white/50"
+                className="aspect-square bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group p-2.5 flex items-center justify-center border border-white/50"
               >
                 {brand.imageUrl ? (
                   <img
