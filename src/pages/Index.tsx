@@ -55,6 +55,10 @@ const Index: React.FC = () => {
     navigate(`/category/${categoryName.toLowerCase()}`);
   };
 
+  const handleShopNowClick = () => {
+    navigate('/products');
+  };
+
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [{
     name: 'Women',
@@ -190,7 +194,10 @@ const Index: React.FC = () => {
                   <p className="text-gray-700 text-xs mb-0.5 font-semibold">
                     Top Styles & Delivered More Fast
                   </p>
-                  <button className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold">
+                  <button 
+                    onClick={handleShopNowClick}
+                    className="bg-white px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition-shadow border border-gray-200 text-xs text-zinc-950 font-semibold"
+                  >
                     SHOP NOW
                   </button>
                 </div>
