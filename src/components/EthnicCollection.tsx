@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { brandService } from '../api/brandClient';
@@ -122,6 +123,15 @@ const EthnicCollection: React.FC = () => {
               SHOP NOW
             </button>
           </div>
+
+          {/* Couple image - visible on mobile */}
+          <div className="md:hidden absolute right-4 top-4 bottom-4 w-32 flex items-center">
+            <img 
+              src="/lovable-uploads/cdd76210-ece1-48bb-983e-733973d49c1e.png" 
+              alt="Fashion Couple" 
+              className="w-full h-auto object-contain" 
+            />
+          </div>
         </div>
 
         {/* Models - Hidden on mobile for cleaner look */}
@@ -171,19 +181,9 @@ const EthnicCollection: React.FC = () => {
                     <p className="text-sm text-white opacity-90 drop-shadow-md">{brand.description}</p>
                   </div>
                   
-                  {/* Bottom content - Brand logos area */}
+                  {/* Bottom content - Brand name instead of logo */}
                   <div className="bg-white rounded-xl p-2 flex items-center justify-center gap-2 min-h-[50px]">
-                    {brand.brandLogo ? (
-                      <div className="flex items-center justify-center w-full">
-                        <img 
-                          src={brand.brandLogo} 
-                          alt={brand.name}
-                          className="max-h-8 max-w-full object-contain"
-                        />
-                      </div>
-                    ) : (
-                      <span className="text-gray-900 font-bold text-sm">{brand.name}</span>
-                    )}
+                    <span className="text-gray-900 font-bold text-sm text-center">{brand.name}</span>
                   </div>
                 </div>
               </div>
