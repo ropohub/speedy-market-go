@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { brandService } from '../api/brandClient';
@@ -20,14 +19,14 @@ const EthnicCollection: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Updated fallback brands with proper images and brand logos
+  // Updated fallback brands with 50% off instead of 70%
   const fallbackBrands: EthnicBrand[] = [
     {
       id: 'libas',
       name: 'Libas',
       image: '/lovable-uploads/1b68c23f-a105-429f-9612-6354761b88dc.png',
       backgroundColor: 'from-pink-400 to-pink-600',
-      offerText: 'MIN. 70% OFF',
+      offerText: 'MIN. 50% OFF',
       description: 'Festive Edge',
       brandLogo: '/lovable-uploads/0cfc2f94-4aca-4dd4-b34a-6af96f00f0dc.png'
     },
@@ -36,7 +35,7 @@ const EthnicCollection: React.FC = () => {
       name: 'DECATHLON',
       image: '/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png',
       backgroundColor: 'from-blue-400 to-blue-600',
-      offerText: 'UP TO 70% OFF',
+      offerText: 'UP TO 50% OFF',
       description: 'Active Essentials',
       brandLogo: '/lovable-uploads/0c28e3f9-0e1e-4129-a491-f0751e26c9f2.png'
     },

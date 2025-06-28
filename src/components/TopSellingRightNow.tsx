@@ -42,37 +42,39 @@ const TopSellingRightNow: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-pink-50 to-orange-50 py-6 px-4 mb-6">
+    <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
       <div className="max-w-md mx-auto">
-        {/* Header Section */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Top-Selling</h2>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Right Now</h2>
-            <p className="text-sm text-gray-600">Must-Haves</p>
-            <p className="text-sm text-gray-600">Coming Your Way</p>
-          </div>
-          <ChevronRight className="text-gray-400 w-8 h-8" />
+        {/* Topic Heading */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Top-Selling Right Now</h2>
+          <p className="text-sm text-gray-600">Must-Haves Coming Your Way</p>
         </div>
 
-        {/* Horizontally Scrollable Items */}
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+        {/* Horizontal Cards Layout */}
+        <div className="grid grid-cols-2 gap-4">
           {topSellingItems.map((item) => (
             <div
               key={item.id}
               onClick={() => handleItemClick(item)}
-              className="flex-shrink-0 cursor-pointer group"
+              className="cursor-pointer group"
             >
-              <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-shadow bg-white p-2">
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
-                  className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300" 
-                />
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 p-4">
+                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-gray-50">
+                  <img 
+                    src={item.image} 
+                    alt={item.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-semibold text-gray-900 leading-tight">
+                    {item.name}
+                  </p>
+                  <p className="text-xs text-orange-600 font-medium mt-1">
+                    {item.category}
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-gray-700 mt-2 text-center font-medium leading-tight max-w-24">
-                {item.name}
-              </p>
             </div>
           ))}
         </div>
