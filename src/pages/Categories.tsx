@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -457,13 +458,13 @@ const Categories: React.FC = () => {
                     className={`mx-2 cursor-pointer transition-all ${
                       selectedCategory === category.id 
                         ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
-                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-gray-200/50'
+                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-gray-500/60'
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
                       {/* Use custom image for women and men, icon for others - increased size */}
                       {category.image ? (
-                        <div className="w-10 h-10 mb-1 rounded-full overflow-hidden">
+                        <div className="w-12 h-12 mb-1 rounded-full overflow-hidden">
                           <img 
                             src={category.image} 
                             alt={category.name} 
@@ -471,7 +472,7 @@ const Categories: React.FC = () => {
                           />
                         </div>
                       ) : (
-                        <div className="text-3xl mb-1">{category.icon}</div>
+                        <div className="text-4xl mb-1">{category.icon}</div>
                       )}
                       <span 
                         className={`text-xs font-medium text-center leading-tight ${
