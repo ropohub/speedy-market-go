@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -146,16 +147,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.women;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Western Wear</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Western Wear</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.westernWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -168,16 +169,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Ethnic Wear</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Ethnic Wear</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.ethnicWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -195,16 +196,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.men;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Casual Wear</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Casual Wear</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.casualWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -217,16 +218,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Formal Wear</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Formal Wear</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.formalWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -244,16 +245,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.footwear;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Women's Footwear</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Women's Footwear</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.womensFootwear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -266,16 +267,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Men's Footwear</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Men's Footwear</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.mensFootwear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -293,16 +294,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.accessories;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Makeup</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Makeup</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.makeup.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -315,16 +316,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Skincare</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Skincare</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.skincare.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -342,16 +343,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.kids;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Boys Wear</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Boys Wear</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.boysWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -364,16 +365,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Girls Wear</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Girls Wear</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.girlsWear.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -391,16 +392,16 @@ const Categories: React.FC = () => {
       const content = categoryContent.home;
       return (
         <>
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Home Decor</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Home Decor</h3>
+            <div className="grid grid-cols-3 gap-3">
               {content.decor.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -413,16 +414,16 @@ const Categories: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Bedding</h3>
-            <div className="flex gap-6 overflow-x-auto pb-2">
+          <div className="px-4 mb-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Bedding</h3>
+            <div className="flex gap-4 overflow-x-auto pb-2">
               {content.bedding.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-20 h-20 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-2 bg-white/60 backdrop-blur-sm shadow-sm">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -448,14 +449,16 @@ const Categories: React.FC = () => {
       <div className="min-h-screen" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
       }}>
-        {/* Use the same Header component as Home page */}
+        {/* Header */}
         <Header />
         
-        {/* Add top padding to account for fixed header */}
-        <div className="pt-28">
+        {/* No space between header and content - removed pt-28 */}
+        <div className="pt-24">
           <div className="flex">
-            {/* Vertical Sidebar */}
-            <div className="w-20 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
+            {/* Vertical Sidebar with gradient theme */}
+            <div className="w-20 min-h-screen shadow-sm" style={{
+              background: 'linear-gradient(180deg, rgba(255,239,228,0.9) 0%, rgba(255,216,177,0.8) 30%, rgba(253,232,232,0.8) 70%, rgba(243,232,255,0.9) 100%)'
+            }}>
               <div className="py-4 space-y-4">
                 {sidebarCategories.map((category) => (
                   <div
@@ -464,7 +467,7 @@ const Categories: React.FC = () => {
                     className={`mx-2 cursor-pointer transition-all ${
                       selectedCategory === category.id 
                         ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
-                        : 'hover:bg-gray-50'
+                        : 'hover:bg-white/20 backdrop-blur-sm'
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
@@ -482,11 +485,13 @@ const Categories: React.FC = () => {
               </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 bg-white/70 backdrop-blur-sm overflow-x-hidden">
-              {/* Banner */}
+            {/* Main Content with gradient theme */}
+            <div className="flex-1 overflow-x-hidden" style={{
+              background: 'linear-gradient(135deg, rgba(255,239,228,0.6) 0%, rgba(255,216,177,0.5) 30%, rgba(253,232,232,0.5) 70%, rgba(243,232,255,0.6) 100%)'
+            }}>
+              {/* Banner with pink accent */}
               <div className="p-4">
-                <div className="bg-gradient-to-r from-purple-100/80 to-purple-200/80 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm">
+                <div className="bg-gradient-to-r from-purple-100/90 to-pink-200/90 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-pink-100/50">
                   <div className="flex justify-between items-center">
                     <div>
                       <h2 className="text-lg font-bold text-purple-800 mb-1">{currentContent.banner.title}</h2>
@@ -503,8 +508,10 @@ const Categories: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dynamic Content Based on Selected Category */}
-              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm">
+              {/* Dynamic Content with gradient background */}
+              <div className="backdrop-blur-sm rounded-t-3xl shadow-sm" style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,240,245,0.4) 50%, rgba(255,228,225,0.4) 100%)'
+              }}>
                 {renderContent()}
               </div>
             </div>
