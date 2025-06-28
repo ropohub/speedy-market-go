@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ProductCard from './ProductCard';
 
@@ -169,50 +168,37 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = ({ category }) => 
     <div 
       className="relative py-8 overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
+        backgroundImage: 'url(/lovable-uploads/3e0072ef-aa44-4339-87df-0ff671c2f3b2.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Background heading text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <h2 
-          className="text-6xl md:text-8xl lg:text-9xl font-black text-gray-200/30 whitespace-nowrap select-none"
-          style={{
-            transform: 'rotate(-2deg)',
-            fontFamily: 'Arial Black, sans-serif',
-            letterSpacing: '0.1em'
-          }}
-        >
-          PRODUCTS YOU CAN'T MISS
-        </h2>
-      </div>
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-20" />
       
       {/* Content container */}
       <div className="relative z-10 px-4 max-w-md mx-auto">
-        {/* Section heading and products container */}
-        <div className="flex items-center gap-4">
-          {/* Left side - Heading */}
-          <div className="flex-shrink-0 w-1/2">
-            <h2 className="text-lg font-bold text-gray-900 leading-tight">
-              Products You 
-              <br />
-              Can't Miss
-            </h2>
-          </div>
-          
-          {/* Right side - Horizontally scrollable products */}
-          <div className="flex-1 overflow-hidden">
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-              {products.map((product, index) => (
-                <div key={product.id} className="flex-shrink-0 w-32">
-                  <ProductCard 
-                    product={product} 
-                    onAddToCart={() => console.log('Added to cart:', product)}
-                    showHeartIcon={false}
-                    itemNumber={index + 1}
-                  />
-                </div>
-              ))}
-            </div>
+        {/* Section heading - above the products */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+            Products You Can't Miss
+          </h2>
+        </div>
+        
+        {/* Horizontally scrollable products - below the heading */}
+        <div className="overflow-hidden">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+            {products.map((product, index) => (
+              <div key={product.id} className="flex-shrink-0 w-32">
+                <ProductCard 
+                  product={product} 
+                  onAddToCart={() => console.log('Added to cart:', product)}
+                  showHeartIcon={false}
+                  itemNumber={index + 1}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
