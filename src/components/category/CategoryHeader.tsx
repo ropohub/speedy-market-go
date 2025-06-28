@@ -2,7 +2,7 @@
 import React from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Header';
+import { Search, Heart, ShoppingBag } from 'lucide-react';
 
 interface CategoryHeaderProps {
   title: string;
@@ -16,22 +16,36 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
   };
 
   return (
-    <>
-      <Header />
-      <div className="px-4 py-4 pt-24" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
-        <div className="flex items-center gap-3 mb-4">
+    <div className="fixed top-0 left-0 right-0 z-50" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
+      <div className="flex items-center justify-between px-4 py-3">
+        {/* Left side - Back button and logo */}
+        <div className="flex items-center gap-3">
           <button 
             onClick={handleBack}
-            className="p-2 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow"
+            className="p-1"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-700" />
+            <ChevronLeft className="w-6 h-6 text-gray-900" />
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {title}
-          </h1>
+          <img 
+            src="/lovable-uploads/5b5065a5-f1ae-4a07-b255-830e99cd26fc.png" 
+            alt="Dripzy Logo" 
+            className="w-6 h-6 object-contain" 
+          />
+        </div>
+        
+        {/* Right side - Icons */}
+        <div className="flex items-center gap-4">
+          <Search className="w-6 h-6 text-gray-900" />
+          <Heart className="w-6 h-6 text-gray-900" />
+          <div className="relative">
+            <ShoppingBag className="w-6 h-6 text-gray-900" />
+            <div className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              5
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
