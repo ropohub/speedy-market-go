@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SearchBar: React.FC = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const words = ['tshirt', 'dresses', 'bra'];
+  const words = ['dresses', 't-shirts', 'jeans'];
   const navigate = useNavigate();
 
   useEffect(() => {

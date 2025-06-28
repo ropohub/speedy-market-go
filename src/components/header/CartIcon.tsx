@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -11,10 +10,11 @@ const CartIcon: React.FC = () => {
   const firebaseUser = auth.currentUser;
   const [cartItemCount, setCartItemCount] = useState(0);
 
-  // Mock cart items count - in a real app, this would come from your cart state/context
+  // Get actual cart items count from the Index page state
   useEffect(() => {
-    // For now, setting a mock count. Replace with actual cart state logic
-    setCartItemCount(3); // Example: 3 items in cart
+    // For now, we'll keep it at 0 since there's no global cart state
+    // This should be connected to actual cart state management
+    setCartItemCount(0);
   }, []);
 
   const handleCartClick = () => {
@@ -39,4 +39,3 @@ const CartIcon: React.FC = () => {
 };
 
 export default CartIcon;
-

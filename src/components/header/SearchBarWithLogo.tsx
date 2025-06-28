@@ -1,10 +1,20 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBarWithLogo: React.FC = () => {
   const navigate = useNavigate();
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const words = ['dresses', 't-shirts', 'jeans'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSearchBarClick = () => {
     navigate('/search-page');
@@ -20,7 +30,7 @@ const SearchBarWithLogo: React.FC = () => {
       <input 
         type="text" 
         onClick={handleSearchBarClick}
-        placeholder='Search "Dresses"'
+        placeholder={`Search "${words[currentWordIndex]}"`}
         className="w-full pl-10 pr-4 border-2 border-black text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-black px-[37px] py-[8px] my-0 mx-0 rounded-lg cursor-pointer"
         readOnly
       />
