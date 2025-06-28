@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -457,7 +459,7 @@ const Categories: React.FC = () => {
                     className={`mx-2 cursor-pointer transition-all ${
                       selectedCategory === category.id 
                         ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
-                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-gray-300'
+                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-black'
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
@@ -546,3 +548,4 @@ const Categories: React.FC = () => {
 };
 
 export default Categories;
+
