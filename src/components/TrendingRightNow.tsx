@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface TrendingCategory {
   id: string;
@@ -65,91 +66,48 @@ const TrendingRightNow: React.FC = () => {
   return (
     <div className="bg-gradient-to-br from-orange-100 to-amber-100 py-8 px-4 mb-6">
       <div className="max-w-md mx-auto">
-        {/* Hero Section with 3D Effects */}
-        <div className="relative bg-gradient-to-r from-orange-200 to-amber-200 rounded-3xl p-6 mb-6 overflow-hidden">
-          {/* 3D Lines and Effects */}
-          <div className="absolute inset-0 rounded-3xl overflow-hidden">
-            {/* Spotlight lines for 3D room effect */}
-            <div 
-              className="absolute top-0 left-1/4 w-px h-full opacity-20"
-              style={{
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
-              }}
-            />
-            <div 
-              className="absolute top-0 right-1/4 w-px h-full opacity-20"
-              style={{
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 50%, transparent 100%)'
-              }}
-            />
-            
-            {/* Horizontal lines */}
-            <div 
-              className="absolute left-0 top-1/4 w-full h-px opacity-15"
-              style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
-              }}
-            />
-            <div 
-              className="absolute left-0 bottom-1/4 w-full h-px opacity-15"
-              style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)'
-              }}
-            />
-            
-            {/* Darker gradient overlay */}
-            <div 
-              className="absolute inset-0 rounded-3xl"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,165,0,0.1) 0%, rgba(255,140,0,0.2) 50%, rgba(255,69,0,0.1) 100%)'
-              }}
-            />
-          </div>
+        {/* Hero Section with new banner image */}
+        <div className="relative rounded-3xl mb-6 overflow-hidden">
+          <img 
+            src="/lovable-uploads/cf401a71-106c-4629-a178-b94eefae726c.png" 
+            alt="Trending Right Now Banner" 
+            className="w-full h-auto object-cover" 
+          />
           
-          {/* Models on left side */}
-          <div className="absolute left-0 top-0 bottom-0 w-2/5 overflow-hidden rounded-l-3xl">
-            <img 
-              src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" 
-              alt="Fashion Models" 
-              className="w-full h-full object-cover opacity-80" 
-            />
-          </div>
-          
-          {/* Content on right side */}
-          <div className="relative z-10 ml-[40%] pl-4">
-            <h2 className="text-2xl font-bold text-orange-600 mb-2 leading-tight">Trending Right Now</h2>
-            <p className="text-sm text-gray-700 mb-4 font-medium">Hot Off The Style Scene</p>
-            
-            <button
-              onClick={handleShopNow}
-              className="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors shadow-lg"
-            >
-              SHOP NOW
-            </button>
-          </div>
+          {/* Overlay button if needed */}
+          <button
+            onClick={handleShopNow}
+            className="absolute bottom-4 right-4 bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors shadow-lg"
+          >
+            SHOP NOW
+          </button>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-4 gap-3">
-          {trendingCategories.map((category) => (
-            <div
-              key={category.id}
-              onClick={() => handleCategoryClick(category.name)}
-              className="flex flex-col items-center cursor-pointer group"
-            >
-              <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
-                <img 
-                  src={category.image} 
-                  alt={category.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                />
+        {/* Categories Grid - Horizontally Scrollable */}
+        <ScrollArea className="w-full">
+          <div className="flex gap-3 pb-4">
+            {trendingCategories.map((category) => (
+              <div
+                key={category.id}
+                onClick={() => handleCategoryClick(category.name)}
+                className="flex flex-col items-center cursor-pointer group flex-shrink-0"
+              >
+                <div className="w-16 aspect-[3/4] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
+                  <img 
+                    src={category.image} 
+                    alt={category.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    style={{ height: '70%' }}
+                  />
+                </div>
+                <span className="text-xs text-gray-900 mt-2 text-center font-medium leading-tight w-16">
+                  {category.name}
+                </span>
               </div>
-              <span className="text-xs text-gray-900 mt-2 text-center font-medium leading-tight">
-                {category.name}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </div>
   );
