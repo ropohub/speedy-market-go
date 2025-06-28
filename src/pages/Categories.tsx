@@ -155,14 +155,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -177,14 +177,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -204,14 +204,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -226,14 +226,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -253,14 +253,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -275,14 +275,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -302,14 +302,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -324,14 +324,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -351,14 +351,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -373,14 +373,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -400,14 +400,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -422,14 +422,14 @@ const Categories: React.FC = () => {
                   onClick={() => handleCategoryClick(item.id)}
                   className="flex flex-col items-center cursor-pointer flex-shrink-0"
                 >
-                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-gray-100">
+                  <div className="w-14 h-14 rounded-full overflow-hidden mb-2 bg-white/20 backdrop-blur-sm border border-white/30">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center">{item.name}</span>
+                  <span className="text-xs font-medium text-gray-800 text-center">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -446,7 +446,7 @@ const Categories: React.FC = () => {
   return (
     <Layout>
       <div className="min-h-screen" style={{
-        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FDE8E8 70%, #F3E8FF 100%)'
+        background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FFB3BA 60%, #F3E8FF 100%)'
       }}>
         {/* Use the same Header component as Home page */}
         <Header />
@@ -454,8 +454,8 @@ const Categories: React.FC = () => {
         {/* Remove extra padding and space - adjust top padding to match header height exactly */}
         <div className="pt-24">
           <div className="flex">
-            {/* Vertical Sidebar - increased width */}
-            <div className="w-32 bg-white/90 backdrop-blur-sm border-r border-gray-200 min-h-screen shadow-sm">
+            {/* Vertical Sidebar - increased width with gradient background */}
+            <div className="w-32 bg-gradient-to-b from-white/40 to-pink-50/60 backdrop-blur-sm border-r border-pink-200/50 min-h-screen shadow-sm">
               <div className="py-4 space-y-4">
                 {sidebarCategories.map((category) => (
                   <div
@@ -463,8 +463,8 @@ const Categories: React.FC = () => {
                     onClick={() => handleSidebarCategoryChange(category.id)}
                     className={`mx-2 cursor-pointer transition-all ${
                       selectedCategory === category.id 
-                        ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm` 
-                        : 'hover:bg-gray-50'
+                        ? `${category.bgColor} ${category.borderColor} border-2 shadow-md` 
+                        : 'hover:bg-white/30 backdrop-blur-sm'
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
@@ -472,7 +472,7 @@ const Categories: React.FC = () => {
                       <span className={`text-xs font-medium text-center leading-tight ${
                         selectedCategory === category.id 
                           ? category.textColor 
-                          : 'text-gray-600'
+                          : 'text-gray-700'
                       }`} style={{ whiteSpace: 'pre-line' }}>
                         {category.name}
                       </span>
@@ -483,9 +483,9 @@ const Categories: React.FC = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 bg-white/70 backdrop-blur-sm overflow-x-hidden">
-              {/* Dynamic Content Based on Selected Category - remove extra padding */}
-              <div className="bg-white/60 backdrop-blur-sm rounded-t-3xl shadow-sm pt-2">
+            <div className="flex-1 overflow-x-hidden">
+              {/* Dynamic Content Based on Selected Category - remove white background */}
+              <div className="bg-gradient-to-b from-transparent to-pink-50/20 backdrop-blur-sm rounded-t-3xl pt-2">
                 {renderContent()}
               </div>
             </div>
