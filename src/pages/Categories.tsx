@@ -14,14 +14,14 @@ const Categories: React.FC = () => {
     navigate(`/products/${selectedCategory}/${categoryId}`);
   };
 
-  // Vertical sidebar categories
+  // Vertical sidebar categories with improved design
   const sidebarCategories = [
-    { id: 'women', name: "Women's\nWear", icon: '👗', bgColor: 'bg-pink-100', textColor: 'text-pink-600', borderColor: 'border-pink-200' },
-    { id: 'men', name: "Men's\nWear", icon: '👔', bgColor: 'bg-blue-100', textColor: 'text-blue-600', borderColor: 'border-blue-200' },
-    { id: 'footwear', name: 'Footwear', icon: '👠', bgColor: 'bg-purple-100', textColor: 'text-purple-600', borderColor: 'border-purple-200' },
-    { id: 'accessories', name: 'Beauty &\nGrooming', icon: '💄', bgColor: 'bg-rose-100', textColor: 'text-rose-600', borderColor: 'border-rose-200' },
-    { id: 'kids', name: 'Kids\nWear', icon: '👶', bgColor: 'bg-yellow-100', textColor: 'text-yellow-600', borderColor: 'border-yellow-200' },
-    { id: 'home', name: 'Home &\nLiving', icon: '🏠', bgColor: 'bg-green-100', textColor: 'text-green-600', borderColor: 'border-green-200' }
+    { id: 'women', name: "Women", icon: '👗', bgColor: 'bg-pink-50', textColor: 'text-pink-700', borderColor: 'border-pink-300', hoverColor: 'hover:bg-pink-100' },
+    { id: 'men', name: "Men", icon: '👔', bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-300', hoverColor: 'hover:bg-blue-100' },
+    { id: 'footwear', name: 'Footwear', icon: '👠', bgColor: 'bg-purple-50', textColor: 'text-purple-700', borderColor: 'border-purple-300', hoverColor: 'hover:bg-purple-100' },
+    { id: 'accessories', name: 'Beauty', icon: '💄', bgColor: 'bg-rose-50', textColor: 'text-rose-700', borderColor: 'border-rose-300', hoverColor: 'hover:bg-rose-100' },
+    { id: 'kids', name: 'Kids', icon: '👶', bgColor: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-300', hoverColor: 'hover:bg-yellow-100' },
+    { id: 'home', name: 'Home', icon: '🏠', bgColor: 'bg-green-50', textColor: 'text-green-700', borderColor: 'border-green-300', hoverColor: 'hover:bg-green-100' }
   ];
 
   // Category content data
@@ -448,35 +448,40 @@ const Categories: React.FC = () => {
       <div className="min-h-screen" style={{
         background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 30%, #FFB3BA 60%, #F3E8FF 100%)'
       }}>
-        {/* Use the same Header component as Home page */}
         <Header />
         
-        {/* Remove extra padding and space - adjust top padding to match header height exactly */}
-        <div className="pt-24">
+        <div className="pt-16">
           <div className="flex">
-            {/* Vertical Sidebar - increased width with gradient background */}
-            <div className="w-32 bg-gradient-to-b from-white/40 to-pink-50/60 backdrop-blur-sm border-r border-pink-200/50 min-h-screen shadow-sm">
-              <div className="py-4 space-y-4">
+            {/* Improved Vertical Sidebar with cleaner design */}
+            <div className="w-40 bg-white/90 backdrop-blur-sm border-r border-gray-200/50 min-h-screen shadow-lg">
+              {/* Header */}
+              <div className="px-4 py-6 border-b border-gray-200/30">
+                <h2 className="text-lg font-bold text-gray-800">Categories</h2>
+              </div>
+              
+              {/* Category List */}
+              <div className="p-3 space-y-2">
                 {sidebarCategories.map((category) => (
-                  <div
-                    key={category.id}
-                    onClick={() => handleSidebarCategoryChange(category.id)}
-                    className={`mx-2 cursor-pointer transition-all ${
-                      selectedCategory === category.id 
-                        ? `${category.bgColor} ${category.borderColor} border-2 shadow-md` 
-                        : 'hover:bg-white/30 backdrop-blur-sm'
-                    } rounded-xl p-2`}
-                  >
-                    <div className="flex flex-col items-center">
-                      <div className="text-2xl mb-1">{category.icon}</div>
-                      <span className={`text-xs font-medium text-center leading-tight ${
+                  <div key={category.id}>
+                    <button
+                      onClick={() => handleSidebarCategoryChange(category.id)}
+                      className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 ${
                         selectedCategory === category.id 
-                          ? category.textColor 
-                          : 'text-gray-700'
-                      }`} style={{ whiteSpace: 'pre-line' }}>
-                        {category.name}
-                      </span>
-                    </div>
+                          ? `${category.bgColor} ${category.borderColor} border-2 shadow-sm ${category.textColor}` 
+                          : `hover:bg-gray-50 ${category.hoverColor} text-gray-700 border border-transparent`
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-xl">{category.icon}</span>
+                        <span className={`font-medium text-sm ${
+                          selectedCategory === category.id 
+                            ? category.textColor 
+                            : 'text-gray-700'
+                        }`}>
+                          {category.name}
+                        </span>
+                      </div>
+                    </button>
                   </div>
                 ))}
               </div>
@@ -484,7 +489,6 @@ const Categories: React.FC = () => {
 
             {/* Main Content */}
             <div className="flex-1 overflow-x-hidden">
-              {/* Dynamic Content Based on Selected Category - remove white background */}
               <div className="bg-gradient-to-b from-transparent to-pink-50/20 backdrop-blur-sm rounded-t-3xl pt-2">
                 {renderContent()}
               </div>
