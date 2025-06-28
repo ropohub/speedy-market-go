@@ -9,6 +9,8 @@ interface EthnicBrand {
   name: string;
   image: string;
   backgroundColor: string;
+  offerText: string;
+  description: string;
 }
 
 const EthnicCollection: React.FC = () => {
@@ -17,25 +19,31 @@ const EthnicCollection: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fallback brands in case API fails
+  // Fallback brands in case API fails - updated with offer information
   const fallbackBrands: EthnicBrand[] = [
     {
       id: 'hm',
       name: 'H&M',
       image: '/lovable-uploads/0cfc2f94-4aca-4dd4-b34a-6af96f00f0dc.png',
-      backgroundColor: 'from-pink-400 to-pink-600'
+      backgroundColor: 'from-pink-400 to-pink-600',
+      offerText: 'MIN. 70% OFF',
+      description: 'Festive Edge'
     },
     {
       id: 'jockey',
       name: 'JOCKEY',
       image: '/lovable-uploads/0c28e3f9-0e1e-4129-a491-f0751e26c9f2.png',
-      backgroundColor: 'from-neutral-400 to-neutral-600'
+      backgroundColor: 'from-blue-400 to-blue-600',
+      offerText: 'UP TO 70% OFF',
+      description: 'Active Essentials'
     },
     {
       id: 'zara',
       name: 'ZARA',
       image: '/lovable-uploads/55cac01f-1f21-487e-ab2c-5d1f516f5871.png',
-      backgroundColor: 'from-blue-400 to-blue-600'
+      backgroundColor: 'from-orange-400 to-orange-600',
+      offerText: 'UNDER 999',
+      description: 'Neck Pieces'
     }
   ];
 
@@ -50,7 +58,9 @@ const EthnicCollection: React.FC = () => {
           id: brand.primaryKey?.brandId.toString() || `brand-${index}`,
           name: brand.name,
           image: brand.imageUrls[0] || fallbackBrands[index % fallbackBrands.length].image,
-          backgroundColor: fallbackBrands[index % fallbackBrands.length].backgroundColor
+          backgroundColor: fallbackBrands[index % fallbackBrands.length].backgroundColor,
+          offerText: fallbackBrands[index % fallbackBrands.length].offerText,
+          description: fallbackBrands[index % fallbackBrands.length].description
         }));
 
         setBrands(mappedBrands.length > 0 ? mappedBrands : fallbackBrands);
@@ -130,68 +140,38 @@ const EthnicCollection: React.FC = () => {
             <span className="text-xs text-orange-600">Using fallback data</span>
           )}
         </div>
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
           {brands.map((brand) => (
             <div
               key={brand.id}
               onClick={() => handleBrandClick(brand.id)}
-              className="flex-shrink-0 w-32 h-40 cursor-pointer group"
+              className="flex-shrink-0 w-64 h-80 cursor-pointer group"
             >
-              {/* Scalloped Frame - matching reference image */}
-              <div className={`relative w-full h-full bg-gradient-to-b ${brand.backgroundColor} overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                style={{
-                  clipPath: `polygon(
-                    0% 0%, 
-                    10% 0%, 15% 8%, 20% 0%, 
-                    30% 0%, 35% 8%, 40% 0%, 
-                    50% 0%, 55% 8%, 60% 0%, 
-                    70% 0%, 75% 8%, 80% 0%, 
-                    90% 0%, 95% 8%, 100% 0%, 
-                    100% 100%, 
-                    95% 92%, 90% 100%, 
-                    80% 100%, 75% 92%, 70% 100%, 
-                    60% 100%, 55% 92%, 50% 100%, 
-                    40% 100%, 35% 92%, 30% 100%, 
-                    20% 100%, 15% 92%, 10% 100%, 
-                    0% 100%
-                  )`
-                }}
-              >
-                {/* Image */}
-                <div className="absolute inset-2 overflow-hidden" 
-                  style={{
-                    clipPath: `polygon(
-                      0% 0%, 
-                      10% 0%, 15% 8%, 20% 0%, 
-                      30% 0%, 35% 8%, 40% 0%, 
-                      50% 0%, 55% 8%, 60% 0%, 
-                      70% 0%, 75% 8%, 80% 0%, 
-                      90% 0%, 95% 8%, 100% 0%, 
-                      100% 100%, 
-                      95% 92%, 90% 100%, 
-                      80% 100%, 75% 92%, 70% 100%, 
-                      60% 100%, 55% 92%, 50% 100%, 
-                      40% 100%, 35% 92%, 30% 100%, 
-                      20% 100%, 15% 92%, 10% 100%, 
-                      0% 100%
-                    )`
-                  }}
-                >
+              {/* Card matching the reference design */}
+              <div className="relative w-full h-full bg-white rounded-3xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 border-4 border-green-500">
+                {/* Background image */}
+                <div className="absolute inset-0">
                   <img 
                     src={brand.image} 
                     alt={brand.name} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                   />
-                  
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                  {/* Overlay for text readability */}
+                  <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                 </div>
                 
-                {/* Brand Name */}
-                <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <span className="text-white text-xs font-bold bg-black bg-opacity-60 px-2 py-1 rounded">
-                    {brand.name}
-                  </span>
+                {/* Content overlay */}
+                <div className="relative z-10 p-6 h-full flex flex-col justify-between text-white">
+                  {/* Top content - Offer text */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">{brand.offerText}</h3>
+                    <p className="text-lg opacity-90">{brand.description}</p>
+                  </div>
+                  
+                  {/* Bottom content - Brand logo area */}
+                  <div className="bg-white bg-opacity-95 rounded-2xl p-4 flex items-center justify-center">
+                    <span className="text-gray-900 font-bold text-lg">{brand.name}</span>
+                  </div>
                 </div>
               </div>
             </div>
