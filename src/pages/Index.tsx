@@ -3,7 +3,9 @@ import Layout from '../components/Layout';
 import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
+import EthnicCollection from '../components/EthnicCollection';
 import { useNavigate } from 'react-router-dom';
+
 interface LegacyProduct {
   id: string;
   name: string;
@@ -16,6 +18,7 @@ interface CartItem extends LegacyProduct {
   selectedSize?: string;
   quantity: number;
 }
+
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -214,7 +217,11 @@ const Index: React.FC = () => {
           {/* Yellow Banner */}
           <YellowBanner />
         </div>
+
+        {/* Featured Brands Section */}
+        <EthnicCollection />
       </div>
     </Layout>;
 };
+
 export default Index;
