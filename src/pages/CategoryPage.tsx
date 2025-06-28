@@ -12,7 +12,7 @@ const CategoryPage: React.FC = () => {
   
   const currentCategory = categoryData[categoryName || 'women'] || categoryData.women;
 
-  // Category items for the bottom section
+  // Category items for the bottom section - added 6 more cards
   const categoryItems = [
     { name: 'Night Suits', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=200&fit=crop' },
     { name: 'Innerwear', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=150&h=200&fit=crop' },
@@ -20,6 +20,13 @@ const CategoryPage: React.FC = () => {
     { name: 'Trousers', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=200&fit=crop' },
     { name: 'Jeans', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=150&h=200&fit=crop' },
     { name: 'Dresses', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=150&h=200&fit=crop' },
+    { name: 'Tops', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=150&h=200&fit=crop' },
+    { name: 'Skirts', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=200&fit=crop' },
+    { name: 'Jackets', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=150&h=200&fit=crop' },
+    { name: 'Sweaters', image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=150&h=200&fit=crop' },
+    { name: 'Leggings', image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=150&h=200&fit=crop' },
+    { name: 'Blazers', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=150&h=200&fit=crop' },
+    { name: 'Hoodies', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=150&h=200&fit=crop' }
   ];
 
   // Auto-sliding banners data
@@ -41,7 +48,7 @@ const CategoryPage: React.FC = () => {
     }
   ];
 
-  // Featured categories data for 3x4 grid (12 items total)
+  // Featured categories data for 4x3 grid (12 items total)
   const featuredCategories = [
     {
       id: 'track-pants',
@@ -96,6 +103,24 @@ const CategoryPage: React.FC = () => {
       name: 'Jeans',
       image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=400&fit=crop',
       collection: 'jeans'
+    },
+    {
+      id: 'sneakers',
+      name: 'Sneakers',
+      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=400&fit=crop',
+      collection: 'sneakers'
+    },
+    {
+      id: 'handbags',
+      name: 'Handbags',
+      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=400&fit=crop',
+      collection: 'handbags'
+    },
+    {
+      id: 'accessories',
+      name: 'Accessories',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      collection: 'accessories'
     }
   ];
 
@@ -106,18 +131,18 @@ const CategoryPage: React.FC = () => {
         
         {/* Main content with top padding for fixed header */}
         <div className="pt-16">
-          {/* Hero Banner Section with 3D Effects - Reduced height */}
-          <div className="px-3 py-1">
-            <div className="relative max-w-sm mx-auto">
+          {/* Hero Banner Section with 3D Effects - restored to original home page size */}
+          <div className="px-4 py-6">
+            <div className="relative max-w-md mx-auto">
               {/* Ultra-thin transparent border container with 3D effects */}
               <div 
-                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-2xl p-0.5 shadow-sm"
+                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-1 shadow-lg"
                 style={{
                   background: 'linear-gradient(180deg, #F5E6D3 0%, #E8B882 50%, #D4915A 100%)',
                 }}
               >
                 {/* Spotlight lines for 3D room effect */}
-                <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                <div className="absolute inset-0 rounded-3xl overflow-hidden">
                   {/* Top spotlight lines */}
                   <div 
                     className="absolute top-0 left-1/4 w-px h-full opacity-20"
@@ -149,15 +174,15 @@ const CategoryPage: React.FC = () => {
                 
                 {/* Radial glow behind the image */}
                 <div 
-                  className="absolute inset-0 rounded-2xl"
+                  className="absolute inset-0 rounded-3xl"
                   style={{
                     background: 'radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 40%, transparent 70%)'
                   }}
                 />
                 
-                <div className="bg-white rounded-xl overflow-hidden relative">
-                  {/* Hero Banner using the new uploaded image - reduced height */}
-                  <div className="relative h-40">
+                <div className="bg-white rounded-2xl overflow-hidden relative">
+                  {/* Hero Banner using the uploaded image - restored to original size */}
+                  <div className="relative h-60">
                     <img 
                       src="/lovable-uploads/f97d0699-d478-48c9-ae97-a3fdf89b8fd7.png" 
                       alt="Hero Banner" 
@@ -169,30 +194,30 @@ const CategoryPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Auto-sliding Banners Section - Reduced height */}
-          <div className="px-3 py-1">
-            <div className="relative mx-2 mb-2 rounded-xl overflow-hidden h-40 bg-gradient-to-r from-gray-900 to-gray-700">
+          {/* Auto-sliding Banners Section - increased height by 25% (from h-32 to h-40) */}
+          <div className="px-4 py-4">
+            <div className="relative mx-2 mb-4 rounded-xl overflow-hidden h-50 bg-gradient-to-r from-gray-900 to-gray-700">
               <AutoSlidingBanner banners={slidingBanners} autoSlideInterval={3000} />
             </div>
           </div>
 
-          {/* Category Cards Section - Smaller cards */}
-          <div className="px-3 pb-3">
-            <div className="max-w-sm mx-auto">
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+          {/* Category Cards Section - with additional cards */}
+          <div className="px-4 pb-4">
+            <div className="max-w-md mx-auto">
+              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {categoryItems.map((item, index) => (
                   <div 
                     key={index} 
                     className="flex flex-col items-center flex-shrink-0 cursor-pointer group"
                   >
-                    <div className="w-12 h-16 rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
+                    <div className="w-16 h-20 rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
                       <img 
                         src={item.image} 
                         alt={item.name} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                       />
                     </div>
-                    <span className="text-xs text-gray-900 mt-1 text-center font-medium leading-tight w-12">
+                    <span className="text-xs text-gray-900 mt-2 text-center font-medium leading-tight w-16">
                       {item.name}
                     </span>
                   </div>
@@ -202,10 +227,10 @@ const CategoryPage: React.FC = () => {
           </div>
 
           {/* Featured Categories Section - 4 columns per row */}
-          <div className="bg-white px-3 py-4">
-            <h2 className="text-base font-bold text-gray-900 mb-3">Featured Categories</h2>
+          <div className="bg-white px-4 py-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Featured Categories</h2>
             
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {featuredCategories.map((category) => (
                 <div
                   key={category.id}
@@ -221,7 +246,7 @@ const CategoryPage: React.FC = () => {
                   <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
                   
                   {/* Category content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-1.5">
+                  <div className="absolute bottom-0 left-0 right-0 p-2">
                     <div className="text-white">
                       <h3 className="font-bold text-xs text-center text-shadow-sm">
                         {category.name}
