@@ -145,7 +145,7 @@ const Categories: React.FC = () => {
             {/* Main Content */}
             <div className="flex-1 overflow-x-hidden">
               {/* Fashion Header with Banner */}
-              <div className="px-2">
+              <div className="px-[8px] py-0 my-0 mx-[2px]">
                 <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden shadow-sm border border-white/30 py-[12px] px-[24px] mx-0 my-[8px]">
                   <div className="flex justify-between items-center">
                     <div>
