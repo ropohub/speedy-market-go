@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { brandService } from '../api/brandClient';
@@ -89,42 +90,42 @@ const EthnicCollection: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading brands...</p>
+      <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-4 px-4 mb-4">
+        <div className="text-center py-6">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500 mx-auto mb-3"></div>
+          <p className="text-gray-600 text-sm">Loading brands...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-6 px-4 mb-6">
-      {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-orange-100 to-amber-100 rounded-2xl p-6 mb-6 overflow-hidden">
+    <div className="bg-gradient-to-br from-orange-50 to-amber-50 py-4 px-4 mb-4">
+      {/* Header Section - Reduced size */}
+      <div className="relative bg-gradient-to-r from-orange-100 to-amber-100 rounded-xl p-4 mb-4 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-br from-orange-300 to-amber-300 rounded-full opacity-20"></div>
-          <div className="absolute bottom-4 right-8 w-24 h-24 bg-gradient-to-br from-amber-300 to-orange-300 rounded-full opacity-15"></div>
+          <div className="absolute top-2 right-2 w-20 h-20 bg-gradient-to-br from-orange-300 to-amber-300 rounded-full opacity-20"></div>
+          <div className="absolute bottom-2 right-4 w-16 h-16 bg-gradient-to-br from-amber-300 to-orange-300 rounded-full opacity-15"></div>
         </div>
         
         <div className="relative z-10 flex items-start justify-between">
           <div className="flex-1">
-            <div className="mb-4">
-              <div className="inline-block bg-black text-white px-3 py-1 rounded-full text-xs font-bold mb-3">UPTO 50% OFF</div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Featured Brands</h2>
+            <div className="mb-3">
+              <div className="inline-block bg-black text-white px-2 py-1 rounded-full text-xs font-bold mb-2">UPTO 50% OFF</div>
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Featured Brands</h2>
             </div>
             
             <button
               onClick={handleShopNow}
-              className="bg-white text-black px-4 py-2 rounded-lg font-bold text-xs hover:bg-gray-100 transition-colors shadow-md"
+              className="bg-white text-black px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-gray-100 transition-colors shadow-md"
             >
               SHOP NOW
             </button>
           </div>
 
-          {/* Couple image - visible on mobile, increased size and shifted right */}
-          <div className="md:hidden absolute right-0 top-0 bottom-0 w-40 flex items-center">
+          {/* Couple image - smaller size */}
+          <div className="md:hidden absolute right-0 top-0 bottom-0 w-28 flex items-center">
             <img 
               src="/lovable-uploads/cdd76210-ece1-48bb-983e-733973d49c1e.png" 
               alt="Fashion Couple" 
@@ -146,21 +147,21 @@ const EthnicCollection: React.FC = () => {
 
       {/* Brands Section */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-gray-900">Shop by Brand</h3>
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-gray-900">Shop by Brand</h3>
           {error && (
             <span className="text-xs text-orange-600">Using fallback data</span>
           )}
         </div>
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {brands.map((brand) => (
             <div
               key={brand.id}
               onClick={() => handleBrandClick(brand.id)}
-              className="flex-shrink-0 w-40 h-56 cursor-pointer group"
+              className="flex-shrink-0 w-28 h-36 cursor-pointer group"
             >
-              {/* Smaller card - reduced from w-64 h-96 to w-40 h-56 */}
-              <div className="relative w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 border-2 border-green-500">
+              {/* Smaller card - reduced from w-40 h-56 to w-28 h-36 */}
+              <div className="relative w-full h-full bg-white rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 border border-gray-200">
                 {/* Background image */}
                 <div className="absolute inset-0">
                   <img 
@@ -173,16 +174,16 @@ const EthnicCollection: React.FC = () => {
                 </div>
                 
                 {/* Content overlay */}
-                <div className="relative z-10 p-3 h-full flex flex-col justify-between text-white">
+                <div className="relative z-10 p-2 h-full flex flex-col justify-between text-white">
                   {/* Top content - Offer text */}
-                  <div className="pt-2">
-                    <h3 className="text-lg font-bold mb-1 text-white drop-shadow-lg">{brand.offerText}</h3>
-                    <p className="text-sm text-white opacity-90 drop-shadow-md">{brand.description}</p>
+                  <div className="pt-1">
+                    <h3 className="text-sm font-bold mb-0.5 text-white drop-shadow-lg">{brand.offerText}</h3>
+                    <p className="text-xs text-white opacity-90 drop-shadow-md">{brand.description}</p>
                   </div>
                   
-                  {/* Bottom content - Brand name instead of logo */}
-                  <div className="bg-white rounded-xl p-2 flex items-center justify-center gap-2 min-h-[50px]">
-                    <span className="text-gray-900 font-bold text-sm text-center">{brand.name}</span>
+                  {/* Bottom content - Brand name */}
+                  <div className="bg-white rounded-lg p-1.5 flex items-center justify-center gap-1 min-h-[32px]">
+                    <span className="text-gray-900 font-bold text-xs text-center">{brand.name}</span>
                   </div>
                 </div>
               </div>

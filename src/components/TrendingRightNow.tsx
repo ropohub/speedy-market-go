@@ -52,6 +52,46 @@ const TrendingRightNow: React.FC = () => {
       id: '8',
       name: 'Floral Tops',
       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop'
+    },
+    {
+      id: '9',
+      name: 'Denim Jackets',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+    },
+    {
+      id: '10',
+      name: 'Maxi Dresses',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop'
+    },
+    {
+      id: '11',
+      name: 'Bomber Jackets',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop'
+    },
+    {
+      id: '12',
+      name: 'Mini Skirts',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop'
+    },
+    {
+      id: '13',
+      name: 'Cargo Pants',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+    },
+    {
+      id: '14',
+      name: 'Tank Tops',
+      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop'
+    },
+    {
+      id: '15',
+      name: 'Midi Dresses',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop'
+    },
+    {
+      id: '16',
+      name: 'Hoodies',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop'
     }
   ];
 
@@ -59,9 +99,9 @@ const TrendingRightNow: React.FC = () => {
     navigate(`/category/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
-  // Split categories into two rows
-  const firstRowCategories = trendingCategories.slice(0, 4);
-  const secondRowCategories = trendingCategories.slice(4, 8);
+  // Split categories into two rows of 8 each
+  const firstRowCategories = trendingCategories.slice(0, 8);
+  const secondRowCategories = trendingCategories.slice(8, 16);
 
   return (
     <div 
