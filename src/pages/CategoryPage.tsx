@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import CategoryHeader from '../components/category/CategoryHeader';
 import AutoSlidingBanner from '../components/AutoSlidingBanner';
 import FeaturedCategories from '../components/FeaturedCategories';
+import BrandsOnDemand from '../components/BrandsOnDemand';
 import { categoryData } from '../data/categoryData';
 
 const CategoryPage: React.FC = () => {
@@ -222,6 +222,9 @@ const CategoryPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Brands On Demand Section */}
+          <BrandsOnDemand />
 
           {/* Featured Categories Section - 4 columns per row */}
           <div className="bg-white px-4 py-6">
