@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import YellowBanner from '../components/YellowBanner';
 import EverydayFashionTitle from '../components/EverydayFashionTitle';
 import EthnicCollection from '../components/EthnicCollection';
+import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
 
 interface LegacyProduct {
@@ -220,6 +221,9 @@ const Index: React.FC = () => {
 
         {/* Featured Brands Section */}
         <EthnicCollection />
+
+        {/* Products You Can't Miss Section */}
+        <ProductYouCantMiss category="women" />
       </div>
     </Layout>;
 };
