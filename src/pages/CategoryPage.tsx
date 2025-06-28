@@ -131,12 +131,12 @@ const CategoryPage: React.FC = () => {
         
         {/* Main content with top padding for fixed header */}
         <div className="pt-16">
-          {/* Hero Banner Section with 3D Effects - restored to original home page size */}
-          <div className="px-4 py-6">
+          {/* Hero Banner Section - matching exact home page size */}
+          <div className="px-4 py-2">
             <div className="relative max-w-md mx-auto">
-              {/* Ultra-thin transparent border container with 3D effects */}
+              {/* Ultra-thin transparent border container with 3D effects - matching home page */}
               <div 
-                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-1 shadow-lg"
+                className="relative bg-gradient-to-r from-orange-100/30 to-pink-100/30 rounded-3xl p-0.5 shadow-sm"
                 style={{
                   background: 'linear-gradient(180deg, #F5E6D3 0%, #E8B882 50%, #D4915A 100%)',
                 }}
@@ -181,14 +181,11 @@ const CategoryPage: React.FC = () => {
                 />
                 
                 <div className="bg-white rounded-2xl overflow-hidden relative">
-                  {/* Hero Banner using the uploaded image - restored to original size */}
-                  <div className="relative h-60">
-                    <img 
-                      src="/lovable-uploads/f97d0699-d478-48c9-ae97-a3fdf89b8fd7.png" 
-                      alt="Hero Banner" 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
+                  <img 
+                    src="/lovable-uploads/c5b6b6ed-a922-4759-a3c6-5601da94a808.png" 
+                    alt="Hero Banner" 
+                    className="w-full h-auto object-contain relative z-10" 
+                  />
                 </div>
               </div>
             </div>
