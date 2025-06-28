@@ -11,6 +11,7 @@ interface EthnicBrand {
   backgroundColor: string;
   offerText: string;
   description: string;
+  brandLogo?: string;
 }
 
 const EthnicCollection: React.FC = () => {
@@ -19,31 +20,34 @@ const EthnicCollection: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fallback brands in case API fails - updated with offer information
+  // Updated fallback brands with proper images and brand logos
   const fallbackBrands: EthnicBrand[] = [
     {
-      id: 'hm',
-      name: 'H&M',
-      image: '/lovable-uploads/0cfc2f94-4aca-4dd4-b34a-6af96f00f0dc.png',
+      id: 'libas',
+      name: 'Libas',
+      image: '/lovable-uploads/1b68c23f-a105-429f-9612-6354761b88dc.png',
       backgroundColor: 'from-pink-400 to-pink-600',
       offerText: 'MIN. 70% OFF',
-      description: 'Festive Edge'
+      description: 'Festive Edge',
+      brandLogo: '/lovable-uploads/0cfc2f94-4aca-4dd4-b34a-6af96f00f0dc.png'
     },
     {
-      id: 'jockey',
-      name: 'JOCKEY',
-      image: '/lovable-uploads/0c28e3f9-0e1e-4129-a491-f0751e26c9f2.png',
+      id: 'decathlon',
+      name: 'DECATHLON',
+      image: '/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png',
       backgroundColor: 'from-blue-400 to-blue-600',
       offerText: 'UP TO 70% OFF',
-      description: 'Active Essentials'
+      description: 'Active Essentials',
+      brandLogo: '/lovable-uploads/0c28e3f9-0e1e-4129-a491-f0751e26c9f2.png'
     },
     {
-      id: 'zara',
-      name: 'ZARA',
-      image: '/lovable-uploads/55cac01f-1f21-487e-ab2c-5d1f516f5871.png',
+      id: 'yellow-chimes',
+      name: 'Yellow Chimes',
+      image: '/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png',
       backgroundColor: 'from-orange-400 to-orange-600',
       offerText: 'UNDER 999',
-      description: 'Neck Pieces'
+      description: 'Neck Pieces',
+      brandLogo: '/lovable-uploads/55cac01f-1f21-487e-ab2c-5d1f516f5871.png'
     }
   ];
 
@@ -53,21 +57,21 @@ const EthnicCollection: React.FC = () => {
         setLoading(true);
         const fetchedBrands = await brandService.getBrands();
         
-        // Map the protobuf Brand objects to our EthnicBrand interface
         const mappedBrands: EthnicBrand[] = fetchedBrands.map((brand: Brand, index: number) => ({
           id: brand.primaryKey?.brandId.toString() || `brand-${index}`,
           name: brand.name,
           image: brand.imageUrls[0] || fallbackBrands[index % fallbackBrands.length].image,
           backgroundColor: fallbackBrands[index % fallbackBrands.length].backgroundColor,
           offerText: fallbackBrands[index % fallbackBrands.length].offerText,
-          description: fallbackBrands[index % fallbackBrands.length].description
+          description: fallbackBrands[index % fallbackBrands.length].description,
+          brandLogo: fallbackBrands[index % fallbackBrands.length].brandLogo
         }));
 
         setBrands(mappedBrands.length > 0 ? mappedBrands : fallbackBrands);
       } catch (err) {
         console.error('Failed to fetch brands:', err);
         setError('Failed to load brands');
-        setBrands(fallbackBrands); // Use fallback data
+        setBrands(fallbackBrands);
       } finally {
         setLoading(false);
       }
@@ -145,9 +149,9 @@ const EthnicCollection: React.FC = () => {
             <div
               key={brand.id}
               onClick={() => handleBrandClick(brand.id)}
-              className="flex-shrink-0 w-64 h-80 cursor-pointer group"
+              className="flex-shrink-0 w-64 h-96 cursor-pointer group"
             >
-              {/* Card matching the reference design */}
+              {/* Card matching the exact reference design */}
               <div className="relative w-full h-full bg-white rounded-3xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 border-4 border-green-500">
                 {/* Background image */}
                 <div className="absolute inset-0">
@@ -156,21 +160,31 @@ const EthnicCollection: React.FC = () => {
                     alt={brand.name} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                   />
-                  {/* Overlay for text readability */}
-                  <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                  {/* Dark overlay for text readability */}
+                  <div className="absolute inset-0 bg-black bg-opacity-40"></div>
                 </div>
                 
                 {/* Content overlay */}
                 <div className="relative z-10 p-6 h-full flex flex-col justify-between text-white">
                   {/* Top content - Offer text */}
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{brand.offerText}</h3>
-                    <p className="text-lg opacity-90">{brand.description}</p>
+                  <div className="pt-4">
+                    <h3 className="text-3xl font-bold mb-2 text-white drop-shadow-lg">{brand.offerText}</h3>
+                    <p className="text-lg text-white opacity-90 drop-shadow-md">{brand.description}</p>
                   </div>
                   
-                  {/* Bottom content - Brand logo area */}
-                  <div className="bg-white bg-opacity-95 rounded-2xl p-4 flex items-center justify-center">
-                    <span className="text-gray-900 font-bold text-lg">{brand.name}</span>
+                  {/* Bottom content - Brand logos area */}
+                  <div className="bg-white rounded-2xl p-4 flex items-center justify-center gap-4 min-h-[80px]">
+                    {brand.brandLogo ? (
+                      <div className="flex items-center justify-center w-full">
+                        <img 
+                          src={brand.brandLogo} 
+                          alt={brand.name}
+                          className="max-h-12 max-w-full object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-gray-900 font-bold text-lg">{brand.name}</span>
+                    )}
                   </div>
                 </div>
               </div>
