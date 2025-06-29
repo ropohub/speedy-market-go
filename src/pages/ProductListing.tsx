@@ -4,6 +4,8 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import CategoryHeader from '../components/category/CategoryHeader';
 import NavigationBar from '../components/NavigationBar';
 import ProductGrid from '../components/ProductGrid';
+import { useFilter } from '../contexts/FilterContext';
+import FilterChips from '../components/FilterChips';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -375,6 +377,8 @@ const fetchProductsByTag = async ({
 
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
+  const { selectedFilters, setFilters, getSearchQuery, clearFilters } = useFilter();
+  
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
   const tag = searchParams.get('tag');
@@ -382,7 +386,29 @@ const ProductListPage = () => {
   console.log('ProductListPage - Collection parameter:', collection);
   console.log('ProductListPage - Search parameter:', searchQuery);
   console.log('ProductListPage - Tag parameter:', tag);
-  console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
+  console.log('ProductListPage - Selected filters:', selectedFilters);
+
+  // Initialize filters based on URL parameters
+  useEffect(() => {
+    if (tag && selectedFilters.length === 0) {
+      // Map tag to filter option
+      const tagToFilterMap: { [key: string]: any } = {
+        "Women's Wear": { id: 'women', label: 'Women', tag: "Women's Wear", category: 'gender' },
+        "Men's Wear": { id: 'men', label: 'Men', tag: "Men's Wear", category: 'gender' },
+        "Sports Wear": { id: 'sports-wear', label: 'Sports', tag: "Sports Wear", category: 'style' },
+        "Tank Tops": { id: 'tank-tops', label: 'Tank Tops', tag: 'Tank Tops', category: 'type' },
+        "Crop Tops": { id: 'crop-tops', label: 'Crop Tops', tag: 'Crop Tops', category: 'type' },
+        "Dresses": { id: 'dresses', label: 'Dresses', tag: 'Dresses', category: 'category' },
+        "T-Shirts": { id: 't-shirts', label: 'T-Shirts', tag: 'T-Shirts', category: 'type' },
+        "Jeans": { id: 'jeans', label: 'Jeans', tag: 'Jeans', category: 'category' },
+      };
+      
+      const filterOption = tagToFilterMap[tag];
+      if (filterOption) {
+        setFilters([filterOption]);
+      }
+    }
+  }, [tag, selectedFilters.length, setFilters]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -390,7 +416,12 @@ const ProductListPage = () => {
   }, []);
 
   const getQueryFn = () => {
-    if (searchQuery) {
+    const filterQuery = getSearchQuery();
+    
+    if (filterQuery) {
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchSearchResults({ pageParam, searchQuery: filterQuery });
+    } else if (searchQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchSearchResults({ pageParam, searchQuery });
     } else if (tag) {
@@ -405,7 +436,11 @@ const ProductListPage = () => {
   };
 
   const getQueryKey = () => {
-    if (searchQuery) {
+    const filterQuery = getSearchQuery();
+    
+    if (filterQuery) {
+      return ['shopifyFilteredProducts', filterQuery];
+    } else if (searchQuery) {
       return ['shopifySearchResults', searchQuery];
     } else if (tag) {
       return ['shopifyProductsByTag', tag];
@@ -471,9 +506,11 @@ const ProductListPage = () => {
 
   console.log('ProductListPage - Products count:', products.length);
 
-  // Determine the header title based on search, tag, collection, or default
+  // Determine the header title based on filters, search, tag, collection, or default
   const getHeaderTitle = () => {
-    if (searchQuery) {
+    if (selectedFilters.length > 0) {
+      return selectedFilters.map(f => f.label).join(' + ');
+    } else if (searchQuery) {
       return `Search: ${searchQuery}`;
     } else if (tag) {
       return tag.replace("'s Wear", "").replace(" Wear", "");
@@ -508,15 +545,22 @@ const ProductListPage = () => {
       <CategoryHeader title={getHeaderTitle()} />
       <div className="pt-16">
         <NavigationBar />
+        <FilterChips />
         <div className="mt-4">
-          {(searchQuery || tag) && products.length === 0 && !isLoading ? (
+          {((searchQuery || tag || selectedFilters.length > 0) && products.length === 0 && !isLoading) ? (
             <div className="text-center py-16 px-4">
               <p className="text-gray-500 text-lg">
-                {searchQuery ? `No products found for "${searchQuery}"` : `No products found for "${tag}"`}
+                No products found for the selected filters
               </p>
               <p className="text-gray-400 mt-2">
-                {searchQuery ? "Try searching with different keywords" : "Try browsing other categories"}
+                Try adjusting your filters or browse other categories
               </p>
+              <button
+                onClick={clearFilters}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Clear Filters
+              </button>
             </div>
           ) : (
             <ProductGrid products={products} isLoading={isLoading && products.length === 0} />

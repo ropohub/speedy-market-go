@@ -8,6 +8,7 @@ import TopSellingRightNow from '../components/TopSellingRightNow';
 import TrendingRightNow from '../components/TrendingRightNow';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 
 interface LegacyProduct {
   id: string;
@@ -24,6 +25,7 @@ interface CartItem extends LegacyProduct {
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
+  const { setFilters, clearFilters } = useFilter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
   const handleAddToCart = (product: LegacyProduct) => {
@@ -54,23 +56,25 @@ const Index: React.FC = () => {
   };
   
   const handleCategoryClick = (categoryName: string) => {
-    // Map category names to Shopify tags
-    const categoryToTagMap: { [key: string]: string } = {
-      'Women': "Women's Wear",
-      'Men': "Men's Wear", // Add other mappings as needed
-      'Sports': "Sports Wear",
-      'Accessories': "Accessories",
-      'Home': "Home",
-      'Kids': "Kids Wear"
+    // Clear existing filters first
+    clearFilters();
+    
+    // Map category names to filter options
+    const categoryToFilterMap: { [key: string]: any } = {
+      'Women': { id: 'women', label: 'Women', tag: "Women's Wear", category: 'gender' },
+      'Men': { id: 'men', label: 'Men', tag: "Men's Wear", category: 'gender' },
+      'Sports': { id: 'sports-wear', label: 'Sports', tag: "Sports Wear", category: 'style' },
+      'Accessories': { id: 'accessories', label: 'Accessories', tag: "Accessories", category: 'category' },
+      'Home': { id: 'home', label: 'Home', tag: "Home", category: 'category' },
+      'Kids': { id: 'kids', label: 'Kids', tag: "Kids Wear", category: 'gender' }
     };
     
-    const tag = categoryToTagMap[categoryName];
-    if (tag) {
-      navigate(`/products?tag=${encodeURIComponent(tag)}`);
-    } else {
-      // Fallback to general products page
-      navigate('/products');
+    const filterOption = categoryToFilterMap[categoryName];
+    if (filterOption) {
+      setFilters([filterOption]);
     }
+    
+    navigate('/products');
   };
 
   const handleShopNowClick = () => {
