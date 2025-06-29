@@ -55,15 +55,14 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading = false }
     <div className="px-4 py-6">
       <div className="grid grid-cols-2 gap-4 max-w-6xl mx-auto">
         {products.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              onAddToCart={() => {
-                console.log('Added to cart:', product);
-              }}
-              onClick={handleProductClick}
-            />
-          ))}
+          <ProductCard 
+            key={product.id} 
+            product={product} 
+            onAddToCart={() => {}} // Empty function since we're removing this functionality
+            onClick={handleProductClick}
+            hideAddToCart={true} // New prop to hide add to cart button
+          />
+        ))}
       </div>
     </div>
   );

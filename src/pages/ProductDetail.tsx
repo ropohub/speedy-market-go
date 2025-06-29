@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +7,44 @@ import { Button } from '../components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { auth } from '../firebase';
 import { cartService } from '../api/cartClient';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
+import CartIcon from '../components/header/CartIcon';
+
+// Interfaces for Shopify data
+interface ShopifyImageNode {
+  url: string;
+  altText: string | null;
+}
+
+interface ShopifyPrice {
+  amount: string;
+  currencyCode: string;
+}
+
+interface ShopifyVariantNode {
+  id: string;
+  title: string;
+  price: ShopifyPrice;
+  image: ShopifyImageNode | null;
+  selectedOptions: {
+    name: string;
+    value: string;
+  }[];
+}
+
+interface ShopifyProduct {
+  id: string;
+  title: string;
+  descriptionHtml: string;
+  vendor: string;
+  options: {
+    id: string;
+    name: string;
+    values: string[];
+  }[];
+  images: { edges: { node: ShopifyImageNode }[] };
+  variants: { edges: { node: ShopifyVariantNode }[] };
+}
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -56,42 +93,6 @@ const getProductByIdQuery = `
   }
 `;
 
-// Interfaces for Shopify data
-interface ShopifyImageNode {
-  url: string;
-  altText: string | null;
-}
-
-interface ShopifyPrice {
-  amount: string;
-  currencyCode: string;
-}
-
-interface ShopifyVariantNode {
-  id: string;
-  title: string;
-  price: ShopifyPrice;
-  image: ShopifyImageNode | null;
-  selectedOptions: {
-    name: string;
-    value: string;
-  }[];
-}
-
-interface ShopifyProduct {
-  id: string;
-  title: string;
-  descriptionHtml: string;
-  vendor: string;
-  options: {
-    id: string;
-    name: string;
-    values: string[];
-  }[];
-  images: { edges: { node: ShopifyImageNode }[] };
-  variants: { edges: { node: ShopifyVariantNode }[] };
-}
-
 const fetchProductFromShopify = async (productId: string): Promise<ShopifyProduct> => {
   const fullProductId = `gid://shopify/Product/${productId}`;
   const response = await fetch(SHOPIFY_API_URL, {
@@ -138,7 +139,7 @@ const ProductDetailPage = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [sizeValidationShake, setSizeValidationShake] = useState(false);
+  const [showSizeDialog, setShowSizeDialog] = useState(false);
 
   useEffect(() => {
     if (colorOption?.values.length && !selectedColor) {
@@ -153,7 +154,6 @@ const ProductDetailPage = () => {
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
-    setSizeValidationShake(false);
   };
 
   const handleBack = () => {
@@ -182,13 +182,7 @@ const ProductDetailPage = () => {
 
   const handleAddToBag = async () => {
     if (sizeOption && !selectedSize) {
-      setSizeValidationShake(true);
-      toast({
-        title: "Size Required",
-        description: "Please select a size before adding to bag",
-        variant: "destructive",
-      });
-      setTimeout(() => setSizeValidationShake(false), 600);
+      setShowSizeDialog(true);
       return;
     }
 
@@ -355,13 +349,7 @@ const ProductDetailPage = () => {
         </button>
         <h1 className="text-lg font-medium truncate max-w-[60vw]">{product.title}</h1>
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => navigate('/cart')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Go to cart"
-          >
-            <ShoppingCart size={20} />
-          </button>
+          <CartIcon />
         </div>
       </header>
   
@@ -448,9 +436,7 @@ const ProductDetailPage = () => {
                 </span>
               )}
             </div>
-            <div className={`flex gap-3 overflow-x-auto scrollbar-hide p-1 transition-all duration-300 ${
-              sizeValidationShake ? 'animate-bounce' : ''
-            }`}>
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide p-1">
               {availableSizes.map((size) => (
                 <button
                   key={size}
@@ -481,17 +467,27 @@ const ProductDetailPage = () => {
         </div>
         <Button 
           onClick={handleAddToBag}
-          className={`px-8 py-3 text-base font-medium transition-all duration-200 ${
-            (!sizeOption || selectedSize)
-              ? 'bg-black text-white hover:bg-gray-800 hover:scale-105' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
-          }`}
+          className="px-8 py-3 text-base font-medium bg-black text-white hover:bg-gray-800 hover:scale-105 transition-all duration-200"
           size="lg"
-          disabled={!!sizeOption && !selectedSize}
         >
           ADD TO BAG
         </Button>
       </div>
+
+      {/* Size Selection Dialog */}
+      <Dialog open={showSizeDialog} onOpenChange={setShowSizeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Size Required</DialogTitle>
+            <DialogDescription>
+              Please select a size before adding this item to your bag.
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setShowSizeDialog(false)} className="mt-4">
+            Got it
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

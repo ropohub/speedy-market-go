@@ -8,6 +8,7 @@ interface ProductImageProps {
   onAddToCart: (e: React.MouseEvent) => void;
   showHeartIcon?: boolean;
   itemNumber?: number;
+  hideAddToCart?: boolean;
 }
 
 const ProductCardImage: React.FC<ProductImageProps> = ({
@@ -16,6 +17,7 @@ const ProductCardImage: React.FC<ProductImageProps> = ({
   onAddToCart,
   showHeartIcon = false,
   itemNumber,
+  hideAddToCart = false,
 }) => {
   return (
     <div className="relative overflow-hidden rounded-t-lg">
@@ -43,13 +45,15 @@ const ProductCardImage: React.FC<ProductImageProps> = ({
         </div>
       )}
       
-      <button
-        onClick={onAddToCart}
-        className="absolute bottom-2 right-2 bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-orange-50"
-        aria-label="Add to cart"
-      >
-        <Plus className="w-4 h-4 text-orange-500" />
-      </button>
+      {!hideAddToCart && (
+        <button
+          onClick={onAddToCart}
+          className="absolute bottom-2 right-2 bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-orange-50"
+          aria-label="Add to cart"
+        >
+          <Plus className="w-4 h-4 text-orange-500" />
+        </button>
+      )}
     </div>
   );
 }

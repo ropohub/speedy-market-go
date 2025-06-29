@@ -22,6 +22,7 @@ interface ProductCardProps {
   onClick?: (productId: string) => void;
   showHeartIcon?: boolean;
   itemNumber?: number;
+  hideAddToCart?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ 
@@ -29,7 +30,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart, 
   onClick, 
   showHeartIcon = false,
-  itemNumber
+  itemNumber,
+  hideAddToCart = false
 }) => {
   const navigate = useNavigate();
   const firebaseUser = auth.currentUser;
@@ -42,6 +44,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    if (hideAddToCart) return;
 
     if (!firebaseUser) {
       navigate('/auth', { state: { from: window.location.pathname } });
@@ -85,6 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onAddToCart={handleAddToCart}
         showHeartIcon={showHeartIcon}
         itemNumber={itemNumber}
+        hideAddToCart={hideAddToCart}
       />
       <ProductCardInfo 
         brand={product.brand}
