@@ -62,19 +62,16 @@ const Index: React.FC = () => {
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [{
     name: 'Women',
-    image: '/lovable-uploads/b95e5ab2-e9a2-4f49-9aa0-8ac2e55fd137.png'
+    image: 'http://35.241.33.76/women1.jpg'
   }, {
     name: 'Men',
-    image: '/lovable-uploads/9a9a6676-d328-415f-8f18-d8475bb4a342.png'
+    image: 'http://35.241.33.76/men1.jpg'
   }, {
-    name: 'Beauty',
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=150&h=150&fit=crop'
+    name: 'Sports',
+    image: 'http://35.241.33.76/sports1.jpeg'
   }, {
     name: 'Accessories',
     image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop'
-  }, {
-    name: 'Footwear',
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop'
   }, {
     name: 'Home',
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=150&h=150&fit=crop'
@@ -85,14 +82,14 @@ const Index: React.FC = () => {
 
   // Main category squares data for the promotional section with appropriate images
   const mainCategorySquares = [{
-    name: 'Personal Care',
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop'
+    name: 'Western Wear',
+    image: 'http://35.241.33.76/women2.jpg'
   }, {
-    name: 'Wardrobe Basics',
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=200&h=200&fit=crop'
+    name: 'Formal Wear',
+    image: 'http://35.241.33.76/formal1.jpeg'
   }, {
-    name: 'Home Finds',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=200&fit=crop'
+    name: 'Inner Wear',
+    image: 'http://35.241.33.76/innerwear1.jpg'
   }, {
     name: 'Comfy Footwear',
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'
