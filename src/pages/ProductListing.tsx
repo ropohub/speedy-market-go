@@ -80,6 +80,42 @@ const getCollectionProductsQuery = `
   }
 `;
 
+const searchProductsQuery = `
+  query SearchProducts($searchQuery: String!, $first: Int!, $after: String) {
+    search(query: $searchQuery, first: $first, after: $after, types: [PRODUCT]) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ... on Product {
+            id
+            title
+            handle
+            vendor
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 interface ShopifyImage {
   url: string;
   altText: string | null;
@@ -215,17 +251,84 @@ const fetchCollectionProductsFromShopify = async ({
   throw new Error("Unexpected response structure from Shopify");
 };
 
+const fetchSearchResults = async ({ 
+  pageParam = null, 
+  searchQuery 
+}: { 
+  pageParam?: string | null;
+  searchQuery: string;
+}) => {
+  console.log(`Searching for: "${searchQuery}"`);
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query: searchProductsQuery,
+      variables: {
+        searchQuery,
+        first: 10,
+        after: pageParam,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error("Shopify Search API Error:", errorBody);
+    throw new Error('Failed to search products from Shopify.');
+  }
+
+  const json = await response.json();
+  console.log('Search API Response:', json);
+  
+  if (json.data?.search) {
+      console.log(`Found ${json.data.search.edges.length} products for search`);
+      return json.data.search;
+  }
+  
+  console.error("Unexpected Shopify Search API response structure:", json);
+  throw new Error("Unexpected response structure from Shopify");
+};
+
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
   const collection = searchParams.get('collection');
+  const searchQuery = searchParams.get('search');
   
   console.log('ProductListPage - Collection parameter:', collection);
+  console.log('ProductListPage - Search parameter:', searchQuery);
   console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Determine which query function to use
+  const getQueryFn = () => {
+    if (searchQuery) {
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchSearchResults({ pageParam, searchQuery });
+    } else if (collection) {
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection });
+    } else {
+      return fetchProductsFromShopify;
+    }
+  };
+
+  const getQueryKey = () => {
+    if (searchQuery) {
+      return ['shopifySearchResults', searchQuery];
+    } else if (collection) {
+      return ['shopifyCollectionProducts', collection];
+    } else {
+      return ['shopifyProducts'];
+    }
+  };
 
   const {
     data,
@@ -235,10 +338,8 @@ const ProductListPage = () => {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: collection ? ['shopifyCollectionProducts', collection] : ['shopifyProducts'],
-    queryFn: collection 
-      ? ({ pageParam }) => fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection })
-      : fetchProductsFromShopify,
+    queryKey: getQueryKey(),
+    queryFn: getQueryFn(),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => {
       return lastPage.pageInfo.hasNextPage ? lastPage.pageInfo.endCursor : undefined;
@@ -284,9 +385,11 @@ const ProductListPage = () => {
 
   console.log('ProductListPage - Products count:', products.length);
 
-  // Determine the header title based on collection
+  // Determine the header title based on search, collection, or default
   const getHeaderTitle = () => {
-    if (collection) {
+    if (searchQuery) {
+      return `Search: ${searchQuery}`;
+    } else if (collection) {
       return collection.charAt(0).toUpperCase() + collection.slice(1).replace(/-/g, ' ');
     }
     return 'Products';
@@ -301,25 +404,37 @@ const ProductListPage = () => {
           {collection && (
             <p className="text-gray-600">Collection: {collection}</p>
           )}
+          {searchQuery && (
+            <p className="text-gray-600">Search: {searchQuery}</p>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
       <CategoryHeader title={getHeaderTitle()} />
       <div className="pt-16">
         <NavigationBar />
-        <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
-        
-        {/* This invisible div will trigger loading more products */}
-        <div ref={loadMoreRef} />
-
-        <div className="flex justify-center py-8">
-          {isFetchingNextPage && (
-            <p>Loading more...</p>
+        <div className="bg-white rounded-t-3xl mt-4">
+          {searchQuery && products.length === 0 && !isLoading ? (
+            <div className="text-center py-16 px-4">
+              <p className="text-gray-500 text-lg">No products found for "{searchQuery}"</p>
+              <p className="text-gray-400 mt-2">Try searching with different keywords</p>
+            </div>
+          ) : (
+            <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
           )}
+          
+          {/* This invisible div will trigger loading more products */}
+          <div ref={loadMoreRef} />
+
+          <div className="flex justify-center py-8">
+            {isFetchingNextPage && (
+              <p>Loading more...</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
