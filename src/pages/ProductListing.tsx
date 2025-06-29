@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
-import Header from '../components/Header';
+import CategoryHeader from '../components/category/CategoryHeader';
 import NavigationBar from '../components/NavigationBar';
 import ProductGrid from '../components/ProductGrid';
 
@@ -284,6 +284,14 @@ const ProductListPage = () => {
 
   console.log('ProductListPage - Products count:', products.length);
 
+  // Determine the header title based on collection
+  const getHeaderTitle = () => {
+    if (collection) {
+      return collection.charAt(0).toUpperCase() + collection.slice(1).replace(/-/g, ' ');
+    }
+    return 'Products';
+  };
+
   if (error) {
     console.error('ProductListPage - Error:', error);
     return (
@@ -300,17 +308,19 @@ const ProductListPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      <NavigationBar />
-      <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
-      
-      {/* This invisible div will trigger loading more products */}
-      <div ref={loadMoreRef} />
+      <CategoryHeader title={getHeaderTitle()} />
+      <div className="pt-16">
+        <NavigationBar />
+        <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
+        
+        {/* This invisible div will trigger loading more products */}
+        <div ref={loadMoreRef} />
 
-      <div className="flex justify-center py-8">
-        {isFetchingNextPage && (
-          <p>Loading more...</p>
-        )}
+        <div className="flex justify-center py-8">
+          {isFetchingNextPage && (
+            <p>Loading more...</p>
+          )}
+        </div>
       </div>
     </div>
   );

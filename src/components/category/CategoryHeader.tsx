@@ -16,6 +16,10 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
     navigate('/');
   };
 
+  const handleSearchClick = () => {
+    navigate('/search-page');
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
       <div className="flex items-center justify-between px-4 py-3">
@@ -36,7 +40,9 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
         
         {/* Right side - Icons */}
         <div className="flex items-center gap-2">
-          <Search className="w-6 h-6 text-gray-900" />
+          <button onClick={handleSearchClick}>
+            <Search className="w-6 h-6 text-gray-900" />
+          </button>
           <NotificationIconWithBadge badgeCount={2} />
           <div className="relative">
             <ShoppingBag className="w-6 h-6 text-gray-900" />
