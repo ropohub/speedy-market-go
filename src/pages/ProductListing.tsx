@@ -6,7 +6,7 @@ import NavigationBar from '../components/NavigationBar';
 import ProductGrid from '../components/ProductGrid';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
-const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/admin/api/2025-04/graphql.json';
+const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
 
 const getProductsQuery = `
   query GetProducts($first: Int!, $after: String) {
