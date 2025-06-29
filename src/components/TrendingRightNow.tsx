@@ -7,6 +7,7 @@ interface TrendingCategory {
   id: string;
   name: string;
   image: string;
+  tag: string;
 }
 
 const TrendingRightNow: React.FC = () => {
@@ -15,88 +16,104 @@ const TrendingRightNow: React.FC = () => {
   const trendingCategories: TrendingCategory[] = [
     {
       id: '1',
-      name: 'Monochrome Fits',
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+      name: 'Oversized Tees',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop',
+      tag: 'Oversized Tees'
     },
     {
       id: '2',
-      name: 'Oversized Tees',
-      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop'
+      name: 'Crop Tops',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      tag: 'Crop Tops'
     },
     {
       id: '3',
-      name: 'Crop Tops',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop'
+      name: 'Dresses',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop',
+      tag: 'Dresses'
     },
     {
       id: '4',
-      name: 'Wide Leg Pants',
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+      name: 'Jeans',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      tag: 'Jeans'
     },
     {
       id: '5',
-      name: 'Floral Dresses',
-      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop'
+      name: 'Sports Wear',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      tag: 'Sports Wear'
     },
     {
       id: '6',
-      name: 'Court Sneakers',
-      image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=400&fit=crop'
+      name: 'T-Shirts',
+      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop',
+      tag: 'T-Shirts'
     },
     {
       id: '7',
-      name: 'Polo T-Shirts',
-      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop'
+      name: 'Shorts',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      tag: 'Shorts'
     },
     {
       id: '8',
-      name: 'Floral Tops',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop'
+      name: 'Jackets',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop',
+      tag: 'Jackets'
     },
     {
       id: '9',
-      name: 'Denim Jackets',
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+      name: 'Co-ords',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      tag: 'Co-ords'
     },
     {
       id: '10',
-      name: 'Maxi Dresses',
-      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop'
+      name: 'Mini Skirts',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop',
+      tag: 'Mini Skirts'
     },
     {
       id: '11',
-      name: 'Bomber Jackets',
-      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop'
+      name: 'Cargos',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      tag: 'Cargos'
     },
     {
       id: '12',
-      name: 'Mini Skirts',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop'
+      name: 'Tank Tops',
+      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop',
+      tag: 'Tank Tops'
     },
     {
       id: '13',
-      name: 'Cargo Pants',
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop'
+      name: 'Trousers',
+      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=400&fit=crop',
+      tag: 'Trousers'
     },
     {
       id: '14',
-      name: 'Tank Tops',
-      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop'
+      name: 'Sweatshirts',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop',
+      tag: 'Sweatshirts'
     },
     {
       id: '15',
-      name: 'Midi Dresses',
-      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop'
+      name: 'Gen-Z Fashion',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop',
+      tag: 'Gen-Z Fashion'
     },
     {
       id: '16',
-      name: 'Hoodies',
-      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop'
+      name: 'Casual Wear',
+      image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=400&fit=crop',
+      tag: 'Casual Wear'
     }
   ];
 
-  const handleCategoryClick = (categoryName: string) => {
-    navigate(`/category/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
+  const handleCategoryClick = (tag: string) => {
+    navigate(`/products?tag=${encodeURIComponent(tag)}`);
   };
 
   // Split categories into two rows of 8 each
@@ -128,7 +145,7 @@ const TrendingRightNow: React.FC = () => {
               {firstRowCategories.map((category) => (
                 <div
                   key={category.id}
-                  onClick={() => handleCategoryClick(category.name)}
+                  onClick={() => handleCategoryClick(category.tag)}
                   className="flex flex-col items-center cursor-pointer group flex-shrink-0"
                 >
                   <div className="w-16 aspect-[3/4] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
@@ -152,7 +169,7 @@ const TrendingRightNow: React.FC = () => {
               {secondRowCategories.map((category) => (
                 <div
                   key={category.id}
-                  onClick={() => handleCategoryClick(category.name)}
+                  onClick={() => handleCategoryClick(category.tag)}
                   className="flex flex-col items-center cursor-pointer group flex-shrink-0"
                 >
                   <div className="w-16 aspect-[3/4] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-300 bg-gray-100">
