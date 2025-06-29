@@ -2,6 +2,7 @@
 import React from 'react';
 import { User, Grid3X3, House } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface CartItem {
   id: string;
@@ -26,9 +27,21 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoading } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
