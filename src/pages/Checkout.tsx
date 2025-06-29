@@ -13,7 +13,7 @@ import { auth } from '../firebase';
 import Auth from './Auth';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
-const SHOPIFY_API_URL = 'https://dripzyy.com/admin/api/2024-04/graphql.json';
+const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/admin/api/2025-04/graphql.json';
 
 interface CustomerAddress {
   id: string;
