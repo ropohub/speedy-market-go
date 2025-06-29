@@ -62,13 +62,13 @@ const Index: React.FC = () => {
   // Category squares data with 7 categories for horizontal scroll
   const categorySquares = [{
     name: 'Women',
-    image: 'http://35.241.33.76/women1.jpg'
+    image: 'https://cdn.dripzyy.com/women1.jpg'
   }, {
     name: 'Men',
-    image: 'http://35.241.33.76/men1.jpg'
+    image: 'https://cdn.dripzyy.com/men1.jpg'
   }, {
     name: 'Sports',
-    image: 'http://35.241.33.76/sports1.jpeg'
+    image: 'https://cdn.dripzyy.com/sports1.jpeg'
   }, {
     name: 'Accessories',
     image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop'
@@ -83,13 +83,13 @@ const Index: React.FC = () => {
   // Main category squares data for the promotional section with appropriate images
   const mainCategorySquares = [{
     name: 'Western Wear',
-    image: 'http://35.241.33.76/women2.jpg'
+    image: 'https://cdn.dripzyy.com/women2.jpg'
   }, {
     name: 'Formal Wear',
-    image: 'http://35.241.33.76/formal1.jpeg'
+    image: 'https://cdn.dripzyy.com/formal1.jpeg'
   }, {
     name: 'Inner Wear',
-    image: 'http://35.241.33.76/innerwear1.jpg'
+    image: 'https://cdn.dripzyy.com/innerwear1.jpg'
   }, {
     name: 'Comfy Footwear',
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'
