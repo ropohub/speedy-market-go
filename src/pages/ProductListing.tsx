@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 import CategoryHeader from '../components/category/CategoryHeader';
 import NavigationBar from '../components/NavigationBar';
 import ProductGrid from '../components/ProductGrid';
+import FilterChips from '../components/FilterChips';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -375,6 +377,7 @@ const fetchProductsByTag = async ({
 
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
+  const { filterState, setFilters, getQueryString } = useFilter();
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
   const tag = searchParams.get('tag');
@@ -382,7 +385,31 @@ const ProductListPage = () => {
   console.log('ProductListPage - Collection parameter:', collection);
   console.log('ProductListPage - Search parameter:', searchQuery);
   console.log('ProductListPage - Tag parameter:', tag);
-  console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
+  console.log('ProductListPage - Filter state:', filterState);
+
+  // Initialize filters based on URL parameters
+  useEffect(() => {
+    const initialTags: string[] = [];
+    
+    if (searchQuery) {
+      // Parse search query for tags
+      const tagMatches = searchQuery.match(/tag:([^"]+?)(?:\s|$)/g);
+      if (tagMatches) {
+        tagMatches.forEach(match => {
+          const tag = match.replace('tag:', '').trim();
+          if (tag && !initialTags.includes(tag)) {
+            initialTags.push(tag);
+          }
+        });
+      }
+    } else if (tag) {
+      initialTags.push(tag);
+    }
+    
+    if (initialTags.length > 0) {
+      setFilters(initialTags);
+    }
+  }, [searchQuery, tag, setFilters]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -390,9 +417,12 @@ const ProductListPage = () => {
   }, []);
 
   const getQueryFn = () => {
-    if (searchQuery) {
+    // Use filter state for query if available, otherwise fall back to URL params
+    const currentQuery = getQueryString() || searchQuery;
+    
+    if (currentQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchSearchResults({ pageParam, searchQuery });
+        fetchSearchResults({ pageParam, searchQuery: currentQuery });
     } else if (tag) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchProductsByTag({ pageParam, tag });
@@ -405,8 +435,10 @@ const ProductListPage = () => {
   };
 
   const getQueryKey = () => {
-    if (searchQuery) {
-      return ['shopifySearchResults', searchQuery];
+    const currentQuery = getQueryString() || searchQuery;
+    
+    if (currentQuery) {
+      return ['shopifySearchResults', currentQuery];
     } else if (tag) {
       return ['shopifyProductsByTag', tag];
     } else if (collection) {
@@ -423,6 +455,7 @@ const ProductListPage = () => {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    refetch,
   } = useInfiniteQuery({
     queryKey: getQueryKey(),
     queryFn: getQueryFn(),
@@ -431,6 +464,11 @@ const ProductListPage = () => {
       return lastPage.pageInfo.hasNextPage ? lastPage.pageInfo.endCursor : undefined;
     },
   });
+
+  const handleFilterChange = () => {
+    console.log('Filter changed, refetching...');
+    refetch();
+  };
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -492,12 +530,6 @@ const ProductListPage = () => {
           {collection && (
             <p className="text-gray-600">Collection: {collection}</p>
           )}
-          {searchQuery && (
-            <p className="text-gray-600">Search: {searchQuery}</p>
-          )}
-          {tag && (
-            <p className="text-gray-600">Tag: {tag}</p>
-          )}
         </div>
       </div>
     );
@@ -508,14 +540,15 @@ const ProductListPage = () => {
       <CategoryHeader title={getHeaderTitle()} />
       <div className="pt-16">
         <NavigationBar />
+        <FilterChips onFilterChange={handleFilterChange} />
         <div className="mt-4">
-          {(searchQuery || tag) && products.length === 0 && !isLoading ? (
+          {filterState.selectedTags.length > 0 && products.length === 0 && !isLoading ? (
             <div className="text-center py-16 px-4">
               <p className="text-gray-500 text-lg">
-                {searchQuery ? `No products found for "${searchQuery}"` : `No products found for "${tag}"`}
+                No products found for the selected filters
               </p>
               <p className="text-gray-400 mt-2">
-                {searchQuery ? "Try searching with different keywords" : "Try browsing other categories"}
+                Try removing some filters or browse other categories
               </p>
             </div>
           ) : (

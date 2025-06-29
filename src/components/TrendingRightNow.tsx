@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface TrendingCategory {
@@ -13,6 +14,7 @@ interface TrendingCategory {
 
 const TrendingRightNow: React.FC = () => {
   const navigate = useNavigate();
+  const { setFilters } = useFilter();
   
   const trendingCategories: TrendingCategory[] = [
     {
@@ -130,6 +132,10 @@ const TrendingRightNow: React.FC = () => {
   ];
 
   const handleCategoryClick = (category: TrendingCategory) => {
+    // Set both category tag and gender tag in filters
+    const tags = [category.tag, category.genderTag];
+    setFilters(tags);
+    
     // Create search query with AND condition for both category tag and gender tag
     const searchQuery = `tag:${category.tag} AND tag:${category.genderTag}`;
     navigate(`/products?search=${encodeURIComponent(searchQuery)}`);

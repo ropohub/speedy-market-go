@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { FilterProvider } from "./contexts/FilterContext";
 import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
@@ -24,25 +25,27 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/category/:categoryName" element={<CategoryPage />} />
-            <Route path="/products" element={<ProductListing />} />
-            <Route path="/products/:category/:subcategory" element={<ProductListing />} />
-            <Route path="/product/:productId" element={<ProductDetail />} />
-            <Route path="/search-page" element={<SearchPage />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <FilterProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/category/:categoryName" element={<CategoryPage />} />
+              <Route path="/products" element={<ProductListing />} />
+              <Route path="/products/:category/:subcategory" element={<ProductListing />} />
+              <Route path="/product/:productId" element={<ProductDetail />} />
+              <Route path="/search-page" element={<SearchPage />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </FilterProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

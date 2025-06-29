@@ -8,6 +8,7 @@ import TopSellingRightNow from '../components/TopSellingRightNow';
 import TrendingRightNow from '../components/TrendingRightNow';
 import ProductYouCantMiss from '../components/ProductYouCantMiss';
 import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 
 interface LegacyProduct {
   id: string;
@@ -24,6 +25,7 @@ interface CartItem extends LegacyProduct {
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
+  const { setFilters } = useFilter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
   const handleAddToCart = (product: LegacyProduct) => {
@@ -57,7 +59,7 @@ const Index: React.FC = () => {
     // Map category names to Shopify tags
     const categoryToTagMap: { [key: string]: string } = {
       'Women': "Women's Wear",
-      'Men': "Men's Wear", // Add other mappings as needed
+      'Men': "Men's Wear",
       'Sports': "Sports Wear",
       'Accessories': "Accessories",
       'Home': "Home",
@@ -66,9 +68,9 @@ const Index: React.FC = () => {
     
     const tag = categoryToTagMap[categoryName];
     if (tag) {
+      setFilters([tag]);
       navigate(`/products?tag=${encodeURIComponent(tag)}`);
     } else {
-      // Fallback to general products page
       navigate('/products');
     }
   };
