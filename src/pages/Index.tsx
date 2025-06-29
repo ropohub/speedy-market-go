@@ -25,6 +25,7 @@ interface CartItem extends LegacyProduct {
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  
   const handleAddToCart = (product: LegacyProduct) => {
     const existingItem = cartItems.find(item => item.id === product.id);
     if (existingItem) {
@@ -51,8 +52,25 @@ const Index: React.FC = () => {
   const handleRemoveCartItem = (id: string) => {
     setCartItems(cartItems.filter(item => item.id !== id));
   };
+  
   const handleCategoryClick = (categoryName: string) => {
-    navigate(`/category/${categoryName.toLowerCase()}`);
+    // Map category names to Shopify tags
+    const categoryToTagMap: { [key: string]: string } = {
+      'Women': "Women's Wear",
+      'Men': "Men's Wear", // Add other mappings as needed
+      'Sports': "Sports Wear",
+      'Accessories': "Accessories",
+      'Home': "Home",
+      'Kids': "Kids Wear"
+    };
+    
+    const tag = categoryToTagMap[categoryName];
+    if (tag) {
+      navigate(`/products?tag=${encodeURIComponent(tag)}`);
+    } else {
+      // Fallback to general products page
+      navigate('/products');
+    }
   };
 
   const handleShopNowClick = () => {

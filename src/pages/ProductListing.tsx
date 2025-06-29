@@ -116,6 +116,42 @@ const searchProductsQuery = `
   }
 `;
 
+const getProductsByTagQuery = `
+  query GetProductsByTag($tagQuery: String!, $first: Int!, $after: String) {
+    search(query: $tagQuery, first: $first, after: $after, types: [PRODUCT]) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ... on Product {
+            id
+            title
+            handle
+            vendor
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 interface ShopifyImage {
   url: string;
   altText: string | null;
@@ -293,13 +329,59 @@ const fetchSearchResults = async ({
   throw new Error("Unexpected response structure from Shopify");
 };
 
+const fetchProductsByTag = async ({ 
+  pageParam = null, 
+  tag 
+}: { 
+  pageParam?: string | null;
+  tag: string;
+}) => {
+  console.log(`Searching for products with tag: "${tag}"`);
+  const tagQuery = `tag:${tag}`;
+  
+  const response = await fetch(SHOPIFY_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query: getProductsByTagQuery,
+      variables: {
+        tagQuery,
+        first: 10,
+        after: pageParam,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error("Shopify Tag Search API Error:", errorBody);
+    throw new Error('Failed to search products by tag from Shopify.');
+  }
+
+  const json = await response.json();
+  console.log('Tag Search API Response:', json);
+  
+  if (json.data?.search) {
+      console.log(`Found ${json.data.search.edges.length} products for tag "${tag}"`);
+      return json.data.search;
+  }
+  
+  console.error("Unexpected Shopify Tag Search API response structure:", json);
+  throw new Error("Unexpected response structure from Shopify");
+};
+
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
+  const tag = searchParams.get('tag');
   
   console.log('ProductListPage - Collection parameter:', collection);
   console.log('ProductListPage - Search parameter:', searchQuery);
+  console.log('ProductListPage - Tag parameter:', tag);
   console.log('ProductListPage - All search params:', Object.fromEntries(searchParams.entries()));
 
   // Scroll to top when component mounts
@@ -311,6 +393,9 @@ const ProductListPage = () => {
     if (searchQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchSearchResults({ pageParam, searchQuery });
+    } else if (tag) {
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchProductsByTag({ pageParam, tag });
     } else if (collection) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection });
@@ -322,6 +407,8 @@ const ProductListPage = () => {
   const getQueryKey = () => {
     if (searchQuery) {
       return ['shopifySearchResults', searchQuery];
+    } else if (tag) {
+      return ['shopifyProductsByTag', tag];
     } else if (collection) {
       return ['shopifyCollectionProducts', collection];
     } else {
@@ -384,10 +471,12 @@ const ProductListPage = () => {
 
   console.log('ProductListPage - Products count:', products.length);
 
-  // Determine the header title based on search, collection, or default
+  // Determine the header title based on search, tag, collection, or default
   const getHeaderTitle = () => {
     if (searchQuery) {
       return `Search: ${searchQuery}`;
+    } else if (tag) {
+      return tag.replace("'s Wear", "").replace(" Wear", "");
     } else if (collection) {
       return collection.charAt(0).toUpperCase() + collection.slice(1).replace(/-/g, ' ');
     }
@@ -406,6 +495,9 @@ const ProductListPage = () => {
           {searchQuery && (
             <p className="text-gray-600">Search: {searchQuery}</p>
           )}
+          {tag && (
+            <p className="text-gray-600">Tag: {tag}</p>
+          )}
         </div>
       </div>
     );
@@ -417,10 +509,14 @@ const ProductListPage = () => {
       <div className="pt-16">
         <NavigationBar />
         <div className="mt-4">
-          {searchQuery && products.length === 0 && !isLoading ? (
+          {(searchQuery || tag) && products.length === 0 && !isLoading ? (
             <div className="text-center py-16 px-4">
-              <p className="text-gray-500 text-lg">No products found for "{searchQuery}"</p>
-              <p className="text-gray-400 mt-2">Try searching with different keywords</p>
+              <p className="text-gray-500 text-lg">
+                {searchQuery ? `No products found for "${searchQuery}"` : `No products found for "${tag}"`}
+              </p>
+              <p className="text-gray-400 mt-2">
+                {searchQuery ? "Try searching with different keywords" : "Try browsing other categories"}
+              </p>
             </div>
           ) : (
             <ProductGrid products={products} isLoading={isLoading && products.length === 0} />
