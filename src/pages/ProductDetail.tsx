@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -9,7 +10,7 @@ import { auth } from '../firebase';
 import { cartService } from '../api/cartClient';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
-const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/admin/api/2025-04/graphql.json';
+const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
 
 const getProductByIdQuery = `
   query GetProductById($id: ID!) {
