@@ -80,7 +80,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group cursor-pointer flex flex-col"
+      className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-shadow group cursor-pointer flex flex-col"
       onClick={handleCardClick}
     >
       <ProductCardImage 

@@ -19,7 +19,7 @@ const Categories: React.FC = () => {
     navigate(`/products/${selectedCategory}/${categoryId}`);
   };
 
-  // Vertical sidebar categories with increased width and custom images
+  // Vertical sidebar categories with reduced width
   const sidebarCategories = [{
     id: 'women',
     name: "Women's\nWear",
@@ -452,8 +452,8 @@ const Categories: React.FC = () => {
         {/* Main content - small padding top for space below header */}
         <div className="pt-20">
           <div className="flex gap-0">
-            {/* Vertical Sidebar - increased width */}
-            <div className="w-28 min-h-screen">
+            {/* Vertical Sidebar - reduced width from w-28 to w-20 */}
+            <div className="w-20 min-h-screen">
               <div className="py-2 space-y-4">
                 {sidebarCategories.map(category => (
                   <div
@@ -466,9 +466,9 @@ const Categories: React.FC = () => {
                     } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
-                      {/* Use custom image for women and men, icon for others - increased size */}
+                      {/* Use custom image for women and men, icon for others - reduced size */}
                       {category.image ? (
-                        <div className="w-12 h-12 mb-1 rounded-full overflow-hidden">
+                        <div className="w-8 h-8 mb-1 rounded-full overflow-hidden">
                           <img 
                             src={category.image} 
                             alt={category.name} 
@@ -476,7 +476,7 @@ const Categories: React.FC = () => {
                           />
                         </div>
                       ) : (
-                        <div className="text-4xl mb-1">{category.icon}</div>
+                        <div className="text-2xl mb-1">{category.icon}</div>
                       )}
                       <span 
                         className={`text-xs font-medium text-center leading-tight ${

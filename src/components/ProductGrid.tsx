@@ -34,7 +34,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading = false }
       <div className="px-4 py-6">
         <div className="grid grid-cols-2 gap-4 max-w-6xl mx-auto">
           {Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm overflow-hidden">
               <Skeleton className="aspect-[3/4] w-full" />
               <div className="p-3">
                 <Skeleton className="h-4 w-16 mb-1" />

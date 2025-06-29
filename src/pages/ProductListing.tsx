@@ -307,7 +307,6 @@ const ProductListPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Determine which query function to use
   const getQueryFn = () => {
     if (searchQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
@@ -417,7 +416,7 @@ const ProductListPage = () => {
       <CategoryHeader title={getHeaderTitle()} />
       <div className="pt-16">
         <NavigationBar />
-        <div className="bg-white rounded-t-3xl mt-4">
+        <div className="mt-4">
           {searchQuery && products.length === 0 && !isLoading ? (
             <div className="text-center py-16 px-4">
               <p className="text-gray-500 text-lg">No products found for "{searchQuery}"</p>
