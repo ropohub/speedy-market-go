@@ -3,7 +3,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface FilterState {
   selectedTags: string[];
-  sortBy: 'PRICE' | 'PRICE_REVERSE' | 'CREATED_AT' | 'BEST_SELLING' | null;
+  sortBy: 'price-low' | 'price-high' | 'newest' | 'popularity' | null;
+  showDiscountOnly: boolean;
   maxPrice: number;
 }
 
@@ -14,8 +15,8 @@ interface FilterContextType {
   setFilters: (tags: string[]) => void;
   clearFilters: () => void;
   setSortBy: (sort: FilterState['sortBy']) => void;
+  setShowDiscountOnly: (show: boolean) => void;
   setMaxPrice: (price: number) => void;
-  resetFiltersForNewPage: () => void;
   getQueryString: () => string;
 }
 
@@ -37,6 +38,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterState, setFilterState] = useState<FilterState>({
     selectedTags: [],
     sortBy: null,
+    showDiscountOnly: false,
     maxPrice: 5000
   });
 
@@ -68,22 +70,22 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       ...prev,
       selectedTags: [],
       sortBy: null,
+      showDiscountOnly: false,
       maxPrice: 5000
     }));
-  };
-
-  const resetFiltersForNewPage = () => {
-    setFilterState({
-      selectedTags: [],
-      sortBy: null,
-      maxPrice: 5000
-    });
   };
 
   const setSortBy = (sort: FilterState['sortBy']) => {
     setFilterState(prev => ({
       ...prev,
       sortBy: sort
+    }));
+  };
+
+  const setShowDiscountOnly = (show: boolean) => {
+    setFilterState(prev => ({
+      ...prev,
+      showDiscountOnly: show
     }));
   };
 
@@ -101,8 +103,9 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       queries.push(filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND '));
     }
     
-    // Add price filter for Shopify search
-    queries.push(`variants.price:<=${filterState.maxPrice}`);
+    if (filterState.showDiscountOnly) {
+      queries.push('available_for_sale:true');
+    }
     
     return queries.join(' AND ');
   };
@@ -115,8 +118,8 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       setFilters,
       clearFilters,
       setSortBy,
+      setShowDiscountOnly,
       setMaxPrice,
-      resetFiltersForNewPage,
       getQueryString
     }}>
       {children}
