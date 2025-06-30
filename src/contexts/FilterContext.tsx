@@ -3,6 +3,9 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface FilterState {
   selectedTags: string[];
+  sortBy: 'price-low' | 'price-high' | 'newest' | 'popularity' | null;
+  showDiscountOnly: boolean;
+  maxPrice: number;
 }
 
 interface FilterContextType {
@@ -11,6 +14,9 @@ interface FilterContextType {
   removeFilter: (tag: string) => void;
   setFilters: (tags: string[]) => void;
   clearFilters: () => void;
+  setSortBy: (sort: FilterState['sortBy']) => void;
+  setShowDiscountOnly: (show: boolean) => void;
+  setMaxPrice: (price: number) => void;
   getQueryString: () => string;
 }
 
@@ -30,7 +36,10 @@ interface FilterProviderProps {
 
 export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterState, setFilterState] = useState<FilterState>({
-    selectedTags: []
+    selectedTags: [],
+    sortBy: null,
+    showDiscountOnly: false,
+    maxPrice: 5000
   });
 
   const addFilter = (tag: string) => {
@@ -59,13 +68,46 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const clearFilters = () => {
     setFilterState(prev => ({
       ...prev,
-      selectedTags: []
+      selectedTags: [],
+      sortBy: null,
+      showDiscountOnly: false,
+      maxPrice: 5000
+    }));
+  };
+
+  const setSortBy = (sort: FilterState['sortBy']) => {
+    setFilterState(prev => ({
+      ...prev,
+      sortBy: sort
+    }));
+  };
+
+  const setShowDiscountOnly = (show: boolean) => {
+    setFilterState(prev => ({
+      ...prev,
+      showDiscountOnly: show
+    }));
+  };
+
+  const setMaxPrice = (price: number) => {
+    setFilterState(prev => ({
+      ...prev,
+      maxPrice: price
     }));
   };
 
   const getQueryString = () => {
-    if (filterState.selectedTags.length === 0) return '';
-    return filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND ');
+    const queries = [];
+    
+    if (filterState.selectedTags.length > 0) {
+      queries.push(filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND '));
+    }
+    
+    if (filterState.showDiscountOnly) {
+      queries.push('available_for_sale:true');
+    }
+    
+    return queries.join(' AND ');
   };
 
   return (
@@ -75,6 +117,9 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       removeFilter,
       setFilters,
       clearFilters,
+      setSortBy,
+      setShowDiscountOnly,
+      setMaxPrice,
       getQueryString
     }}>
       {children}

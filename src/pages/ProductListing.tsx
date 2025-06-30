@@ -6,6 +6,7 @@ import CategoryHeader from '../components/category/CategoryHeader';
 import NavigationBar from '../components/NavigationBar';
 import ProductGrid from '../components/ProductGrid';
 import FilterChips from '../components/FilterChips';
+import FloatingFilterButton from '../components/FloatingFilterButton';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -565,6 +566,8 @@ const ProductListPage = () => {
           </div>
         </div>
       </div>
+      
+      <FloatingFilterButton onFilterChange={handleFilterChange} />
     </div>
   );
 };

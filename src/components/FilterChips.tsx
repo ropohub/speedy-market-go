@@ -1,135 +1,129 @@
 
 import React from 'react';
-import { X } from 'lucide-react';
+import { ChevronDown, ArrowUpDown } from 'lucide-react';
 import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Slider } from './ui/slider';
+import { Label } from './ui/label';
+import { Checkbox } from './ui/checkbox';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 import { useFilter } from '../contexts/FilterContext';
-
-// Available filter options organized by category
-const FILTER_OPTIONS = {
-  gender: [
-    { tag: "Men's Wear", display: "Men" },
-    { tag: "Women's Wear", display: "Women" }
-  ],
-  category: [
-    { tag: "T-Shirts", display: "T-Shirts" },
-    { tag: "Jeans", display: "Jeans" },
-    { tag: "Dresses", display: "Dresses" },
-    { tag: "Tank Tops", display: "Tank Tops" },
-    { tag: "Crop Tops", display: "Crop Tops" },
-    { tag: "Shorts", display: "Shorts" },
-    { tag: "Jackets", display: "Jackets" },
-    { tag: "Co-ords", display: "Co-ords" },
-    { tag: "Mini Skirts", display: "Mini Skirts" },
-    { tag: "Cargos", display: "Cargos" },
-    { tag: "Trousers", display: "Trousers" },
-    { tag: "Sweatshirts", display: "Sweatshirts" }
-  ],
-  style: [
-    { tag: "Casual Wear", display: "Casual" },
-    { tag: "Sports Wear", display: "Sports" },
-    { tag: "Formal Wear", display: "Formal" },
-    { tag: "Gen-Z Fashion", display: "Gen-Z" },
-    { tag: "Oversized Tees", display: "Oversized" }
-  ]
-};
 
 interface FilterChipsProps {
   onFilterChange?: () => void;
 }
 
 const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
-  const { filterState, addFilter, removeFilter } = useFilter();
+  const { 
+    filterState, 
+    setSortBy, 
+    setShowDiscountOnly, 
+    setMaxPrice 
+  } = useFilter();
 
-  const handleChipClick = (tag: string) => {
-    if (filterState.selectedTags.includes(tag)) {
-      removeFilter(tag);
-    } else {
-      addFilter(tag);
+  const handleSortChange = (sort: typeof filterState.sortBy) => {
+    setSortBy(sort);
+    onFilterChange?.();
+  };
+
+  const handleDiscountToggle = (checked: boolean) => {
+    setShowDiscountOnly(checked);
+    onFilterChange?.();
+  };
+
+  const handlePriceChange = (value: number[]) => {
+    setMaxPrice(value[0]);
+    onFilterChange?.();
+  };
+
+  const getSortLabel = () => {
+    switch (filterState.sortBy) {
+      case 'price-low':
+        return 'Price: Low to High';
+      case 'price-high':
+        return 'Price: High to Low';
+      case 'newest':
+        return 'Newest First';
+      case 'popularity':
+        return 'Most Popular';
+      default:
+        return 'Sort by';
     }
-    onFilterChange?.();
   };
-
-  const handleRemoveFilter = (tag: string) => {
-    removeFilter(tag);
-    onFilterChange?.();
-  };
-
-  const getDisplayName = (tag: string): string => {
-    const allOptions = [
-      ...FILTER_OPTIONS.gender,
-      ...FILTER_OPTIONS.category,
-      ...FILTER_OPTIONS.style
-    ];
-    const option = allOptions.find(opt => opt.tag === tag);
-    return option?.display || tag;
-  };
-
-  const renderFilterGroup = (title: string, options: { tag: string; display: string }[]) => (
-    <div className="mb-3">
-      <h4 className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">
-        {title}
-      </h4>
-      <div className="flex flex-wrap gap-2">
-        {options.map(({ tag, display }) => {
-          const isSelected = filterState.selectedTags.includes(tag);
-          return (
-            <Badge
-              key={tag}
-              variant={isSelected ? "default" : "outline"}
-              className={`cursor-pointer transition-all duration-200 ${
-                isSelected 
-                  ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                  : 'hover:bg-gray-100'
-              }`}
-              onClick={() => handleChipClick(tag)}
-            >
-              {display}
-              {isSelected && (
-                <X 
-                  className="ml-1 h-3 w-3 cursor-pointer hover:bg-orange-600 rounded-full" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveFilter(tag);
-                  }}
-                />
-              )}
-            </Badge>
-          );
-        })}
-      </div>
-    </div>
-  );
 
   return (
-    <div className="px-4 py-4 bg-white/60 backdrop-blur-sm">
+    <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-200 px-4 py-3">
       <div className="max-w-6xl mx-auto">
-        {/* Selected Filters Summary */}
-        {filterState.selectedTags.length > 0 && (
-          <div className="mb-4 pb-3 border-b border-gray-200">
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-sm font-medium text-gray-700">Active Filters:</span>
-              {filterState.selectedTags.map(tag => (
-                <Badge
-                  key={tag}
-                  variant="default"
-                  className="bg-orange-500 text-white"
-                >
-                  {getDisplayName(tag)}
-                  <X 
-                    className="ml-1 h-3 w-3 cursor-pointer hover:bg-orange-600 rounded-full" 
-                    onClick={() => handleRemoveFilter(tag)}
-                  />
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+          {/* Sort Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className={`flex items-center gap-2 whitespace-nowrap ${
+                  filterState.sortBy ? 'bg-orange-50 border-orange-200 text-orange-700' : ''
+                }`}
+              >
+                <ArrowUpDown className="h-4 w-4" />
+                {getSortLabel()}
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48 bg-white border shadow-lg">
+              <DropdownMenuItem onClick={() => handleSortChange('price-low')}>
+                Price: Low to High
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('price-high')}>
+                Price: High to Low
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('newest')}>
+                Newest First
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleSortChange('popularity')}>
+                Most Popular
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        {/* Filter Categories */}
-        <div className="space-y-4">
-          {renderFilterGroup("Gender", FILTER_OPTIONS.gender)}
-          {renderFilterGroup("Category", FILTER_OPTIONS.category)}
-          {renderFilterGroup("Style", FILTER_OPTIONS.style)}
+          {/* Discount Filter */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="discount"
+              checked={filterState.showDiscountOnly}
+              onCheckedChange={handleDiscountToggle}
+            />
+            <Label htmlFor="discount" className="text-sm font-medium cursor-pointer">
+              On Sale
+            </Label>
+          </div>
+
+          {/* Price Range Filter */}
+          <div className="flex items-center gap-3 min-w-[200px]">
+            <Label className="text-sm font-medium whitespace-nowrap">
+              Max Price: ₹{filterState.maxPrice}
+            </Label>
+            <Slider
+              value={[filterState.maxPrice]}
+              onValueChange={handlePriceChange}
+              max={10000}
+              min={500}
+              step={100}
+              className="flex-1"
+            />
+          </div>
+
+          {/* Active Filters Count */}
+          {filterState.selectedTags.length > 0 && (
+            <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+              {filterState.selectedTags.length} filter{filterState.selectedTags.length !== 1 ? 's' : ''} active
+            </Badge>
+          )}
         </div>
       </div>
     </div>
