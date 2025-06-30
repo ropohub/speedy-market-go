@@ -31,11 +31,24 @@ interface FilterProviderProps {
   children: ReactNode;
 }
 
-// Category mapping for grouping tags
+// Updated category mapping with all the new tags
 const TAG_CATEGORIES = {
   gender: ["Men's Wear", "Women's Wear"],
-  category: ["T-Shirts", "Jeans", "Dresses", "Tank Tops", "Crop Tops", "Shorts", "Jackets", "Co-ords", "Mini Skirts", "Cargos", "Trousers", "Sweatshirts"],
-  style: ["Casual Wear", "Sports Wear", "Formal Wear", "Gen-Z Fashion", "Oversized Tees"]
+  category: [
+    "Shirts", "T-Shirts", "Jeans", "Trousers", "Shorts", "Track Pants", 
+    "Jackets", "Sweatshirts", "Sweaters", "Dresses", "Tops", "Co-ords", 
+    "Skirts & Shorts", "Jumpsuits", "Bras", "Briefs", "Lounge Pants", 
+    "Shapewear", "Crop Tops", "Tank Tops", "Mini Skirts", "Cargos"
+  ],
+  style: [
+    "Casual Wear", "Sports Wear", "Gen-Z Fashion", "Western Wear", 
+    "Lingerie & Loungewear", "Oversized Tees", "Polo T-Shirts", 
+    "Oversized Shirts", "Half Sleeve Shirts", "Printed Shirts", 
+    "Stripes & Checks", "Casual Trousers", "Casual Shorts", 
+    "Printed Dresses", "Flared Dresses", "Bodycon Dresses", "Maxi Dresses", 
+    "Floral Tops", "Printed Tees", "Crop Tees", "Slit Skirts", 
+    "Relaxed Fit Shorts", "Western Avenue"
+  ]
 };
 
 export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
