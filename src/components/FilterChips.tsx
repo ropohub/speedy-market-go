@@ -1,9 +1,8 @@
 
 import React from 'react';
-import { ChevronDown, ArrowUpDown } from 'lucide-react';
+import { ChevronDown, ArrowUpDown, X } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Slider } from './ui/slider';
 import { Label } from './ui/label';
 import { 
   DropdownMenu,
@@ -20,8 +19,9 @@ interface FilterChipsProps {
 const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
   const { 
     filterState, 
-    setSortBy, 
-    setMaxPrice 
+    setSortBy,
+    addFilter,
+    removeFilter
   } = useFilter();
 
   const handleSortChange = (sort: typeof filterState.sortBy) => {
@@ -29,8 +29,26 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     onFilterChange?.();
   };
 
-  const handlePriceChange = (value: number[]) => {
-    setMaxPrice(value[0]);
+  const handlePriceFilterToggle = (priceRange: string) => {
+    if (filterState.selectedTags.includes(priceRange)) {
+      removeFilter(priceRange);
+    } else {
+      // Remove any existing price filter first
+      const existingPriceFilters = filterState.selectedTags.filter(tag => 
+        tag.startsWith('price_under_') || tag.startsWith('price_range_')
+      );
+      existingPriceFilters.forEach(filter => removeFilter(filter));
+      addFilter(priceRange);
+    }
+    onFilterChange?.();
+  };
+
+  const handleAvailabilityToggle = (availability: string) => {
+    if (filterState.selectedTags.includes(availability)) {
+      removeFilter(availability);
+    } else {
+      addFilter(availability);
+    }
     onFilterChange?.();
   };
 
@@ -47,6 +65,14 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
       default:
         return 'Sort by';
     }
+  };
+
+  const isPriceFilterActive = (priceRange: string) => {
+    return filterState.selectedTags.includes(priceRange);
+  };
+
+  const isAvailabilityFilterActive = (availability: string) => {
+    return filterState.selectedTags.includes(availability);
   };
 
   return (
@@ -68,7 +94,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 bg-white border shadow-lg">
+            <DropdownMenuContent align="start" className="w-48 bg-white border shadow-lg z-50">
               <DropdownMenuItem onClick={() => handleSortChange('price-low')}>
                 Price: Low to High
               </DropdownMenuItem>
@@ -84,20 +110,55 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Price Range Filter */}
-          <div className="flex items-center gap-3 min-w-[200px]">
-            <Label className="text-sm font-medium whitespace-nowrap">
-              Max Price: ₹{filterState.maxPrice}
-            </Label>
-            <Slider
-              value={[filterState.maxPrice]}
-              onValueChange={handlePriceChange}
-              max={10000}
-              min={500}
-              step={100}
-              className="flex-1"
-            />
-          </div>
+          {/* Price Filter Chips */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePriceFilterToggle('price_under_999')}
+            className={`whitespace-nowrap ${
+              isPriceFilterActive('price_under_999') 
+                ? 'bg-orange-50 border-orange-200 text-orange-700' 
+                : ''
+            }`}
+          >
+            Price < ₹999
+            {isPriceFilterActive('price_under_999') && (
+              <X className="ml-1 h-3 w-3" />
+            )}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePriceFilterToggle('price_range_1000_2000')}
+            className={`whitespace-nowrap ${
+              isPriceFilterActive('price_range_1000_2000') 
+                ? 'bg-orange-50 border-orange-200 text-orange-700' 
+                : ''
+            }`}
+          >
+            ₹1000 - ₹2000
+            {isPriceFilterActive('price_range_1000_2000') && (
+              <X className="ml-1 h-3 w-3" />
+            )}
+          </Button>
+
+          {/* In Stock Filter */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAvailabilityToggle('available')}
+            className={`whitespace-nowrap ${
+              isAvailabilityFilterActive('available') 
+                ? 'bg-orange-50 border-orange-200 text-orange-700' 
+                : ''
+            }`}
+          >
+            In Stock
+            {isAvailabilityFilterActive('available') && (
+              <X className="ml-1 h-3 w-3" />
+            )}
+          </Button>
 
           {/* Active Filters Count */}
           {filterState.selectedTags.length > 0 && (

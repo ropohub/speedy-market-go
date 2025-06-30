@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 export interface FilterState {
   selectedTags: string[];
   sortBy: 'price-low' | 'price-high' | 'newest' | 'popularity' | null;
-  maxPrice: number;
 }
 
 interface FilterContextType {
@@ -14,7 +13,6 @@ interface FilterContextType {
   setFilters: (tags: string[]) => void;
   clearFilters: () => void;
   setSortBy: (sort: FilterState['sortBy']) => void;
-  setMaxPrice: (price: number) => void;
   getQueryString: () => string;
   getSortKey: () => string | null;
 }
@@ -36,8 +34,7 @@ interface FilterProviderProps {
 export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterState, setFilterState] = useState<FilterState>({
     selectedTags: [],
-    sortBy: null,
-    maxPrice: 5000
+    sortBy: null
   });
 
   const addFilter = (tag: string) => {
@@ -67,8 +64,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setFilterState(prev => ({
       ...prev,
       selectedTags: [],
-      sortBy: null,
-      maxPrice: 5000
+      sortBy: null
     }));
   };
 
@@ -79,23 +75,39 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     }));
   };
 
-  const setMaxPrice = (price: number) => {
-    setFilterState(prev => ({
-      ...prev,
-      maxPrice: price
-    }));
-  };
-
   const getQueryString = () => {
     const queries = [];
     
-    if (filterState.selectedTags.length > 0) {
-      queries.push(filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND '));
+    // Handle regular tag filters (category, gender, style, etc.)
+    const regularTags = filterState.selectedTags.filter(tag => 
+      !tag.startsWith('price_under_') && 
+      !tag.startsWith('price_range_') && 
+      tag !== 'available'
+    );
+    
+    if (regularTags.length > 0) {
+      queries.push(regularTags.map(tag => `tag:${tag}`).join(' AND '));
     }
     
-    // Add max price filter
-    if (filterState.maxPrice < 5000) {
-      queries.push(`variants.price:<=${filterState.maxPrice}`);
+    // Handle price filters
+    const priceFilters = filterState.selectedTags.filter(tag => 
+      tag.startsWith('price_under_') || tag.startsWith('price_range_')
+    );
+    
+    priceFilters.forEach(filter => {
+      switch (filter) {
+        case 'price_under_999':
+          queries.push('variants.price:<=999');
+          break;
+        case 'price_range_1000_2000':
+          queries.push('variants.price:>=1000 AND variants.price:<=2000');
+          break;
+      }
+    });
+    
+    // Handle availability filter
+    if (filterState.selectedTags.includes('available')) {
+      queries.push('available:true');
     }
     
     return queries.join(' AND ');
@@ -124,7 +136,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       setFilters,
       clearFilters,
       setSortBy,
-      setMaxPrice,
       getQueryString,
       getSortKey
     }}>

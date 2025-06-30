@@ -446,16 +446,28 @@ const ProductListPage = () => {
   }, []);
 
   const getQueryFn = () => {
-    const currentQuery = getQueryString() || searchQuery;
+    const filterQuery = getQueryString();
     const sortKey = getSortKey();
     const reverse = filterState.sortBy === 'price-high';
     
-    if (currentQuery) {
+    // Combine search query with filter query
+    let finalQuery = filterQuery;
+    if (searchQuery && !filterQuery) {
+      finalQuery = searchQuery;
+    } else if (searchQuery && filterQuery) {
+      finalQuery = `${searchQuery} AND ${filterQuery}`;
+    }
+    
+    console.log('Final query for Shopify:', finalQuery);
+    
+    if (finalQuery || tag) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchSearchResults({ pageParam, searchQuery: currentQuery, sortKey, reverse });
-    } else if (tag) {
-      return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchProductsByTag({ pageParam, tag });
+        fetchSearchResults({ 
+          pageParam, 
+          searchQuery: finalQuery || `tag:${tag}`, 
+          sortKey, 
+          reverse 
+        });
     } else if (collection) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchCollectionProductsFromShopify({ 
@@ -463,27 +475,37 @@ const ProductListPage = () => {
           collectionHandle: collection, 
           sortKey, 
           reverse, 
-          query: currentQuery 
+          query: finalQuery 
         });
     } else {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchProductsFromShopify({ pageParam, sortKey, reverse, query: currentQuery });
+        fetchProductsFromShopify({ 
+          pageParam, 
+          sortKey, 
+          reverse, 
+          query: finalQuery 
+        });
     }
   };
 
   const getQueryKey = () => {
-    const currentQuery = getQueryString() || searchQuery;
+    const filterQuery = getQueryString();
     const sortKey = getSortKey();
     const reverse = filterState.sortBy === 'price-high';
     
-    if (currentQuery) {
-      return ['shopifySearchResults', currentQuery, sortKey, reverse];
-    } else if (tag) {
-      return ['shopifyProductsByTag', tag];
+    let finalQuery = filterQuery;
+    if (searchQuery && !filterQuery) {
+      finalQuery = searchQuery;
+    } else if (searchQuery && filterQuery) {
+      finalQuery = `${searchQuery} AND ${filterQuery}`;
+    }
+    
+    if (finalQuery || tag) {
+      return ['shopifySearchResults', finalQuery || `tag:${tag}`, sortKey, reverse];
     } else if (collection) {
-      return ['shopifyCollectionProducts', collection, sortKey, reverse, currentQuery];
+      return ['shopifyCollectionProducts', collection, sortKey, reverse, finalQuery];
     } else {
-      return ['shopifyProducts', sortKey, reverse, currentQuery];
+      return ['shopifyProducts', sortKey, reverse, finalQuery];
     }
   };
 
