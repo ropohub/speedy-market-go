@@ -35,19 +35,10 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     } else {
       // Remove any existing price filter first
       const existingPriceFilters = filterState.selectedTags.filter(tag => 
-        tag.startsWith('price_under_') || tag.startsWith('price_range_')
+        tag.startsWith('price_under_')
       );
       existingPriceFilters.forEach(filter => removeFilter(filter));
       addFilter(priceRange);
-    }
-    onFilterChange?.();
-  };
-
-  const handleAvailabilityToggle = (availability: string) => {
-    if (filterState.selectedTags.includes(availability)) {
-      removeFilter(availability);
-    } else {
-      addFilter(availability);
     }
     onFilterChange?.();
   };
@@ -69,10 +60,6 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
 
   const isPriceFilterActive = (priceRange: string) => {
     return filterState.selectedTags.includes(priceRange);
-  };
-
-  const isAvailabilityFilterActive = (availability: string) => {
-    return filterState.selectedTags.includes(availability);
   };
 
   return (
@@ -110,7 +97,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Price Filter Chips */}
+          {/* Price Filter Chip */}
           <Button
             variant="outline"
             size="sm"
@@ -123,39 +110,6 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
           >
             Price &lt; Rs999
             {isPriceFilterActive('price_under_999') && (
-              <X className="ml-1 h-3 w-3" />
-            )}
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePriceFilterToggle('price_range_1000_2000')}
-            className={`whitespace-nowrap ${
-              isPriceFilterActive('price_range_1000_2000') 
-                ? 'bg-orange-50 border-orange-200 text-orange-700' 
-                : ''
-            }`}
-          >
-            Rs1000 - Rs2000
-            {isPriceFilterActive('price_range_1000_2000') && (
-              <X className="ml-1 h-3 w-3" />
-            )}
-          </Button>
-
-          {/* In Stock Filter */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleAvailabilityToggle('available')}
-            className={`whitespace-nowrap ${
-              isAvailabilityFilterActive('available') 
-                ? 'bg-orange-50 border-orange-200 text-orange-700' 
-                : ''
-            }`}
-          >
-            In Stock
-            {isAvailabilityFilterActive('available') && (
               <X className="ml-1 h-3 w-3" />
             )}
           </Button>
