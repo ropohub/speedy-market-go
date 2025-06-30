@@ -29,12 +29,8 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     onFilterChange?.();
   };
 
-  const handleTagFilterToggle = (tag: string) => {
-    if (filterState.selectedTags.includes(tag)) {
-      removeFilter(tag);
-    } else {
-      addFilter(tag);
-    }
+  const handleQuickSort = (sortType: 'newest' | 'popularity') => {
+    setSortBy(sortType);
     onFilterChange?.();
   };
 
@@ -53,8 +49,8 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     }
   };
 
-  const isTagFilterActive = (tag: string) => {
-    return filterState.selectedTags.includes(tag);
+  const isQuickSortActive = (sortType: 'newest' | 'popularity') => {
+    return filterState.sortBy === sortType;
   };
 
   return (
@@ -96,15 +92,15 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleTagFilterToggle('new-arrival')}
+            onClick={() => handleQuickSort('newest')}
             className={`whitespace-nowrap ${
-              isTagFilterActive('new-arrival') 
+              isQuickSortActive('newest') 
                 ? 'bg-orange-50 border-orange-200 text-orange-700' 
                 : ''
             }`}
           >
             New Arrival
-            {isTagFilterActive('new-arrival') && (
+            {isQuickSortActive('newest') && (
               <X className="ml-1 h-3 w-3" />
             )}
           </Button>
@@ -113,23 +109,23 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleTagFilterToggle('popular')}
+            onClick={() => handleQuickSort('popularity')}
             className={`whitespace-nowrap ${
-              isTagFilterActive('popular') 
+              isQuickSortActive('popularity') 
                 ? 'bg-orange-50 border-orange-200 text-orange-700' 
                 : ''
             }`}
           >
             Most Popular
-            {isTagFilterActive('popular') && (
+            {isQuickSortActive('popularity') && (
               <X className="ml-1 h-3 w-3" />
             )}
           </Button>
 
-          {/* Active Filters Count */}
-          {filterState.selectedTags.length > 0 && (
+          {/* Active Sort Indicator */}
+          {filterState.sortBy && (
             <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-              {filterState.selectedTags.length} filter{filterState.selectedTags.length !== 1 ? 's' : ''} active
+              Sorted by {getSortLabel()}
             </Badge>
           )}
         </div>
