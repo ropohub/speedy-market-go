@@ -5,7 +5,6 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
-import { Checkbox } from './ui/checkbox';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -22,17 +21,11 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
   const { 
     filterState, 
     setSortBy, 
-    setShowDiscountOnly, 
     setMaxPrice 
   } = useFilter();
 
   const handleSortChange = (sort: typeof filterState.sortBy) => {
     setSortBy(sort);
-    onFilterChange?.();
-  };
-
-  const handleDiscountToggle = (checked: boolean) => {
-    setShowDiscountOnly(checked);
     onFilterChange?.();
   };
 
@@ -43,13 +36,13 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
 
   const getSortLabel = () => {
     switch (filterState.sortBy) {
-      case 'price-low':
+      case 'PRICE':
         return 'Price: Low to High';
-      case 'price-high':
+      case 'PRICE_REVERSE':
         return 'Price: High to Low';
-      case 'newest':
+      case 'CREATED_AT':
         return 'Newest First';
-      case 'popularity':
+      case 'BEST_SELLING':
         return 'Most Popular';
       default:
         return 'Sort by';
@@ -76,32 +69,20 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48 bg-white border shadow-lg">
-              <DropdownMenuItem onClick={() => handleSortChange('price-low')}>
+              <DropdownMenuItem onClick={() => handleSortChange('PRICE')}>
                 Price: Low to High
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('price-high')}>
+              <DropdownMenuItem onClick={() => handleSortChange('PRICE_REVERSE')}>
                 Price: High to Low
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('newest')}>
+              <DropdownMenuItem onClick={() => handleSortChange('CREATED_AT')}>
                 Newest First
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange('popularity')}>
+              <DropdownMenuItem onClick={() => handleSortChange('BEST_SELLING')}>
                 Most Popular
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Discount Filter */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="discount"
-              checked={filterState.showDiscountOnly}
-              onCheckedChange={handleDiscountToggle}
-            />
-            <Label htmlFor="discount" className="text-sm font-medium cursor-pointer">
-              On Sale
-            </Label>
-          </div>
 
           {/* Price Range Filter */}
           <div className="flex items-center gap-3 min-w-[200px]">

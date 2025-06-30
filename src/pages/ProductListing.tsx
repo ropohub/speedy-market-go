@@ -12,8 +12,8 @@ const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
 
 const getProductsQuery = `
-  query GetProducts($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
+  query GetProducts($first: Int!, $after: String, $sortKey: ProductSortKeys, $reverse: Boolean) {
+    products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse) {
       pageInfo {
         hasNextPage
         endCursor
@@ -46,11 +46,11 @@ const getProductsQuery = `
 `;
 
 const getCollectionProductsQuery = `
-  query GetCollectionProducts($handle: String!, $first: Int!, $after: String) {
+  query GetCollectionProducts($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys, $reverse: Boolean) {
     collectionByHandle(handle: $handle) {
       id
       title
-      products(first: $first, after: $after) {
+      products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse) {
         pageInfo {
           hasNextPage
           endCursor
@@ -84,8 +84,8 @@ const getCollectionProductsQuery = `
 `;
 
 const searchProductsQuery = `
-  query SearchProducts($searchQuery: String!, $first: Int!, $after: String) {
-    search(query: $searchQuery, first: $first, after: $after, types: [PRODUCT]) {
+  query SearchProducts($searchQuery: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys, $reverse: Boolean) {
+    search(query: $searchQuery, first: $first, after: $after, types: [PRODUCT], sortKey: $sortKey, reverse: $reverse) {
       pageInfo {
         hasNextPage
         endCursor
@@ -211,8 +211,31 @@ interface ShopifyCollectionResponse {
   };
 }
 
-const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: string | null }) => {
+const getSortParameters = (sortBy: string | null) => {
+  switch (sortBy) {
+    case 'PRICE':
+      return { sortKey: 'PRICE', reverse: false };
+    case 'PRICE_REVERSE':
+      return { sortKey: 'PRICE', reverse: true };
+    case 'CREATED_AT':
+      return { sortKey: 'CREATED_AT', reverse: true };
+    case 'BEST_SELLING':
+      return { sortKey: 'BEST_SELLING', reverse: false };
+    default:
+      return { sortKey: undefined, reverse: false };
+  }
+};
+
+const fetchProductsFromShopify = async ({ 
+  pageParam = null, 
+  sortBy = null 
+}: { 
+  pageParam?: string | null;
+  sortBy?: string | null;
+}) => {
   console.log('Fetching all products from Shopify...');
+  const { sortKey, reverse } = getSortParameters(sortBy);
+  
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -224,6 +247,8 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
       variables: {
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
       },
     }),
   });
@@ -245,12 +270,16 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
 
 const fetchCollectionProductsFromShopify = async ({ 
   pageParam = null, 
-  collectionHandle 
+  collectionHandle,
+  sortBy = null 
 }: { 
   pageParam?: string | null;
   collectionHandle: string;
+  sortBy?: string | null;
 }) => {
   console.log(`Fetching products from collection: "${collectionHandle}"`);
+  const { sortKey, reverse } = getSortParameters(sortBy);
+  
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -263,6 +292,8 @@ const fetchCollectionProductsFromShopify = async ({
         handle: collectionHandle,
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
       },
     }),
   });
@@ -292,12 +323,16 @@ const fetchCollectionProductsFromShopify = async ({
 
 const fetchSearchResults = async ({ 
   pageParam = null, 
-  searchQuery 
+  searchQuery,
+  sortBy = null 
 }: { 
   pageParam?: string | null;
   searchQuery: string;
+  sortBy?: string | null;
 }) => {
   console.log(`Searching for: "${searchQuery}"`);
+  const { sortKey, reverse } = getSortParameters(sortBy);
+  
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -310,6 +345,8 @@ const fetchSearchResults = async ({
         searchQuery,
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
       },
     }),
   });
@@ -349,9 +386,9 @@ const fetchProductsByTag = async ({
       'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
     },
     body: JSON.stringify({
-      query: getProductsByTagQuery,
+      query: searchProductsQuery,
       variables: {
-        tagQuery,
+        searchQuery: tagQuery,
         first: 10,
         after: pageParam,
       },
@@ -423,15 +460,16 @@ const ProductListPage = () => {
     
     if (currentQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchSearchResults({ pageParam, searchQuery: currentQuery });
+        fetchSearchResults({ pageParam, searchQuery: currentQuery, sortBy: filterState.sortBy });
     } else if (tag) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchProductsByTag({ pageParam, tag });
     } else if (collection) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection });
+        fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection, sortBy: filterState.sortBy });
     } else {
-      return fetchProductsFromShopify;
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchProductsFromShopify({ pageParam, sortBy: filterState.sortBy });
     }
   };
 
@@ -439,13 +477,13 @@ const ProductListPage = () => {
     const currentQuery = getQueryString() || searchQuery;
     
     if (currentQuery) {
-      return ['shopifySearchResults', currentQuery];
+      return ['shopifySearchResults', currentQuery, filterState.sortBy, filterState.maxPrice];
     } else if (tag) {
-      return ['shopifyProductsByTag', tag];
+      return ['shopifyProductsByTag', tag, filterState.sortBy, filterState.maxPrice];
     } else if (collection) {
-      return ['shopifyCollectionProducts', collection];
+      return ['shopifyCollectionProducts', collection, filterState.sortBy, filterState.maxPrice];
     } else {
-      return ['shopifyProducts'];
+      return ['shopifyProducts', filterState.sortBy, filterState.maxPrice];
     }
   };
 
@@ -499,14 +537,21 @@ const ProductListPage = () => {
 
   const products = data?.pages.flatMap(page => page.edges.map(edge => {
     const { node } = edge;
+    const price = parseFloat(node.priceRange.minVariantPrice.amount);
+    
+    // Filter products by max price
+    if (price > filterState.maxPrice) {
+      return null;
+    }
+    
     return {
       id: node.id,
       name: node.title,
-      price: parseFloat(node.priceRange.minVariantPrice.amount),
+      price,
       image: node.images.edges[0]?.node.url || '/placeholder.svg',
       brand: node.vendor,
     };
-  })) ?? [];
+  }).filter(Boolean)) ?? [];
 
   console.log('ProductListPage - Products count:', products.length);
 
