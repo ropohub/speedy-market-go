@@ -369,53 +369,9 @@ const fetchSearchResults = async ({
   throw new Error("Unexpected response structure from Shopify");
 };
 
-const fetchProductsByTag = async ({ 
-  pageParam = null, 
-  tag 
-}: { 
-  pageParam?: string | null;
-  tag: string;
-}) => {
-  console.log(`Searching for products with tag: "${tag}"`);
-  const tagQuery = `tag:${tag}`;
-  
-  const response = await fetch(SHOPIFY_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
-    },
-    body: JSON.stringify({
-      query: searchProductsQuery,
-      variables: {
-        searchQuery: tagQuery,
-        first: 10,
-        after: pageParam,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    console.error("Shopify Tag Search API Error:", errorBody);
-    throw new Error('Failed to search products by tag from Shopify.');
-  }
-
-  const json = await response.json();
-  console.log('Tag Search API Response:', json);
-  
-  if (json.data?.search) {
-      console.log(`Found ${json.data.search.edges.length} products for tag "${tag}"`);
-      return json.data.search;
-  }
-  
-  console.error("Unexpected Shopify Tag Search API response structure:", json);
-  throw new Error("Unexpected response structure from Shopify");
-};
-
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
-  const { filterState, setFilters, getQueryString } = useFilter();
+  const { filterState, setFilters, getQueryString, resetFiltersForNewPage } = useFilter();
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
   const tag = searchParams.get('tag');
@@ -425,7 +381,13 @@ const ProductListPage = () => {
   console.log('ProductListPage - Tag parameter:', tag);
   console.log('ProductListPage - Filter state:', filterState);
 
-  // Initialize filters based on URL parameters
+  // Reset filters when navigating to a different page/collection
+  useEffect(() => {
+    console.log('Page navigation detected, resetting filters');
+    resetFiltersForNewPage();
+  }, [collection, searchQuery, tag, resetFiltersForNewPage]);
+
+  // Initialize filters based on URL parameters after reset
   useEffect(() => {
     const initialTags: string[] = [];
     
@@ -461,9 +423,6 @@ const ProductListPage = () => {
     if (currentQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchSearchResults({ pageParam, searchQuery: currentQuery, sortBy: filterState.sortBy });
-    } else if (tag) {
-      return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchProductsByTag({ pageParam, tag });
     } else if (collection) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection, sortBy: filterState.sortBy });
@@ -478,8 +437,6 @@ const ProductListPage = () => {
     
     if (currentQuery) {
       return ['shopifySearchResults', currentQuery, filterState.sortBy, filterState.maxPrice];
-    } else if (tag) {
-      return ['shopifyProductsByTag', tag, filterState.sortBy, filterState.maxPrice];
     } else if (collection) {
       return ['shopifyCollectionProducts', collection, filterState.sortBy, filterState.maxPrice];
     } else {
@@ -535,14 +492,10 @@ const ProductListPage = () => {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // Remove client-side price filtering - let Shopify handle all filtering
   const products = data?.pages.flatMap(page => page.edges.map(edge => {
     const { node } = edge;
     const price = parseFloat(node.priceRange.minVariantPrice.amount);
-    
-    // Filter products by max price
-    if (price > filterState.maxPrice) {
-      return null;
-    }
     
     return {
       id: node.id,
@@ -551,7 +504,7 @@ const ProductListPage = () => {
       image: node.images.edges[0]?.node.url || '/placeholder.svg',
       brand: node.vendor,
     };
-  }).filter(Boolean)) ?? [];
+  })) ?? [];
 
   console.log('ProductListPage - Products count:', products.length);
 

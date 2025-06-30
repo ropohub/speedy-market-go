@@ -15,6 +15,7 @@ interface FilterContextType {
   clearFilters: () => void;
   setSortBy: (sort: FilterState['sortBy']) => void;
   setMaxPrice: (price: number) => void;
+  resetFiltersForNewPage: () => void;
   getQueryString: () => string;
 }
 
@@ -71,6 +72,14 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     }));
   };
 
+  const resetFiltersForNewPage = () => {
+    setFilterState({
+      selectedTags: [],
+      sortBy: null,
+      maxPrice: 5000
+    });
+  };
+
   const setSortBy = (sort: FilterState['sortBy']) => {
     setFilterState(prev => ({
       ...prev,
@@ -92,7 +101,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       queries.push(filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND '));
     }
     
-    // Add price filter
+    // Add price filter for Shopify search
     queries.push(`variants.price:<=${filterState.maxPrice}`);
     
     return queries.join(' AND ');
@@ -107,6 +116,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       clearFilters,
       setSortBy,
       setMaxPrice,
+      resetFiltersForNewPage,
       getQueryString
     }}>
       {children}
