@@ -31,6 +31,13 @@ interface FilterProviderProps {
   children: ReactNode;
 }
 
+// Category mapping for grouping tags
+const TAG_CATEGORIES = {
+  gender: ["Men's Wear", "Women's Wear"],
+  category: ["T-Shirts", "Jeans", "Dresses", "Tank Tops", "Crop Tops", "Shorts", "Jackets", "Co-ords", "Mini Skirts", "Cargos", "Trousers", "Sweatshirts"],
+  style: ["Casual Wear", "Sports Wear", "Formal Wear", "Gen-Z Fashion", "Oversized Tees"]
+};
+
 export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterState, setFilterState] = useState<FilterState>({
     selectedTags: [],
@@ -76,12 +83,47 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   };
 
   const getQueryString = () => {
-    // Handle tag filters using Shopify's tag syntax
-    if (filterState.selectedTags.length > 0) {
-      return filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND ');
+    if (filterState.selectedTags.length === 0) {
+      return '';
     }
-    
-    return '';
+
+    // Group tags by category
+    const genderTags = filterState.selectedTags.filter(tag => TAG_CATEGORIES.gender.includes(tag));
+    const categoryTags = filterState.selectedTags.filter(tag => TAG_CATEGORIES.category.includes(tag));
+    const styleTags = filterState.selectedTags.filter(tag => TAG_CATEGORIES.style.includes(tag));
+
+    const queryParts: string[] = [];
+
+    // Create OR groups for each category that has multiple tags
+    if (genderTags.length > 0) {
+      if (genderTags.length === 1) {
+        queryParts.push(`tag:${genderTags[0]}`);
+      } else {
+        const genderQuery = genderTags.map(tag => `tag:${tag}`).join(' OR ');
+        queryParts.push(`(${genderQuery})`);
+      }
+    }
+
+    if (categoryTags.length > 0) {
+      if (categoryTags.length === 1) {
+        queryParts.push(`tag:${categoryTags[0]}`);
+      } else {
+        const categoryQuery = categoryTags.map(tag => `tag:${tag}`).join(' OR ');
+        queryParts.push(`(${categoryQuery})`);
+      }
+    }
+
+    if (styleTags.length > 0) {
+      if (styleTags.length === 1) {
+        queryParts.push(`tag:${styleTags[0]}`);
+      } else {
+        const styleQuery = styleTags.map(tag => `tag:${tag}`).join(' OR ');
+        queryParts.push(`(${styleQuery})`);
+      }
+    }
+
+    // Join different categories with AND
+    return queryParts.join(' AND ');
   };
 
   const getSortKey = () => {
