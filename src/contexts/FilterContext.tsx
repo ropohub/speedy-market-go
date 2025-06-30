@@ -76,32 +76,12 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   };
 
   const getQueryString = () => {
-    const queries = [];
-    
-    // Handle regular tag filters (category, gender, style, etc.)
-    const regularTags = filterState.selectedTags.filter(tag => 
-      !tag.startsWith('price_under_')
-    );
-    
-    if (regularTags.length > 0) {
-      queries.push(regularTags.map(tag => `tag:${tag}`).join(' AND '));
+    // Handle tag filters using Shopify's tag syntax
+    if (filterState.selectedTags.length > 0) {
+      return filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND ');
     }
     
-    // Handle price filters - try different syntax
-    const priceFilters = filterState.selectedTags.filter(tag => 
-      tag.startsWith('price_under_')
-    );
-    
-    priceFilters.forEach(filter => {
-      switch (filter) {
-        case 'price_under_999':
-          // Try multiple price query formats that Shopify might accept
-          queries.push('(price:<999 OR variants.price:<999 OR price:<=999 OR variants.price:<=999)');
-          break;
-      }
-    });
-    
-    return queries.join(' AND ');
+    return '';
   };
 
   const getSortKey = () => {

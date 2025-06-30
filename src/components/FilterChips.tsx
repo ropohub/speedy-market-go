@@ -29,16 +29,11 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     onFilterChange?.();
   };
 
-  const handlePriceFilterToggle = (priceRange: string) => {
-    if (filterState.selectedTags.includes(priceRange)) {
-      removeFilter(priceRange);
+  const handleTagFilterToggle = (tag: string) => {
+    if (filterState.selectedTags.includes(tag)) {
+      removeFilter(tag);
     } else {
-      // Remove any existing price filter first
-      const existingPriceFilters = filterState.selectedTags.filter(tag => 
-        tag.startsWith('price_under_')
-      );
-      existingPriceFilters.forEach(filter => removeFilter(filter));
-      addFilter(priceRange);
+      addFilter(tag);
     }
     onFilterChange?.();
   };
@@ -58,8 +53,8 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
     }
   };
 
-  const isPriceFilterActive = (priceRange: string) => {
-    return filterState.selectedTags.includes(priceRange);
+  const isTagFilterActive = (tag: string) => {
+    return filterState.selectedTags.includes(tag);
   };
 
   return (
@@ -97,19 +92,36 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Price Filter Chip */}
+          {/* New Arrival Filter Chip */}
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePriceFilterToggle('price_under_999')}
+            onClick={() => handleTagFilterToggle('new-arrival')}
             className={`whitespace-nowrap ${
-              isPriceFilterActive('price_under_999') 
+              isTagFilterActive('new-arrival') 
                 ? 'bg-orange-50 border-orange-200 text-orange-700' 
                 : ''
             }`}
           >
-            Price &lt; Rs999
-            {isPriceFilterActive('price_under_999') && (
+            New Arrival
+            {isTagFilterActive('new-arrival') && (
+              <X className="ml-1 h-3 w-3" />
+            )}
+          </Button>
+
+          {/* Most Popular Filter Chip */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleTagFilterToggle('popular')}
+            className={`whitespace-nowrap ${
+              isTagFilterActive('popular') 
+                ? 'bg-orange-50 border-orange-200 text-orange-700' 
+                : ''
+            }`}
+          >
+            Most Popular
+            {isTagFilterActive('popular') && (
               <X className="ml-1 h-3 w-3" />
             )}
           </Button>
