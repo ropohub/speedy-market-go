@@ -12,8 +12,8 @@ const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
 
 const getProductsQuery = `
-  query GetProducts($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
+  query GetProducts($first: Int!, $after: String, $sortKey: ProductSortKeys, $reverse: Boolean, $query: String) {
+    products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, query: $query) {
       pageInfo {
         hasNextPage
         endCursor
@@ -46,11 +46,11 @@ const getProductsQuery = `
 `;
 
 const getCollectionProductsQuery = `
-  query GetCollectionProducts($handle: String!, $first: Int!, $after: String) {
+  query GetCollectionProducts($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys, $reverse: Boolean, $query: String) {
     collectionByHandle(handle: $handle) {
       id
       title
-      products(first: $first, after: $after) {
+      products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, query: $query) {
         pageInfo {
           hasNextPage
           endCursor
@@ -84,8 +84,8 @@ const getCollectionProductsQuery = `
 `;
 
 const searchProductsQuery = `
-  query SearchProducts($searchQuery: String!, $first: Int!, $after: String) {
-    search(query: $searchQuery, first: $first, after: $after, types: [PRODUCT]) {
+  query SearchProducts($searchQuery: String!, $first: Int!, $after: String, $sortKey: SearchSortKeys, $reverse: Boolean) {
+    search(query: $searchQuery, first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, types: [PRODUCT]) {
       pageInfo {
         hasNextPage
         endCursor
@@ -211,8 +211,18 @@ interface ShopifyCollectionResponse {
   };
 }
 
-const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: string | null }) => {
-  console.log('Fetching all products from Shopify...');
+const fetchProductsFromShopify = async ({ 
+  pageParam = null, 
+  sortKey = null, 
+  reverse = false,
+  query = null 
+}: { 
+  pageParam?: string | null;
+  sortKey?: string | null;
+  reverse?: boolean;
+  query?: string | null;
+}) => {
+  console.log('Fetching all products from Shopify...', { sortKey, reverse, query });
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -224,6 +234,9 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
       variables: {
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
+        query,
       },
     }),
   });
@@ -245,12 +258,18 @@ const fetchProductsFromShopify = async ({ pageParam = null }: { pageParam?: stri
 
 const fetchCollectionProductsFromShopify = async ({ 
   pageParam = null, 
-  collectionHandle 
+  collectionHandle,
+  sortKey = null,
+  reverse = false,
+  query = null
 }: { 
   pageParam?: string | null;
   collectionHandle: string;
+  sortKey?: string | null;
+  reverse?: boolean;
+  query?: string | null;
 }) => {
-  console.log(`Fetching products from collection: "${collectionHandle}"`);
+  console.log(`Fetching products from collection: "${collectionHandle}"`, { sortKey, reverse, query });
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -263,6 +282,9 @@ const fetchCollectionProductsFromShopify = async ({
         handle: collectionHandle,
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
+        query,
       },
     }),
   });
@@ -292,12 +314,16 @@ const fetchCollectionProductsFromShopify = async ({
 
 const fetchSearchResults = async ({ 
   pageParam = null, 
-  searchQuery 
+  searchQuery,
+  sortKey = null,
+  reverse = false
 }: { 
   pageParam?: string | null;
   searchQuery: string;
+  sortKey?: string | null;
+  reverse?: boolean;
 }) => {
-  console.log(`Searching for: "${searchQuery}"`);
+  console.log(`Searching for: "${searchQuery}"`, { sortKey, reverse });
   const response = await fetch(SHOPIFY_API_URL, {
     method: 'POST',
     headers: {
@@ -310,6 +336,8 @@ const fetchSearchResults = async ({
         searchQuery,
         first: 10,
         after: pageParam,
+        sortKey,
+        reverse,
       },
     }),
   });
@@ -378,7 +406,7 @@ const fetchProductsByTag = async ({
 
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
-  const { filterState, setFilters, getQueryString } = useFilter();
+  const { filterState, setFilters, getQueryString, getSortKey } = useFilter();
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
   const tag = searchParams.get('tag');
@@ -418,34 +446,44 @@ const ProductListPage = () => {
   }, []);
 
   const getQueryFn = () => {
-    // Use filter state for query if available, otherwise fall back to URL params
     const currentQuery = getQueryString() || searchQuery;
+    const sortKey = getSortKey();
+    const reverse = filterState.sortBy === 'price-high';
     
     if (currentQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchSearchResults({ pageParam, searchQuery: currentQuery });
+        fetchSearchResults({ pageParam, searchQuery: currentQuery, sortKey, reverse });
     } else if (tag) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchProductsByTag({ pageParam, tag });
     } else if (collection) {
       return ({ pageParam }: { pageParam?: string | null }) => 
-        fetchCollectionProductsFromShopify({ pageParam, collectionHandle: collection });
+        fetchCollectionProductsFromShopify({ 
+          pageParam, 
+          collectionHandle: collection, 
+          sortKey, 
+          reverse, 
+          query: currentQuery 
+        });
     } else {
-      return fetchProductsFromShopify;
+      return ({ pageParam }: { pageParam?: string | null }) => 
+        fetchProductsFromShopify({ pageParam, sortKey, reverse, query: currentQuery });
     }
   };
 
   const getQueryKey = () => {
     const currentQuery = getQueryString() || searchQuery;
+    const sortKey = getSortKey();
+    const reverse = filterState.sortBy === 'price-high';
     
     if (currentQuery) {
-      return ['shopifySearchResults', currentQuery];
+      return ['shopifySearchResults', currentQuery, sortKey, reverse];
     } else if (tag) {
       return ['shopifyProductsByTag', tag];
     } else if (collection) {
-      return ['shopifyCollectionProducts', collection];
+      return ['shopifyCollectionProducts', collection, sortKey, reverse, currentQuery];
     } else {
-      return ['shopifyProducts'];
+      return ['shopifyProducts', sortKey, reverse, currentQuery];
     }
   };
 

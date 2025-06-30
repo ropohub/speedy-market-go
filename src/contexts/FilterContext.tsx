@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 export interface FilterState {
   selectedTags: string[];
   sortBy: 'price-low' | 'price-high' | 'newest' | 'popularity' | null;
-  showDiscountOnly: boolean;
   maxPrice: number;
 }
 
@@ -15,9 +14,9 @@ interface FilterContextType {
   setFilters: (tags: string[]) => void;
   clearFilters: () => void;
   setSortBy: (sort: FilterState['sortBy']) => void;
-  setShowDiscountOnly: (show: boolean) => void;
   setMaxPrice: (price: number) => void;
   getQueryString: () => string;
+  getSortKey: () => string | null;
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -38,7 +37,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterState, setFilterState] = useState<FilterState>({
     selectedTags: [],
     sortBy: null,
-    showDiscountOnly: false,
     maxPrice: 5000
   });
 
@@ -70,7 +68,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       ...prev,
       selectedTags: [],
       sortBy: null,
-      showDiscountOnly: false,
       maxPrice: 5000
     }));
   };
@@ -79,13 +76,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setFilterState(prev => ({
       ...prev,
       sortBy: sort
-    }));
-  };
-
-  const setShowDiscountOnly = (show: boolean) => {
-    setFilterState(prev => ({
-      ...prev,
-      showDiscountOnly: show
     }));
   };
 
@@ -103,11 +93,27 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       queries.push(filterState.selectedTags.map(tag => `tag:${tag}`).join(' AND '));
     }
     
-    if (filterState.showDiscountOnly) {
-      queries.push('available_for_sale:true');
+    // Add max price filter
+    if (filterState.maxPrice < 5000) {
+      queries.push(`variants.price:<=${filterState.maxPrice}`);
     }
     
     return queries.join(' AND ');
+  };
+
+  const getSortKey = () => {
+    switch (filterState.sortBy) {
+      case 'price-low':
+        return 'PRICE';
+      case 'price-high':
+        return 'PRICE';
+      case 'newest':
+        return 'CREATED_AT';
+      case 'popularity':
+        return 'BEST_SELLING';
+      default:
+        return null;
+    }
   };
 
   return (
@@ -118,9 +124,9 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       setFilters,
       clearFilters,
       setSortBy,
-      setShowDiscountOnly,
       setMaxPrice,
-      getQueryString
+      getQueryString,
+      getSortKey
     }}>
       {children}
     </FilterContext.Provider>
