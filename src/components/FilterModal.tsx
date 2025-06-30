@@ -46,7 +46,11 @@ interface FilterModalProps {
 const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) => {
   const { filterState, addFilter, removeFilter, clearFilters } = useFilter();
 
+  console.log('FilterModal - Current filter state:', filterState);
+
   const handleTagToggle = (tag: string) => {
+    console.log('FilterModal - Toggling tag:', tag, 'Current selected:', filterState.selectedTags);
+    
     if (filterState.selectedTags.includes(tag)) {
       removeFilter(tag);
     } else {
@@ -63,25 +67,35 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
     clearFilters();
   };
 
+  const isTagSelected = (tag: string) => {
+    const selected = filterState.selectedTags.includes(tag);
+    console.log(`FilterModal - Tag ${tag} selected:`, selected);
+    return selected;
+  };
+
   const renderFilterSection = (title: string, options: { tag: string; display: string }[]) => (
     <div className="mb-6">
       <h3 className="font-semibold text-lg mb-3">{title}</h3>
       <div className="space-y-3">
-        {options.map(({ tag, display }) => (
-          <div key={tag} className="flex items-center space-x-3">
-            <Checkbox
-              id={tag}
-              checked={filterState.selectedTags.includes(tag)}
-              onCheckedChange={() => handleTagToggle(tag)}
-            />
-            <Label
-              htmlFor={tag}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              {display}
-            </Label>
-          </div>
-        ))}
+        {options.map(({ tag, display }) => {
+          const isChecked = isTagSelected(tag);
+          return (
+            <div key={tag} className="flex items-center space-x-3">
+              <Checkbox
+                id={tag}
+                checked={isChecked}
+                onCheckedChange={() => handleTagToggle(tag)}
+              />
+              <Label
+                htmlFor={tag}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                onClick={() => handleTagToggle(tag)}
+              >
+                {display}
+              </Label>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
