@@ -121,7 +121,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
                 : ''
             }`}
           >
-            Price < ₹999
+            Price &lt; Rs999
             {isPriceFilterActive('price_under_999') && (
               <X className="ml-1 h-3 w-3" />
             )}
@@ -137,7 +137,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({ onFilterChange }) => {
                 : ''
             }`}
           >
-            ₹1000 - ₹2000
+            Rs1000 - Rs2000
             {isPriceFilterActive('price_range_1000_2000') && (
               <X className="ml-1 h-3 w-3" />
             )}
