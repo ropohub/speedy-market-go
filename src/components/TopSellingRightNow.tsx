@@ -1,12 +1,14 @@
-
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 
 interface TopSellingItem {
   id: string;
   name: string;
   image: string;
   category: string;
+  subcategory?: string;
 }
 
 const TopSellingRightNow: React.FC = () => {
@@ -15,30 +17,61 @@ const TopSellingRightNow: React.FC = () => {
       id: '1',
       name: "Women's Innerwear",
       image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
-      category: 'innerwear'
+      category: 'women',
+      subcategory: 'innerwear'
     },
     {
       id: '2',
       name: "Men's Innerwear",
       image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=200&h=200&fit=crop',
-      category: 'innerwear'
+      category: 'men',
+      subcategory: 'innerwear'
     },
     {
       id: '3',
-      name: "Water Bottles",
-      image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=200&h=200&fit=crop',
-      category: 'accessories'
+      name: "Trendy Handbags",
+      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop',
+      category: 'accessories',
+      subcategory: 'handbags'
     },
     {
       id: '4',
       name: "Sports Wear",
       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop',
-      category: 'sports'
+      category: 'sportswear',
+      subcategory: ''
     }
   ];
 
-  const handleItemClick = (item: TopSellingItem) => {
-    console.log('Clicked item:', item);
+  const navigate = useNavigate();
+  const { setFilters } = useFilter();
+
+  const categoryToTagMap: { [key: string]: string } = {
+    'women': "Women's Wear",
+    'men': "Men's Wear",
+    'accessories': 'Accessories',
+    'sportswear': 'Sports Wear',
+  };
+  
+  const subcategoryToTagMap: { [key: string]: string } = {
+    'innerwear': 'Inner Wear',
+    'handbags': 'Handbags',
+  };
+
+  const handleItemClick = (item: TopSellingItem & { subcategory?: string }) => {
+    const tags: string[] = [];
+    if (categoryToTagMap[item.category]) {
+      tags.push(categoryToTagMap[item.category]);
+    }
+    if (item.subcategory && subcategoryToTagMap[item.subcategory]) {
+      tags.push(subcategoryToTagMap[item.subcategory]);
+    }
+    if (tags.length > 0) {
+      setFilters(tags);
+      navigate('/products');
+    } else {
+      navigate('/products');
+    }
   };
 
   return (

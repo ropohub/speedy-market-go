@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { brandService } from '../api/brandClient';
 import { Brand } from '../../protogen/api/common/proto/brand';
+import { useFilter } from '../contexts/FilterContext';
 
 interface EthnicBrand {
   id: string;
@@ -16,6 +16,7 @@ interface EthnicBrand {
 
 const EthnicCollection: React.FC = () => {
   const navigate = useNavigate();
+  const { clearFilters } = useFilter();
   const [brands, setBrands] = useState<EthnicBrand[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,6 +82,7 @@ const EthnicCollection: React.FC = () => {
   }, []);
 
   const handleShopNow = () => {
+    clearFilters();
     navigate('/products/women/ethnic-wear');
   };
 

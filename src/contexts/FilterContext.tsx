@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface FilterState {
@@ -14,7 +13,7 @@ interface FilterContextType {
   clearFilters: () => void;
   setSortBy: (sort: FilterState['sortBy']) => void;
   getQueryString: () => string;
-  getSortKey: () => string | null;
+  getSortKey: (context?: 'search' | 'products') => string | null;
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -139,16 +138,15 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     return queryParts.join(' AND ');
   };
 
-  const getSortKey = () => {
+  const getSortKey = (context: 'search' | 'products' = 'products') => {
     switch (filterState.sortBy) {
       case 'price-low':
-        return 'PRICE';
       case 'price-high':
         return 'PRICE';
       case 'newest':
-        return 'CREATED_AT';
+        return context === 'search' ? 'RELEVANCE' : 'RELEVANCE';
       case 'popularity':
-        return 'BEST_SELLING';
+        return context === 'search' ? 'RELEVANCE' : 'BEST_SELLING';
       default:
         return null;
     }

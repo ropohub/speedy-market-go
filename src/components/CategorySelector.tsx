@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
 
 interface Category {
   id: string;
@@ -20,9 +22,32 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   onCategoryChange
 }) => {
   const navigate = useNavigate();
+  const { setFilters } = useFilter();
 
   const handlePromoClick = () => {
-    navigate('/products/women/all');
+    // Clear filters and navigate to products page
+    setFilters([]);
+    navigate('/products');
+  };
+
+  const handleCategoryClick = (categoryId: string) => {
+    // Set the appropriate filter based on category and navigate to products
+    let genderTag = '';
+    
+    if (categoryId === 'women') {
+      genderTag = "Women's Wear";
+    } else if (categoryId === 'men') {
+      genderTag = "Men's Wear";
+    }
+    
+    if (genderTag) {
+      setFilters([genderTag]);
+    } else {
+      setFilters([]);
+    }
+    
+    navigate('/products');
+    onCategoryChange(categoryId);
   };
 
   return (
@@ -49,7 +74,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
         {categories.map(category => (
           <button
             key={category.id}
-            onClick={() => onCategoryChange(category.id)}
+            onClick={() => handleCategoryClick(category.id)}
             className="flex flex-col items-center gap-1 group"
           >
             <div className="relative">

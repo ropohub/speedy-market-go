@@ -25,7 +25,7 @@ interface CartItem extends LegacyProduct {
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
-  const { setFilters } = useFilter();
+  const { setFilters, clearFilters } = useFilter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   
   const handleAddToCart = (product: LegacyProduct) => {
@@ -69,14 +69,32 @@ const Index: React.FC = () => {
     const tag = categoryToTagMap[categoryName];
     if (tag) {
       setFilters([tag]);
-      navigate(`/products?tag=${encodeURIComponent(tag)}`);
+      navigate('/products'); // Navigate without URL parameters
     } else {
       navigate('/products');
     }
   };
 
   const handleShopNowClick = () => {
+    clearFilters(); // Reset filters
     navigate('/products');
+  };
+
+  const handleMainCategoryClick = (mainCategoryName: string) => {
+    // Map main category names to Shopify tags or product keys
+    const mainCategoryToTagMap: { [key: string]: string } = {
+      'Western Wear': "Western Wear",
+      'Formal Wear': "Formal Wear",
+      'Inner Wear': "Inner Wear",
+      'Sport Wear': "Sport Wear"
+    };
+    const tag = mainCategoryToTagMap[mainCategoryName];
+    if (tag) {
+      setFilters([tag]);
+      navigate('/products');
+    } else {
+      navigate('/products');
+    }
   };
 
   // Category squares data with 7 categories for horizontal scroll
@@ -103,16 +121,16 @@ const Index: React.FC = () => {
   // Main category squares data for the promotional section with appropriate images
   const mainCategorySquares = [{
     name: 'Western Wear',
-    image: 'https://cdn.dripzyy.com/women2.jpg'
+    image: 'https://cdn.dripzyy.com/w_wear.jpg'
   }, {
     name: 'Formal Wear',
     image: 'https://cdn.dripzyy.com/formal1.jpeg'
   }, {
     name: 'Inner Wear',
-    image: 'https://cdn.dripzyy.com/innerwear1.jpg'
+    image: 'https://cdn.dripzyy.com/p3.webp'
   }, {
-    name: 'Comfy Footwear',
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'
+    name: 'Sport Wear',
+    image: 'https://cdn.dripzyy.com/w5.avif'
   }];
   return <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
@@ -173,7 +191,7 @@ const Index: React.FC = () => {
                 />
                 
                 <div className="bg-white rounded-2xl overflow-hidden relative">
-                  <img src="/lovable-uploads/94201d14-8dbc-4778-ab88-0695ecee9e03.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain relative z-10" />
+                  <img src="https://cdn.dripzyy.com/hero_banner_main.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain relative z-10" />
                 </div>
               </div>
             </div>
@@ -200,9 +218,9 @@ const Index: React.FC = () => {
             <div className="max-w-md mx-auto">
               {/* Main promotional content with model images */}
               <div className="flex items-center justify-between mb-2">
-                {/* Left model image - removed border styling */}
+                {/* Left model image - updated URL */}
                 <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/f1345680-4375-42e5-b4f1-12c76962ae5c.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                  <img src="https://cdn.dripzyy.com/small_b1.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
                 
                 {/* Center text content */}
@@ -219,15 +237,15 @@ const Index: React.FC = () => {
                   </button>
                 </div>
                 
-                {/* Right model image - replaced with new image */}
+                {/* Right model image - updated URL */}
                 <div className="w-20 h-24 overflow-hidden">
-                  <img src="/lovable-uploads/fed2d75f-54fd-492e-befc-995d89b0e9a0.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                  <img src="https://cdn.dripzyy.com/small_b2.png" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
               
               {/* Main Category Squares - Larger size matching reference */}
               <div className="grid grid-cols-4 gap-3 mt-2">
-                {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center">
+                {mainCategorySquares.map((category, index) => <div key={index} className="flex flex-col items-center cursor-pointer" onClick={() => handleMainCategoryClick(category.name)}>
                     <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-lg bg-white p-2">
                       <div className="w-full h-full rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
                         <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-2xl" />

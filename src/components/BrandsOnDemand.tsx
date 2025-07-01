@@ -13,23 +13,27 @@ const BrandsOnDemand: React.FC = () => {
   console.log('Loading state:', isLoading);
   console.log('Error:', error);
 
-  // Additional mock brands to fill the grid (6 more brands)
+  // Updated hardcoded brands as requested
   const additionalBrands = [
-    { name: 'PUMA', imageUrl: 'https://logoeps.com/wp-content/uploads/2013/03/puma-vector-logo.png' },
-    { name: 'adidas', imageUrl: 'https://logoeps.com/wp-content/uploads/2012/11/adidas-vector-logo.png' },
-    { name: 'MARKS & SPENCER', imageUrl: 'https://1000logos.net/wp-content/uploads/2020/09/Marks-Spencer-Logo.png' },
-    { name: 'Sangria', imageUrl: 'https://images.meesho.com/images/products/114472076/bvhpv_512.webp' },
-    { name: 'HRX', imageUrl: 'https://assets.ajio.com/medias/sys_master/root/20230629/Km4I/649ce26feebac147fc14538a/hrx-by-hrithik-roshan-black-logo-print-slim-fit-t-shirt.jpg' },
-    { name: 'TOKYO TALKIES', imageUrl: 'https://assets.ajio.com/medias/sys_master/root/20220916/lhSy/632444f1f997ddfdbd6a1e0f/tokyo-talkies-black-floral-print-regular-fit-shirt.jpg' }
+    { name: 'Snitch', imageUrl: null },
+    { name: 'Souled Store', imageUrl: null },
+    { name: 'PUMA', imageUrl: null },
+    { name: 'NewMe', imageUrl: null },
+    { name: 'ZARA', imageUrl: null },
+    { name: 'UNIQLO', imageUrl: null }
   ];
 
   // Combine backend brands with additional brands
   const allBrands = [
     ...(brands || []).map(brand => ({
       name: brand.name,
-      imageUrl: brand.imageUrls?.[0] || null
+      imageUrl: brand.imageUrls?.[0] || null,
+      isFromBackend: true
     })),
-    ...additionalBrands
+    ...additionalBrands.map(brand => ({
+      ...brand,
+      isFromBackend: false
+    }))
   ].slice(0, 8); // Ensure we only show 8 brands total
 
   return (
@@ -125,6 +129,15 @@ const BrandsOnDemand: React.FC = () => {
                 key={brand.name + index}
                 className="w-full h-0 pb-[100%] relative bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group border border-white/50"
               >
+                {/* Coming Soon Tag for hardcoded brands only */}
+                {!brand.isFromBackend && (
+                  <div className="absolute -top-1 -right-1 z-10">
+                    <div className="bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-bl-lg rounded-tr-2xl shadow-sm transform rotate-0">
+                      COMING SOON
+                    </div>
+                  </div>
+                )}
+                
                 <div className="absolute inset-0 p-2.5 flex items-center justify-center">
                   {brand.imageUrl ? (
                     <img

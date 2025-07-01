@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useFilter } from '../contexts/FilterContext';
 import CategoryHeader from '../components/category/CategoryHeader';
 import NavigationBar from '../components/NavigationBar';
@@ -213,7 +213,7 @@ interface ShopifyCollectionResponse {
 
 const fetchProductsFromShopify = async ({ 
   pageParam = null, 
-  sortKey = null, 
+  sortKey = null,
   reverse = false,
   query = null 
 }: { 
@@ -409,11 +409,9 @@ const ProductListPage = () => {
   const { filterState, setFilters, getQueryString, getSortKey } = useFilter();
   const collection = searchParams.get('collection');
   const searchQuery = searchParams.get('search');
-  const tag = searchParams.get('tag');
   
   console.log('ProductListPage - Collection parameter:', collection);
   console.log('ProductListPage - Search parameter:', searchQuery);
-  console.log('ProductListPage - Tag parameter:', tag);
   console.log('ProductListPage - Filter state:', filterState);
 
   // Initialize filters based on URL parameters
@@ -431,14 +429,14 @@ const ProductListPage = () => {
           }
         });
       }
-    } else if (tag) {
-      initialTags.push(tag);
+    } else if (searchParams.get('tag')) {
+      initialTags.push(searchParams.get('tag') as string);
     }
     
     if (initialTags.length > 0) {
       setFilters(initialTags);
     }
-  }, [searchQuery, tag, setFilters]);
+  }, [searchQuery, searchParams, setFilters]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -447,24 +445,18 @@ const ProductListPage = () => {
 
   const getQueryFn = () => {
     const filterQuery = getQueryString();
-    const sortKey = getSortKey();
+    const finalQuery = filterQuery || searchQuery || '';
+    // Use 'search' context for search queries, otherwise default
+    const sortKey = finalQuery ? getSortKey('search') : getSortKey();
     const reverse = filterState.sortBy === 'price-high';
-    
-    // Combine search query with filter query
-    let finalQuery = filterQuery;
-    if (searchQuery && !filterQuery) {
-      finalQuery = searchQuery;
-    } else if (searchQuery && filterQuery) {
-      finalQuery = `${searchQuery} AND ${filterQuery}`;
-    }
     
     console.log('Final query for Shopify:', finalQuery);
     
-    if (finalQuery || tag) {
+    if (finalQuery) {
       return ({ pageParam }: { pageParam?: string | null }) => 
         fetchSearchResults({ 
           pageParam, 
-          searchQuery: finalQuery || `tag:${tag}`, 
+          searchQuery: finalQuery, 
           sortKey, 
           reverse 
         });
@@ -490,18 +482,13 @@ const ProductListPage = () => {
 
   const getQueryKey = () => {
     const filterQuery = getQueryString();
-    const sortKey = getSortKey();
+    const finalQuery = filterQuery || searchQuery || '';
+    // Use 'search' context for search queries, otherwise default
+    const sortKey = finalQuery ? getSortKey('search') : getSortKey();
     const reverse = filterState.sortBy === 'price-high';
     
-    let finalQuery = filterQuery;
-    if (searchQuery && !filterQuery) {
-      finalQuery = searchQuery;
-    } else if (searchQuery && filterQuery) {
-      finalQuery = `${searchQuery} AND ${filterQuery}`;
-    }
-    
-    if (finalQuery || tag) {
-      return ['shopifySearchResults', finalQuery || `tag:${tag}`, sortKey, reverse];
+    if (finalQuery) {
+      return ['shopifySearchResults', finalQuery, sortKey, reverse];
     } else if (collection) {
       return ['shopifyCollectionProducts', collection, sortKey, reverse, finalQuery];
     } else {
@@ -570,14 +557,21 @@ const ProductListPage = () => {
 
   console.log('ProductListPage - Products count:', products.length);
 
-  // Determine the header title based on search, tag, collection, or default
+  // Determine the header title based on search, collection, or default
   const getHeaderTitle = () => {
     if (searchQuery) {
       return `Search: ${searchQuery}`;
-    } else if (tag) {
-      return tag.replace("'s Wear", "").replace(" Wear", "");
     } else if (collection) {
       return collection.charAt(0).toUpperCase() + collection.slice(1).replace(/-/g, ' ');
+    } else if (filterState.selectedTags.length > 0) {
+      // Show the primary gender tag if available
+      const genderTag = filterState.selectedTags.find(tag => 
+        tag === "Women's Wear" || tag === "Men's Wear"
+      );
+      if (genderTag) {
+        return genderTag.replace("'s Wear", "").replace(" Wear", "");
+      }
+      return filterState.selectedTags[0];
     }
     return 'Products';
   };
@@ -599,7 +593,7 @@ const ProductListPage = () => {
   return (
     <div className="min-h-screen" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
       <CategoryHeader title={getHeaderTitle()} />
-      <div className="pt-16">
+      <div className="pt-24">
         <NavigationBar />
         <FilterChips onFilterChange={handleFilterChange} />
         <div className="mt-4">

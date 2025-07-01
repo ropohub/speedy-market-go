@@ -4,6 +4,9 @@ import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag } from 'lucide-react';
 import NotificationIconWithBadge from '../header/NotificationIconWithBadge';
+import LocationDisplay from '../header/LocationDisplay';
+import { useAuth } from '../../contexts/AuthContext';
+import { auth } from '../../firebase';
 
 interface CategoryHeaderProps {
   title: string;
@@ -11,6 +14,8 @@ interface CategoryHeaderProps {
 
 const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
   const navigate = useNavigate();
+  const { isLoading } = useAuth();
+  const firebaseUser = auth.currentUser;
 
   const handleBack = () => {
     navigate('/');
@@ -20,8 +25,20 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
     navigate('/search-page');
   };
 
+  const handleCartClick = () => {
+    if (isLoading) return;
+    if (firebaseUser) navigate('/cart');
+    else navigate('/auth');
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50" style={{background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'}}>
+      {/* First row: Location */}
+      <div className="px-4 pt-2 pb-0.5">
+        <LocationDisplay />
+      </div>
+      
+      {/* Second row: Navigation and icons */}
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left side - Back button and logo */}
         <div className="flex items-center gap-3">
@@ -44,12 +61,12 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title }) => {
             <Search className="w-6 h-6 text-gray-900" />
           </button>
           <NotificationIconWithBadge badgeCount={2} />
-          <div className="relative">
+          <button onClick={handleCartClick} className="relative">
             <ShoppingBag className="w-6 h-6 text-gray-900" />
             <div className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
               0
             </div>
-          </div>
+          </button>
         </div>
       </div>
     </div>

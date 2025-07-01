@@ -1,9 +1,7 @@
-
 import React from 'react';
 import ProductCard from './ProductCard';
 import { Skeleton } from './ui/skeleton';
 import { useNavigate } from 'react-router-dom';
-
 interface ProductForCard {
   id: string;
   name: string;
@@ -12,15 +10,15 @@ interface ProductForCard {
   image: string;
   brand: string;
 }
-
 interface ProductGridProps {
   products: ProductForCard[];
   isLoading?: boolean;
 }
-
-const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading = false }) => {
+const ProductGrid: React.FC<ProductGridProps> = ({
+  products,
+  isLoading = false
+}) => {
   const navigate = useNavigate();
-
   const handleProductClick = (productId: string) => {
     // Extract numeric ID from Shopify GID
     const numericId = productId.split('/').pop();
@@ -28,13 +26,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading = false }
       navigate(`/product/${numericId}`);
     }
   };
-
   if (isLoading) {
-    return (
-      <div className="px-4 py-6">
+    return <div className="px-4 py-6">
         <div className="grid grid-cols-2 gap-4 max-w-6xl mx-auto">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm overflow-hidden">
+          {Array.from({
+          length: 10
+        }).map((_, index) => <div key={index} className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm overflow-hidden">
               <Skeleton className="aspect-[3/4] w-full" />
               <div className="p-3">
                 <Skeleton className="h-4 w-16 mb-1" />
@@ -44,28 +41,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, isLoading = false }
                   <Skeleton className="h-3 w-12" />
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="px-4 py-6">
+  return <div className="px-[17px] py-0">
       <div className="grid grid-cols-2 gap-4 max-w-6xl mx-auto">
-        {products.map((product) => (
-          <ProductCard 
-            key={product.id} 
-            product={product} 
-            onAddToCart={() => {}} // Empty function since we're removing this functionality
-            onClick={handleProductClick}
-            hideAddToCart={true} // New prop to hide add to cart button
-          />
-        ))}
+        {products.map(product => <ProductCard key={product.id} product={product} onAddToCart={() => {}} // Empty function since we're removing this functionality
+      onClick={handleProductClick} hideAddToCart={true} // New prop to hide add to cart button
+      />)}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ProductGrid;
