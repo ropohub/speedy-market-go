@@ -59,6 +59,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       // In a real app, you'd need to get the actual variant ID
       const productVariantId = `gid://shopify/ProductVariant/${product.id}`;
       
+      // Send delta of +1 to add one item to cart
       await cartService.mutateCart(productVariantId, 1);
       
       toast({

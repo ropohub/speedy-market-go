@@ -208,14 +208,17 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Updating quantity for item:', id, 'to:', newQuantity);
+      const currentQuantity = item.quantity;
+      const quantityDelta = newQuantity - currentQuantity;
+
+      console.log('Updating quantity for item:', id, 'from:', currentQuantity, 'to:', newQuantity, 'delta:', quantityDelta);
       
       // Optimistically update UI
       setCartItems(cartItems.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
 
-      await cartService.mutateCart(item.productVariantId, newQuantity);
+      await cartService.mutateCart(item.productVariantId, quantityDelta);
       
       toast({
         title: "Cart Updated",
@@ -240,12 +243,15 @@ const Cart: React.FC = () => {
       const item = cartItems.find(item => item.id === id);
       if (!item) return;
 
-      console.log('Removing item:', id);
+      const currentQuantity = item.quantity;
+      const quantityDelta = -currentQuantity; // Negative delta to remove all
+
+      console.log('Removing item:', id, 'current quantity:', currentQuantity, 'delta:', quantityDelta);
       
       // Optimistically update UI
       setCartItems(cartItems.filter(item => item.id !== id));
 
-      await cartService.mutateCart(item.productVariantId, 0);
+      await cartService.mutateCart(item.productVariantId, quantityDelta);
       
       toast({
         title: "Item Removed",

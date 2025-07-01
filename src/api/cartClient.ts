@@ -38,15 +38,15 @@ export const cartService = {
     }
   },
 
-  // Add or update cart item
-  async mutateCart(productVariantId: string, quantity: number): Promise<CartUpdateResponse> {
+  // Add or update cart item with delta (change amount)
+  async mutateCart(productVariantId: string, quantityDelta: number): Promise<CartUpdateResponse> {
     try {
       const user = auth.currentUser;
       if (!user) {
         throw new Error('User not authenticated');
       }
 
-      console.log('Mutating cart for user:', user.phoneNumber, 'variant:', productVariantId, 'quantity:', quantity);
+      console.log('Mutating cart for user:', user.phoneNumber, 'variant:', productVariantId, 'delta:', quantityDelta);
       const token = await user.getIdToken();
       
       // Ensure the variant ID is in the correct format
@@ -57,12 +57,12 @@ export const cartService = {
       
       const items = [{
         product_variant_id: formattedVariantId,
-        quantity
+        quantity: quantityDelta // Send delta instead of total quantity
       }];
       
       const response = await shopifyClient.updateCart(token, items);
       
-      console.log("Cart mutated:", response);
+      console.log("Cart mutated with delta:", response);
       return response;
     } catch (error) {
       console.error("Error mutating cart:", error);

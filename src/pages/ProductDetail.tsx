@@ -202,6 +202,7 @@ const ProductDetailPage = () => {
       // Use the selected variant ID or fallback to product ID
       const variantId = selectedVariant?.id || `gid://shopify/ProductVariant/${productId}`;
       
+      // Send delta of +1 to add one item to cart
       await cartService.mutateCart(variantId, 1);
 
       toast({
