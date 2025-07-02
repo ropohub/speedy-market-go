@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -109,6 +110,7 @@ const fetchProductsByTag = async (tag: string): Promise<ShopifyProductNode[]> =>
 };
 
 const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProductNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +131,11 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleProductClick = (productId: string) => {
+    const cleanProductId = productId.replace('gid://shopify/Product/', '');
+    navigate(`/product/${cleanProductId}`);
+  };
 
   if (loading) {
     return <div className="text-center py-8 text-white">Loading products you can't miss...</div>;
@@ -164,13 +171,14 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
               <div key={product.id} className="flex-shrink-0 w-32">
                 <ProductCard 
                   product={{
-                    id: product.id,
+                    id: product.id.replace('gid://shopify/Product/', ''),
                     name: product.title,
                     price: parseFloat(product.priceRange.minVariantPrice.amount),
                     image: product.images.edges[0]?.node.url || '/placeholder.svg',
                     brand: product.vendor
                   }}
                   onAddToCart={() => console.log('Added to cart:', product)}
+                  onClick={handleProductClick}
                   showHeartIcon={false}
                   itemNumber={index + 1}
                 />

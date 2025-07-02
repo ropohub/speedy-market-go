@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingCart, Heart, Share } from 'lucide-react';
 import ImageCarousel from '../components/ImageCarousel';
 import { Button } from '../components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '../contexts/CartContext';
 import { auth } from '../firebase';
 import { cartService } from '../api/cartClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
@@ -126,6 +127,7 @@ const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { incrementCartCount, updateCartCount } = useCart();
 
   const { data: product, isLoading, error } = useQuery<ShopifyProduct, Error>({
     queryKey: ['shopifyProduct', productId],
@@ -205,12 +207,17 @@ const ProductDetailPage = () => {
       // Send delta of +1 to add one item to cart
       await cartService.mutateCart(variantId, 1);
 
+      // Update cart count
+      incrementCartCount();
+
       toast({
         title: "Added to Bag",
         description: `${product?.title}${selectedSize ? ` (Size: ${selectedSize})` : ''} added to your bag`,
       });
     } catch (error: any) {
       console.error('Failed to add to bag:', error);
+      // Refresh cart count from server in case of error
+      updateCartCount();
       toast({
         title: "Add to Bag Failed",
         description: error.message || "Failed to add item to bag",
@@ -362,7 +369,7 @@ const ProductDetailPage = () => {
         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 space-y-3">
           <button
             onClick={toggleWishlist}
-            className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            className="w-12 h-12 bg-white/900 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             aria-label="Add to wishlist"
           >
             <Heart
@@ -372,7 +379,7 @@ const ProductDetailPage = () => {
           </button>
           <button
             onClick={handleShare}
-            className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+            className="w-12 h-12 bg-white/900 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             aria-label="Share product"
           >
             <Share size={20} className="text-gray-600" />

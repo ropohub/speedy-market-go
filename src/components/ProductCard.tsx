@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { cartService } from '../api/cartClient';
+import { useCart } from '../contexts/CartContext';
 import { toast } from "@/hooks/use-toast";
 import ProductCardImage from './product-card/ProductCardImage';
 import ProductCardInfo from './product-card/ProductCardInfo';
@@ -35,6 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const firebaseUser = auth.currentUser;
+  const { incrementCartCount, updateCartCount } = useCart();
 
   const handleCardClick = () => {
     if (onClick) {
@@ -62,6 +64,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       // Send delta of +1 to add one item to cart
       await cartService.mutateCart(productVariantId, 1);
       
+      // Update cart count
+      incrementCartCount();
+      
       toast({
         title: "Added to Bag",
         description: `${product.name} added to your bag`,
@@ -71,6 +76,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onAddToCart(product);
     } catch (error: any) {
       console.error('Failed to add to cart:', error);
+      // Refresh cart count from server in case of error
+      updateCartCount();
       toast({
         title: "Add to Cart Failed",
         description: error.message || "Failed to add item to cart",
