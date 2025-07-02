@@ -251,15 +251,33 @@ const Checkout: React.FC = () => {
       return;
     }
 
+    // Find the selected address
+    const selectedAddress = addresses.find(addr => addr.id === selectedAddressId);
+    if (!selectedAddress) {
+      toast({
+        title: "Address Error",
+        description: "Selected address not found",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       setPlacing(true);
       
-      const result = await orderService.placeOrder(selectedAddressId);
+      const result = await orderService.placeOrder(
+        selectedAddress.id,
+        selectedAddress.address,
+        selectedAddress.name,
+        selectedAddress.phone,
+        selectedAddress.latitude,
+        selectedAddress.longitude
+      );
       
       if (result.status === 'success') {
         toast({
           title: "Order Placed Successfully!",
-          description: `Your order ${result.order_id} has been confirmed`
+          description: `Your order has been confirmed`
         });
         navigate('/profile');
       } else {
