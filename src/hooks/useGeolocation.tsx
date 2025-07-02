@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface LocationData {
@@ -9,10 +8,37 @@ interface LocationData {
   } | null;
   isLoading: boolean;
   error: string | null;
-  permissionBlocked: boolean;
 }
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAxLcnwB8NW5AIObRuIKMinfNvENzzgRZE";
+
+async function fetchLocationFromIP() {
+  try {
+    const response = await fetch('https://ipinfo.io/json');
+    if (!response.ok) throw new Error('Failed to fetch IP location');
+    const data = await response.json();
+    // ipinfo.io returns location as a comma-separated string in 'loc'
+    let latitude = null, longitude = null;
+    if (data.loc) {
+      const [lat, lon] = data.loc.split(',');
+      latitude = parseFloat(lat);
+      longitude = parseFloat(lon);
+    }
+    return {
+      address: data.city && data.region && data.country
+        ? `${data.city}, ${data.region}, ${data.country}`
+        : data.city || data.region || data.country || 'Unknown location',
+      coordinates: latitude && longitude
+        ? { latitude, longitude }
+        : null,
+    };
+  } catch (e) {
+    return {
+      address: 'Unknown location',
+      coordinates: null,
+    };
+  }
+}
 
 export const useGeolocation = () => {
   const [locationData, setLocationData] = useState<LocationData>({
@@ -20,7 +46,6 @@ export const useGeolocation = () => {
     coordinates: null,
     isLoading: false,
     error: null,
-    permissionBlocked: false,
   });
 
   const requestLocation = async () => {
@@ -28,7 +53,6 @@ export const useGeolocation = () => {
       setLocationData(prev => ({
         ...prev,
         error: "Geolocation is not supported by this browser",
-        permissionBlocked: true,
       }));
       return;
     }
@@ -54,7 +78,6 @@ export const useGeolocation = () => {
               coordinates: { latitude, longitude },
               isLoading: false,
               error: null,
-              permissionBlocked: false,
             });
           } else {
             throw new Error('No address found for coordinates');
@@ -65,41 +88,42 @@ export const useGeolocation = () => {
             coordinates: { latitude, longitude },
             isLoading: false,
             error: null,
-            permissionBlocked: false,
           });
         }
       },
       async (error) => {
         let errorMessage = "Location access denied";
-        let shouldBlock = false;
-        
         switch (error.code) {
           case error.PERMISSION_DENIED:
             errorMessage = "Location access denied";
-            shouldBlock = true;
             break;
           case error.POSITION_UNAVAILABLE:
             errorMessage = "Location unavailable";
-            shouldBlock = true;
             break;
           case error.TIMEOUT:
             errorMessage = "Location request timeout";
-            shouldBlock = true;
             break;
         }
-        
-        setLocationData({
-          address: "Location permission required",
-          coordinates: null,
+        // Immediately set loading to false and show temporary message
+        setLocationData(prev => ({
+          ...prev,
+          isLoading: false,
+          address: 'Getting approximate location...'
+        }));
+        // Fallback to IP-based location if denied or unavailable
+        const ipLocation = await fetchLocationFromIP();
+        setLocationData(prev => ({
+          ...prev,
+          address: ipLocation.address,
+          coordinates: ipLocation.coordinates,
           isLoading: false,
           error: errorMessage,
-          permissionBlocked: shouldBlock,
-        });
+        }));
       },
       {
         enableHighAccuracy: true,
         timeout: 15000,
-        maximumAge: 60000,
+        maximumAge: 60000, // 1 minute cache
       }
     );
   };

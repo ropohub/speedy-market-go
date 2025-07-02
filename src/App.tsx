@@ -7,8 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { FilterProvider } from './contexts/FilterContext';
 import { CartProvider } from './contexts/CartContext';
-import { useGeolocation } from './hooks/useGeolocation';
-import LocationPermissionScreen from './components/LocationPermissionScreen';
 import Index from "./pages/Index";
 import ProductListing from "./pages/ProductListing";
 import ProductDetail from "./pages/ProductDetail";
@@ -24,33 +22,6 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const AppContent = () => {
-  const { permissionBlocked, isLoading, requestLocation } = useGeolocation();
-
-  if (permissionBlocked) {
-    return <LocationPermissionScreen onRetry={requestLocation} isLoading={isLoading} />;
-  }
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/products" element={<ProductListing />} />
-        <Route path="/product/:productId" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/category/:categoryId" element={<CategoryPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/search-results" element={<SearchResults />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -59,7 +30,22 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <AppContent />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/products" element={<ProductListing />} />
+                <Route path="/product/:productId" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/category/:categoryId" element={<CategoryPage />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/search-results" element={<SearchResults />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </TooltipProvider>
         </CartProvider>
       </FilterProvider>

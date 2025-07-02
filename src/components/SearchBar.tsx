@@ -17,7 +17,7 @@ const SearchBar: React.FC = () => {
   }, []);
 
   const handleSearchBarClick = () => {
-    navigate('/search');
+    navigate('/search-page');
   };
 
   return (
