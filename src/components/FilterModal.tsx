@@ -5,6 +5,8 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useFilter } from '../contexts/FilterContext';
+import { useQuery } from '@tanstack/react-query';
+import { brandService } from '../api/brandClient';
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -71,6 +73,12 @@ const FILTER_OPTIONS = {
 const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) => {
   const { filterState, setFilters } = useFilter();
   const [localSelectedTags, setLocalSelectedTags] = useState<string[]>([]);
+
+  // Fetch brands for the Brand filter section
+  const { data: brands, isLoading: brandsLoading } = useQuery({
+    queryKey: ['brands'],
+    queryFn: brandService.getBrands,
+  });
 
   // Hydrate local state on modal open
   useEffect(() => {
@@ -172,6 +180,37 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply }) =
           )}
 
           {renderFilterSection("Gender", FILTER_OPTIONS.gender)}
+
+          {/* Brand Section */}
+          <div className="mb-6">
+            <h3 className="font-semibold text-lg mb-3">Brand</h3>
+            <div className="space-y-3">
+              {brandsLoading ? (
+                <div className="text-gray-500 text-sm">Loading brands...</div>
+              ) : brands && brands.length > 0 ? (
+                brands.map((brand: any) => (
+                  <div key={brand.name} className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id={`checkbox-brand-${brand.name}`}
+                      checked={localSelectedTags.includes(brand.name)}
+                      onChange={() => toggleTag(brand.name)}
+                      className="accent-[#b97b4a] w-4 h-4"
+                    />
+                    <Label
+                      htmlFor={`checkbox-brand-${brand.name}`}
+                      className="text-sm font-medium cursor-pointer flex-1"
+                    >
+                      {brand.name}
+                    </Label>
+                  </div>
+                ))
+              ) : (
+                <div className="text-gray-500 text-sm">No brands available</div>
+              )}
+            </div>
+          </div>
+
           {renderFilterSection("Category", FILTER_OPTIONS.category)}
           {renderFilterSection("Style", FILTER_OPTIONS.style)}
         </div>

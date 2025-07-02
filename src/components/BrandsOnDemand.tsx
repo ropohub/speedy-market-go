@@ -1,13 +1,19 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { brandService } from '../api/brandClient';
+import { useNavigate } from 'react-router-dom';
+import { useFilter } from '../contexts/FilterContext';
+import { useToast } from './ui/use-toast';
 
 const BrandsOnDemand: React.FC = () => {
   const { data: brands, isLoading, error } = useQuery({
     queryKey: ['brands'],
     queryFn: brandService.getBrands,
   });
+
+  const navigate = useNavigate();
+  const { setFilters } = useFilter();
+  const { toast } = useToast();
 
   console.log('Brands data:', brands);
   console.log('Loading state:', isLoading);
@@ -128,6 +134,26 @@ const BrandsOnDemand: React.FC = () => {
               <div
                 key={brand.name + index}
                 className="w-full h-0 pb-[100%] relative bg-gradient-to-br from-white/95 via-pink-50/80 to-purple-50/70 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group border border-white/50"
+                onClick={() => {
+                  if (brand.isFromBackend) {
+                    setFilters([brand.name]);
+                    navigate('/products');
+                  } else {
+                    toast({ title: 'Coming Soon', description: `${brand.name} will be available soon!` });
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    if (brand.isFromBackend) {
+                      setFilters([brand.name]);
+                      navigate('/products');
+                    } else {
+                      toast({ title: 'Coming Soon', description: `${brand.name} will be available soon!` });
+                    }
+                  }
+                }}
               >
                 {/* Coming Soon Tag for hardcoded brands only */}
                 {!brand.isFromBackend && (
