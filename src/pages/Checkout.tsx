@@ -238,7 +238,7 @@ const Checkout: React.FC = () => {
 
   const subtotal = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0) : 0;
   const originalDeliveryFee = 49;
-  const deliveryFee = 0;
+  const deliveryFee = 0; // Always 0 for free delivery
   const total = subtotal + deliveryFee;
 
   const handlePlaceOrder = async () => {
