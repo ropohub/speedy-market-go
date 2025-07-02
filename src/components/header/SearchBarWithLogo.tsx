@@ -17,7 +17,7 @@ const SearchBarWithLogo: React.FC = () => {
   }, []);
 
   const handleSearchBarClick = () => {
-    navigate('/search-page');
+    navigate('/search');
   };
 
   return (
