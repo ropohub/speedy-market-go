@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface LocationData {
@@ -12,6 +11,34 @@ interface LocationData {
 }
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAxLcnwB8NW5AIObRuIKMinfNvENzzgRZE";
+
+async function fetchLocationFromIP() {
+  try {
+    const response = await fetch('https://ipinfo.io/json');
+    if (!response.ok) throw new Error('Failed to fetch IP location');
+    const data = await response.json();
+    // ipinfo.io returns location as a comma-separated string in 'loc'
+    let latitude = null, longitude = null;
+    if (data.loc) {
+      const [lat, lon] = data.loc.split(',');
+      latitude = parseFloat(lat);
+      longitude = parseFloat(lon);
+    }
+    return {
+      address: data.city && data.region && data.country
+        ? `${data.city}, ${data.region}, ${data.country}`
+        : data.city || data.region || data.country || 'Unknown location',
+      coordinates: latitude && longitude
+        ? { latitude, longitude }
+        : null,
+    };
+  } catch (e) {
+    return {
+      address: 'Unknown location',
+      coordinates: null,
+    };
+  }
+}
 
 export const useGeolocation = () => {
   const [locationData, setLocationData] = useState<LocationData>({
@@ -35,24 +62,17 @@ export const useGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        
         try {
-          // Using Google Maps Geocoding API for more precise location
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`
           );
-          
           if (!response.ok) {
             throw new Error('Failed to fetch address from Google Maps');
           }
-          
           const data = await response.json();
-          
           if (data.status === 'OK' && data.results && data.results.length > 0) {
-            // Get the most accurate address (usually the first result)
             const result = data.results[0];
             const formattedAddress = result.formatted_address;
-            
             setLocationData({
               address: formattedAddress,
               coordinates: { latitude, longitude },
@@ -63,8 +83,6 @@ export const useGeolocation = () => {
             throw new Error('No address found for coordinates');
           }
         } catch (error) {
-          console.error('Error fetching address from Google Maps:', error);
-          // Fallback to coordinates display
           setLocationData({
             address: `Location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
             coordinates: { latitude, longitude },
@@ -73,10 +91,8 @@ export const useGeolocation = () => {
           });
         }
       },
-      (error) => {
-        console.error('Geolocation error:', error);
+      async (error) => {
         let errorMessage = "Location access denied";
-        
         switch (error.code) {
           case error.PERMISSION_DENIED:
             errorMessage = "Location access denied";
@@ -88,9 +104,18 @@ export const useGeolocation = () => {
             errorMessage = "Location request timeout";
             break;
         }
-        
+        // Immediately set loading to false and show temporary message
         setLocationData(prev => ({
           ...prev,
+          isLoading: false,
+          address: 'Getting approximate location...'
+        }));
+        // Fallback to IP-based location if denied or unavailable
+        const ipLocation = await fetchLocationFromIP();
+        setLocationData(prev => ({
+          ...prev,
+          address: ipLocation.address,
+          coordinates: ipLocation.coordinates,
           isLoading: false,
           error: errorMessage,
         }));
@@ -102,6 +127,12 @@ export const useGeolocation = () => {
       }
     );
   };
+
+  // Automatically request location on mount
+  useEffect(() => {
+    requestLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     ...locationData,

@@ -44,7 +44,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({
   };
   return <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-200 py-[4px] px-0">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide px-4 lg:px-0">
           {/* Sort Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

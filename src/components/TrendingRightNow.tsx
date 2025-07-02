@@ -42,7 +42,7 @@ const TrendingRightNow: React.FC = () => {
       name: 'Jeans',
       image: 'https://cdn.dripzyy.com/women_jeans.jpg',
       tag: 'Jeans',
-      genderTag: 'Men\'s Wear'
+      genderTag: 'Women\'s Wear'
     },
     {
       id: '5',
@@ -97,7 +97,7 @@ const TrendingRightNow: React.FC = () => {
       id: '12',
       name: 'Briefs',
       image: 'https://cdn.dripzyy.com/briefs.jpg',
-      tag: 'briefs',
+      tag: 'Briefs',
       genderTag: 'Women\'s Wear'
     },
     {

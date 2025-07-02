@@ -16,23 +16,23 @@ const TopSellingRightNow: React.FC = () => {
     {
       id: '1',
       name: "Women's Innerwear",
-      image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=200&fit=crop',
+      image: 'https://cdn.dripzyy.com/briefs.jpg',
       category: 'women',
-      subcategory: 'innerwear'
+      subcategory: 'bras'
     },
     {
       id: '2',
       name: "Men's Innerwear",
-      image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=200&h=200&fit=crop',
+      image: 'https://cdn.dripzyy.com/p3.webp',
       category: 'men',
-      subcategory: 'innerwear'
+      subcategory: 'Lingerie & Loungewear'
     },
     {
       id: '3',
-      name: "Trendy Handbags",
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop',
-      category: 'accessories',
-      subcategory: 'handbags'
+      name: "Men's T-Shirts",
+      image: 'https://cdn.dripzyy.com/tshirt.png',
+      category: 'men',
+      subcategory: 'T-Shirts'
     },
     {
       id: '4',
@@ -55,7 +55,7 @@ const TopSellingRightNow: React.FC = () => {
   
   const subcategoryToTagMap: { [key: string]: string } = {
     'innerwear': 'Inner Wear',
-    'handbags': 'Handbags',
+    'T-Shirts': 'T-Shirts',
   };
 
   const handleItemClick = (item: TopSellingItem & { subcategory?: string }) => {
