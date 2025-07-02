@@ -271,6 +271,16 @@ const Cart: React.FC = () => {
     }
   };
 
+  const handleGoBack = () => {
+    // Use browser history to go back to the previous page
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      // Fallback to home page if no history
+      navigate('/');
+    }
+  };
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = 99;
   const total = subtotal + deliveryFee;
@@ -318,10 +328,10 @@ const Cart: React.FC = () => {
                 Retry
               </button>
               <button
-                onClick={() => navigate('/categories')}
+                onClick={handleGoBack}
                 className="bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-600 transition-colors"
               >
-                Shop Now
+                Go Back
               </button>
             </div>
           </div>
@@ -341,7 +351,7 @@ const Cart: React.FC = () => {
             <h2 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
             <p className="text-gray-600 mb-4 text-sm">Add some items to get started</p>
             <button
-              onClick={() => navigate('/categories')}
+              onClick={handleGoBack}
               className="bg-orange-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors"
             >
               Continue Shopping
@@ -361,7 +371,7 @@ const Cart: React.FC = () => {
         <div className="bg-white/90 backdrop-blur-sm px-4 py-3 border-b border-gray-200/50">
           <div className="max-w-md mx-auto flex items-center gap-3">
             <button
-              onClick={() => navigate('/categories')}
+              onClick={handleGoBack}
               className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ArrowLeft className="w-4 h-4 text-gray-700" />
@@ -453,7 +463,7 @@ const Cart: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate('/categories')}
+                  onClick={handleGoBack}
                   className="w-full border border-gray-300 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                 >
                   Continue Shopping

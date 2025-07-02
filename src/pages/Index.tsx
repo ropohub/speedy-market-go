@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -61,9 +62,9 @@ const Index: React.FC = () => {
       'Women': "Women's Wear",
       'Men': "Men's Wear",
       'Sports': "Sports Wear",
-      'Accessories': "Accessories",
-      'Home': "Home",
-      'Kids': "Kids Wear"
+      'T-Shirts': "T-Shirts",
+      'Crop Tops': "Crop Tops",
+      'Jackets': "Jackets"
     };
     
     const tag = categoryToTagMap[categoryName];
@@ -97,7 +98,7 @@ const Index: React.FC = () => {
     }
   };
 
-  // Category squares data with 7 categories for horizontal scroll
+  // Category squares data with updated items
   const categorySquares = [{
     name: 'Women',
     image: 'https://cdn.dripzyy.com/women1.jpg'
@@ -108,14 +109,14 @@ const Index: React.FC = () => {
     name: 'Sports',
     image: 'https://cdn.dripzyy.com/sports1.jpeg'
   }, {
-    name: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=150&h=150&fit=crop'
+    name: 'T-Shirts',
+    image: 'https://cdn.dripzyy.com/tshirt.png'
   }, {
-    name: 'Home',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=150&h=150&fit=crop'
+    name: 'Crop Tops',
+    image: 'https://cdn.dripzyy.com/crop_top.jpg'
   }, {
-    name: 'Kids',
-    image: 'https://images.unsplash.com/photo-1503919005314-30d93d07d823?w=150&h=150&fit=crop'
+    name: 'Jackets',
+    image: 'https://cdn.dripzyy.com/women_jacket.webp'
   }];
 
   // Main category squares data for the promotional section with appropriate images
