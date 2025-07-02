@@ -3,7 +3,6 @@ import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Minus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { auth } from '../firebase';
-import { useCart } from '../contexts/CartContext';
 import Auth from './Auth';
 import { cartService } from '../api/cartClient';
 import { toast } from "@/hooks/use-toast";
@@ -87,7 +86,6 @@ const fetchVariantDetails = async (variantId: string) => {
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const firebaseUser = auth.currentUser;
-  const { updateCartCount } = useCart();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -222,9 +220,6 @@ const Cart: React.FC = () => {
 
       await cartService.mutateCart(item.productVariantId, quantityDelta);
       
-      // Update global cart count
-      updateCartCount();
-      
       toast({
         title: "Cart Updated",
         description: "Item quantity updated successfully"
@@ -257,9 +252,6 @@ const Cart: React.FC = () => {
       setCartItems(cartItems.filter(item => item.id !== id));
 
       await cartService.mutateCart(item.productVariantId, quantityDelta);
-      
-      // Update global cart count
-      updateCartCount();
       
       toast({
         title: "Item Removed",

@@ -1,16 +1,21 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../contexts/CartContext';
 import { auth } from '../../firebase';
 
 const CartIcon: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading } = useAuth();
-  const { cartItemCount } = useCart();
   const firebaseUser = auth.currentUser;
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  // Get actual cart items count from the Index page state
+  useEffect(() => {
+    // For now, we'll keep it at 0 since there's no global cart state
+    // This should be connected to actual cart state management
+    setCartItemCount(0);
+  }, []);
 
   const handleCartClick = () => {
     if (isLoading) return;
