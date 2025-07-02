@@ -160,32 +160,6 @@ const SearchPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Recommended for you - Expanded */}
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-2">Recommended for You</h2>
-          <div className="space-y-2">
-            {[
-              { title: 'Summer Collection 2024', subtitle: 'Light and breezy styles' },
-              { title: 'Workwear Essentials', subtitle: 'Professional looks' },
-              { title: 'Weekend Casuals', subtitle: 'Comfort meets style' },
-              { title: 'Party Ready', subtitle: 'Stand out looks' },
-              { title: 'Ethnic Fusion', subtitle: 'Traditional meets modern' },
-              { title: 'Fitness Wear', subtitle: 'Active lifestyle essentials' },
-              { title: 'Luxury Collection', subtitle: 'Premium fashion pieces' },
-              { title: 'Budget Finds', subtitle: 'Great style, great prices' }
-            ].map((item, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(item.title)}
-                className="w-full p-3 bg-gradient-to-r from-orange-50 to-pink-50 rounded-lg text-left hover:from-orange-100 hover:to-pink-100 transition-all border border-orange-100"
-              >
-                <h3 className="font-semibold text-gray-900 text-sm">{item.title}</h3>
-                <p className="text-xs text-gray-600 mt-0.5">{item.subtitle}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Shop by Brand */}
         <div>
           <h2 className="text-base font-semibold text-gray-900 mb-2">Shop by Brand</h2>

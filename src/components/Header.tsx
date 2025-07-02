@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MapPin, ChevronDown } from 'lucide-react';
 import SearchBarWithLogo from './header/SearchBarWithLogo';
@@ -24,13 +23,17 @@ const Header: React.FC = () => {
 
   const getDisplayAddress = () => {
     if (isLoading) return "Getting location...";
+    // If we have a fallback address, show it even if there's an error
+    if (
+      address &&
+      address !== "Enable location for delivery" &&
+      address !== "Unknown location"
+    ) {
+      return address.length > 30 ? address.substring(0, 30) + "..." : address;
+    }
+    // Otherwise, show the error prompt
     if (error) return "Tap to enable location";
-    
-    const truncatedAddress = address.length > 30 
-      ? address.substring(0, 30) + "..." 
-      : address;
-    
-    return truncatedAddress;
+    return address;
   };
 
   return (

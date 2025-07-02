@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin, ChevronDown } from 'lucide-react';
 import { useGeolocation } from '../../hooks/useGeolocation';
@@ -12,13 +11,15 @@ const LocationDisplay: React.FC = () => {
 
   const getDisplayAddress = () => {
     if (isLoading) return "Getting location...";
+    if (
+      address &&
+      address !== "Enable location for delivery" &&
+      address !== "Unknown location"
+    ) {
+      return address.length > 30 ? address.substring(0, 30) + "..." : address;
+    }
     if (error) return "Tap to enable location";
-    
-    const truncatedAddress = address.length > 30 
-      ? address.substring(0, 30) + "..." 
-      : address;
-    
-    return truncatedAddress;
+    return address;
   };
 
   return (
