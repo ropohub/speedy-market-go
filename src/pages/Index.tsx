@@ -84,9 +84,9 @@ const Index: React.FC = () => {
     // Map main category names to Shopify tags or product keys
     const mainCategoryToTagMap: { [key: string]: string } = {
       'Western Wear': "Western Wear",
-      'Formal Wear': "Formal Wear",
-      'Inner Wear': "Inner Wear",
-      'Sport Wear': "Sport Wear"
+      'Lingerie': "Bras",
+      'Inner Wear': "Lingerie & Loungewear",
+      'Sports Wear': "Sports Wear"
     };
     const tag = mainCategoryToTagMap[mainCategoryName];
     if (tag) {
@@ -123,13 +123,13 @@ const Index: React.FC = () => {
     name: 'Western Wear',
     image: 'https://cdn.dripzyy.com/w_wear.jpg'
   }, {
-    name: 'Formal Wear',
-    image: 'https://cdn.dripzyy.com/formal1.jpeg'
+    name: 'Lingerie',
+    image: 'https://cdn.dripzyy.com/bras.avif'
   }, {
     name: 'Inner Wear',
     image: 'https://cdn.dripzyy.com/p3.webp'
   }, {
-    name: 'Sport Wear',
+    name: 'Sports Wear',
     image: 'https://cdn.dripzyy.com/w5.avif'
   }];
   return <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>

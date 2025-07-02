@@ -8,7 +8,7 @@ const SearchPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { setFilters, filterState } = useFilter();
+  const { setFilters, filterState, clearFilters } = useFilter();
 
   // Hardcoded categories with images (similar to Categories.tsx)
   const categoriesData = [
@@ -43,19 +43,16 @@ const SearchPage: React.FC = () => {
   const trendingSearches = categoriesData.slice(0, 12);
   const popularCategories = categoriesData.slice(0, 16);
 
-  // Scroll to top when component mounts
+  // Scroll to top and clear filters when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    clearFilters();
+  }, [clearFilters]);
 
   // Set filter on tag click (do not navigate)
   const handleTagClick = (tag: string) => {
-    if (tag) {
-      setFilters([tag]);
-      navigate('/products'); // Navigate without URL parameters
-    } else {
-      navigate('/products');
-    }
+    setFilters([tag]);
+    navigate('/products'); // Navigate without URL parameters
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -77,7 +74,7 @@ const SearchPage: React.FC = () => {
         >
           <ArrowLeft size={20} />
         </button>
-        
+
         <div className="flex-1 relative">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
