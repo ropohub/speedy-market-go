@@ -284,7 +284,7 @@ class PercentageOffer$Type extends MessageType<PercentageOffer> {
                         throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
                     let d = reader.skip(wireType);
                     if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, whereType, d);
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
             }
         }
         return message;
