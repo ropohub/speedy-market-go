@@ -563,7 +563,7 @@ const ProductListPage = () => {
     background: 'linear-gradient(135deg, #FFEFE4 0%, #FFD8B1 100%)'
   }}>
       <CategoryHeader title={getHeaderTitle()} />
-      <div className="pt-24 py-[63px]">
+      <div className="pt-24 py-[66px]">
         <NavigationBar />
         <FilterChips onFilterChange={handleFilterChange} />
         <div className="mt-4">
