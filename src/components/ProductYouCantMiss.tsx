@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const SHOPIFY_STOREFRONT_ACCESS_TOKEN = '50b756b36c591cc2d86ea31b1eceace5';
 const SHOPIFY_API_URL = 'https://sycfx9-af.myshopify.com/api/2025-04/graphql.json';
@@ -112,6 +113,7 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
   const [products, setProducts] = useState<ShopifyProductNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -173,6 +175,13 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
                   onAddToCart={() => console.log('Added to cart:', product)}
                   showHeartIcon={false}
                   itemNumber={index + 1}
+                  onClick={() => {
+                    // Extract numeric ID from Shopify GID
+                    const numericId = product.id.split('/').pop();
+                    if (numericId) {
+                      navigate(`/product/${numericId}`);
+                    }
+                  }}
                 />
               </div>
             ))}
