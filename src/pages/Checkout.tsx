@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Truck, Shield, Trash2, ArrowLeft } from 'lucide-react';
+import { MapPin, Truck, Shield, Trash2, ArrowLeft, Tag } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import AddressForm from '../components/AddressForm';
@@ -105,6 +105,9 @@ const Checkout: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [placing, setPlacing] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [couponDiscount, setCouponDiscount] = useState(0);
 
   // Fetch addresses and cart items
   const fetchData = async () => {
@@ -236,10 +239,37 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const handleApplyCoupon = () => {
+    if (couponCode.trim().toLowerCase() === 'flat400') {
+      setIsCouponApplied(true);
+      setCouponDiscount(400);
+      toast({
+        title: "Coupon Applied!",
+        description: "You saved ₹400 on your order"
+      });
+    } else {
+      toast({
+        title: "Invalid Coupon",
+        description: "Please enter a valid coupon code",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setIsCouponApplied(false);
+    setCouponDiscount(0);
+    setCouponCode('');
+    toast({
+      title: "Coupon Removed",
+      description: "Coupon discount has been removed"
+    });
+  };
+
   const subtotal = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0) : 0;
   const originalDeliveryFee = 49;
   const deliveryFee = 0; // Always 0 for free delivery
-  const total = subtotal + deliveryFee;
+  const total = subtotal + deliveryFee - couponDiscount;
 
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
@@ -408,6 +438,57 @@ const Checkout: React.FC = () => {
               </div>
             </div>
 
+            {/* Coupon Section */}
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Tag className="w-5 h-5 text-orange-500" />
+                <h2 className="text-lg font-bold text-gray-900">Apply Coupon</h2>
+              </div>
+              
+              {!isCouponApplied ? (
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter coupon code (FLAT400)"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-700">
+                      <strong>FLAT400:</strong> Get ₹400 off on your order
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Tag className="w-5 h-5 text-green-600" />
+                      <div>
+                        <span className="font-medium text-green-800">FLAT400 Applied</span>
+                        <p className="text-sm text-green-600">You saved ₹400 on this order</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleRemoveCoupon}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Payment Method */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
@@ -488,6 +569,12 @@ const Checkout: React.FC = () => {
                     <span className="font-medium text-green-600">FREE</span>
                   </div>
                 </div>
+                {isCouponApplied && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Coupon Discount</span>
+                    <span className="font-medium text-green-600">-₹{couponDiscount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="border-t pt-3">
                   <div className="flex justify-between">
                     <span className="font-bold text-lg">Total</span>
