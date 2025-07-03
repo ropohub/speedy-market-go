@@ -45,7 +45,6 @@ const SearchPage: React.FC = () => {
 
   // Scroll to top and clear filters when component mounts
   useEffect(() => {
-    window.scrollTo(0, 0);
     clearFilters();
   }, [clearFilters]);
 
