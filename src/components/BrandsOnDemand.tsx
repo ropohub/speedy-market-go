@@ -92,26 +92,12 @@ const BrandsOnDemand: React.FC = () => {
           </div>
           
           {/* Right side - Delivery Rider Illustration */}
-          <div className="w-24 h-24 flex-shrink-0 ml-4">
-            <div className="relative w-full h-full">
-              {/* Enhanced scooter illustration matching the reference */}
-              <div className="w-20 h-16 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-lg relative shadow-lg">
-                {/* Rider */}
-                <div className="absolute -top-4 left-4 w-6 h-6 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-full shadow-sm"></div>
-                {/* Helmet */}
-                <div className="absolute -top-5 left-3 w-4 h-3 bg-orange-300 rounded-full"></div>
-                {/* Delivery box */}
-                <div className="absolute -top-3 right-1 w-5 h-5 bg-gradient-to-r from-purple-400 to-pink-400 rounded shadow-sm"></div>
-                {/* Front wheel */}
-                <div className="absolute -bottom-3 left-2 w-4 h-4 bg-gray-800 rounded-full shadow-sm"></div>
-                {/* Back wheel */}
-                <div className="absolute -bottom-3 right-4 w-4 h-4 bg-gray-800 rounded-full shadow-sm"></div>
-                {/* Scooter body details */}
-                <div className="absolute top-3 left-8 w-8 h-3 bg-cyan-300 rounded"></div>
-                {/* Windshield */}
-                <div className="absolute top-1 left-6 w-3 h-4 bg-cyan-200 rounded-t-lg"></div>
-              </div>
-            </div>
+          <div className="w-24 h-24 flex-shrink-0 ml-4 flex items-center justify-center">
+            <img
+              src="https://cdn.dripzyy.com/scooter.png"
+              alt="Scooter"
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
 

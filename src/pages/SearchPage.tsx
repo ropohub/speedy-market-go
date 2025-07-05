@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Search, TrendingUp, Clock } from 'lucide-react';
+import { ArrowLeft, Search, TrendingUp } from 'lucide-react';
 import { useFilter } from '../contexts/FilterContext';
+import Layout from '../components/Layout';
 
 const SearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -46,17 +47,24 @@ const SearchPage: React.FC = () => {
   // Scroll to top and clear filters when component mounts
   useEffect(() => {
     clearFilters();
-  }, [clearFilters]);
+  }, []);
 
-  // Set filter on tag click (do not navigate)
+  // Handle search when user presses Enter or clicks search
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      // Navigate to products page with search query
+      navigate(`/products?search=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   const handleTagClick = (tag: string) => {
     setFilters([tag]);
-    navigate('/products'); // Navigate without URL parameters
+    navigate('/products');
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
-    handleTagClick(suggestion);
+    handleSearch(suggestion);
   };
 
   useEffect(() => {
@@ -64,134 +72,136 @@ const SearchPage: React.FC = () => {
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="flex items-center p-3 border-b bg-white sticky top-0 z-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-1.5 hover:bg-gray-100 rounded-full transition-colors mr-2"
-        >
-          <ArrowLeft size={20} />
-        </button>
+    <Layout>
+      <div className="min-h-screen bg-white">
+        {/* Header - Fixed */}
+        <header className="flex items-center p-3 border-b bg-white sticky top-0 z-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-1.5 hover:bg-gray-100 rounded-full transition-colors mr-2"
+          >
+            <ArrowLeft size={20} />
+          </button>
 
-        <div className="flex-1 relative">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSuggestionClick(searchQuery)}
-              placeholder="Search for products..."
-              className="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-sm"
-              autoFocus
-            />
+          <div className="flex-1 relative">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
+                placeholder="Search for products..."
+                className="w-full pl-8 pr-3 py-2.5 bg-gray-100 text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all text-sm"
+                autoFocus
+              />
+            </div>
+
+            {/* Typeahead Suggestions */}
+            {showSuggestions && filteredSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto z-20">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion.name)}
+                    className="w-full px-3 py-2.5 text-left hover:bg-gray-50 flex items-center gap-2.5 transition-colors border-b border-gray-100 last:border-b-0"
+                  >
+                    <img src={suggestion.image} alt={suggestion.name} className="w-5 h-5 rounded-full object-cover" />
+                    <span className="text-gray-900 text-sm">{suggestion.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+        </header>
 
-          {/* Typeahead Suggestions */}
-          {showSuggestions && filteredSuggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto z-20">
-              {filteredSuggestions.map((suggestion, index) => (
+        {/* Main Content - Normal Scroll */}
+        <div className="p-3 space-y-4 pb-20">
+          {/* Trending Searches */}
+          <div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
+              <h2 className="text-base font-semibold text-gray-900">Trending Now</h2>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {trendingSearches.map((cat, index) => (
                 <button
                   key={index}
-                  onClick={() => handleSuggestionClick(suggestion.name)}
-                  className="w-full px-3 py-2.5 text-left hover:bg-gray-50 flex items-center gap-2.5 transition-colors border-b border-gray-100 last:border-b-0"
+                  onClick={() => handleTagClick(cat.name)}
+                  className={`px-2.5 py-1.5 rounded-full text-xs border transition-colors flex items-center gap-2
+                    ${filterState.selectedTags.includes(cat.name)
+                      ? 'bg-orange-500 text-white border-orange-500'
+                      : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'}`}
                 >
-                  <img src={suggestion.image} alt={suggestion.name} className="w-5 h-5 rounded-full object-cover" />
-                  <span className="text-gray-900 text-sm">{suggestion.name}</span>
+                  <img src={cat.image} alt={cat.name} className="w-5 h-5 rounded-full object-cover" />
+                  {cat.name}
                 </button>
               ))}
             </div>
-          )}
-        </div>
-      </header>
-
-      {/* Content */}
-      <div className="p-3 space-y-4">
-        {/* Trending Searches */}
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
-            <h2 className="text-base font-semibold text-gray-900">Trending Now</h2>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {trendingSearches.map((cat, index) => (
-              <button
-                key={index}
-                onClick={() => handleTagClick(cat.name)}
-                className={`px-2.5 py-1.5 rounded-full text-xs border transition-colors flex items-center gap-2
-                  ${filterState.selectedTags.includes(cat.name)
-                    ? 'bg-orange-500 text-white border-orange-500'
-                    : 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100'}`}
-              >
-                <img src={cat.image} alt={cat.name} className="w-5 h-5 rounded-full object-cover" />
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Popular Categories - 4x4 Grid */}
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-2">Popular Categories</h2>
-          <div className="grid grid-cols-4 gap-2">
-            {popularCategories.map((category, index) => (
-              <button
-                key={index}
-                onClick={() => handleTagClick(category.name)}
-                className={`flex flex-col items-center p-2 rounded-lg transition-colors
-                  ${filterState.selectedTags.includes(category.name)
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-50 hover:bg-gray-100'}`}
-              >
-                <div className="w-12 h-12 rounded-full overflow-hidden mb-1.5 bg-white shadow-sm">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="text-xs font-medium text-center leading-tight">
-                  {category.name}
-                </span>
-              </button>
-            ))}
+          {/* Popular Categories - 4x4 Grid */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-900 mb-2">Popular Categories</h2>
+            <div className="grid grid-cols-4 gap-2">
+              {popularCategories.map((category, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleTagClick(category.name)}
+                  className={`flex flex-col items-center p-2 rounded-lg transition-colors
+                    ${filterState.selectedTags.includes(category.name)
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-50 hover:bg-gray-100'}`}
+                >
+                  <div className="w-12 h-12 rounded-full overflow-hidden mb-1.5 bg-white shadow-sm">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-center leading-tight">
+                    {category.name}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Shop by Brand */}
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-2">Shop by Brand</h2>
-          <div className="flex flex-wrap gap-1.5">
-            {['H&M', 'Zara', 'Nike', 'Adidas', 'Puma', 'Levi\'s', 'Only', 'Vero Moda'].map((brand, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(brand)}
-                className="px-2.5 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs hover:bg-blue-100 transition-colors border border-blue-200"
-              >
-                {brand}
-              </button>
-            ))}
+          {/* Shop by Brand */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-900 mb-2">Shop by Brand</h2>
+            <div className="flex flex-wrap gap-1.5">
+              {['H&M', 'Zara', 'Nike', 'Adidas', 'Puma', 'Levi\'s', 'Only', 'Vero Moda'].map((brand, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSearch(brand)}
+                  className="px-2.5 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs hover:bg-blue-100 transition-colors border border-blue-200"
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Price Range */}
-        <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-2">Shop by Price</h2>
-          <div className="flex flex-wrap gap-1.5">
-            {['Under ₹500', '₹500 - ₹1000', '₹1000 - ₹2000', '₹2000 - ₹5000', 'Above ₹5000'].map((price, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(price)}
-                className="px-2.5 py-1.5 bg-green-50 text-green-700 rounded-full text-xs hover:bg-green-100 transition-colors border border-green-200"
-              >
-                {price}
-              </button>
-            ))}
+          {/* Price Range */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-900 mb-2">Shop by Price</h2>
+            <div className="flex flex-wrap gap-1.5">
+              {['Under ₹500', '₹500 - ₹1000', '₹1000 - ₹2000', '₹2000 - ₹5000', 'Above ₹5000'].map((price, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSearch(price)}
+                  className="px-2.5 py-1.5 bg-green-50 text-green-700 rounded-full text-xs hover:bg-green-100 transition-colors border border-green-200"
+                >
+                  {price}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

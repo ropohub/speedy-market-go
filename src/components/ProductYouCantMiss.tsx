@@ -1,4 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import { useNavigate } from 'react-router-dom';
 
@@ -110,6 +112,7 @@ const fetchProductsByTag = async (tag: string): Promise<ShopifyProductNode[]> =>
 };
 
 const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProductNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -131,6 +134,12 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleProductClick = (productId: string) => {
+    // Extract the product ID from the Shopify GID
+    const id = productId.split('/').pop();
+    navigate(`/product/${id}`);
+  };
 
   if (loading) {
     return <div className="text-center py-8 text-white">Loading products you can't miss...</div>;
@@ -173,6 +182,7 @@ const ProductYouCantMiss: React.FC<ProductYouCantMissProps> = () => {
                     brand: product.vendor
                   }}
                   onAddToCart={() => console.log('Added to cart:', product)}
+                  onClick={handleProductClick}
                   showHeartIcon={false}
                   itemNumber={index + 1}
                   onClick={() => {

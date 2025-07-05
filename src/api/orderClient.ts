@@ -2,8 +2,17 @@
 import { shopifyClient } from "./shopifyClient";
 import { auth } from "../firebase";
 
-interface PlaceOrderRequest {
+interface CustomerAddress {
+  full_address: string;
+  name: string;
+  phone: string;
+  latitude: number;
+  longitude: number;
   address_id: string;
+}
+
+interface PlaceOrderRequest {
+  address: CustomerAddress;
 }
 
 interface PlaceOrderResponse {
@@ -35,7 +44,7 @@ interface PagedOrdersResponse {
 
 export const orderService = {
   // Place order
-  async placeOrder(addressId: string): Promise<PlaceOrderResponse> {
+  async placeOrder(addressId: string, fullAddress: string, name: string, phone: string, latitude: number, longitude: number): Promise<PlaceOrderResponse> {
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -45,15 +54,26 @@ export const orderService = {
       console.log('Placing order for user:', user.phoneNumber, 'with address:', addressId);
       const token = await user.getIdToken();
       
+      const requestBody: PlaceOrderRequest = {
+        address: {
+          full_address: fullAddress,
+          name: name,
+          phone: phone,
+          latitude: latitude,
+          longitude: longitude,
+          address_id: addressId
+        }
+      };
+
+      console.log('Order request body:', requestBody);
+      
       const response = await fetch(`${import.meta.env.VITE_SHOPIFY_API_URL || 'https://shopifyapi-851631422269.asia-south2.run.app'}/order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          address_id: addressId
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
