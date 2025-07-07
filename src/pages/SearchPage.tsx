@@ -3,6 +3,61 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Search, TrendingUp } from 'lucide-react';
 import { useFilter } from '../contexts/FilterContext';
 import Layout from '../components/Layout';
+import { SHOPIFY_API_URL, SHOPIFY_STOREFRONT_ACCESS_TOKEN } from './ProductListing'; // Reuse constants
+import ProductCard from '../components/ProductCard';
+
+const searchProductsQuery = `
+  query SearchProducts($searchQuery: String!, $first: Int!) {
+    search(query: $searchQuery, first: $first, types: [PRODUCT]) {
+      edges {
+        node {
+          ... on Product {
+            id
+            title
+            handle
+            vendor
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+// Define a type for product suggestions
+interface ProductSuggestion {
+  id: string;
+  title: string;
+  handle: string;
+  vendor: string;
+  priceRange: {
+    minVariantPrice: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+  images: {
+    edges: {
+      node: {
+        url: string;
+        altText: string | null;
+      };
+    }[];
+  };
+}
 
 const SearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -10,6 +65,8 @@ const SearchPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { setFilters, filterState, clearFilters } = useFilter();
+  const [productSuggestions, setProductSuggestions] = useState<ProductSuggestion[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
 
   // Hardcoded categories with images (similar to Categories.tsx)
   const categoriesData = [
@@ -46,7 +103,6 @@ const SearchPage: React.FC = () => {
 
   // Scroll to top and clear filters when component mounts
   useEffect(() => {
-    window.scrollTo(0, 0);
     clearFilters();
   }, []);
 
@@ -70,6 +126,32 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     setShowSuggestions(searchQuery.length > 0);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setProductSuggestions([]);
+      return;
+    }
+    setLoadingProducts(true);
+    fetch(SHOPIFY_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+      },
+      body: JSON.stringify({
+        query: searchProductsQuery,
+        variables: { searchQuery, first: 5 },
+      }),
+    })
+      .then(res => res.json())
+      .then(json => {
+        const edges = json.data?.search?.edges || [];
+        setProductSuggestions(edges.map((e: { node: ProductSuggestion }) => e.node));
+      })
+      .catch(() => setProductSuggestions([]))
+      .finally(() => setLoadingProducts(false));
   }, [searchQuery]);
 
   return (
@@ -99,8 +181,9 @@ const SearchPage: React.FC = () => {
             </div>
 
             {/* Typeahead Suggestions */}
-            {showSuggestions && filteredSuggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto z-20">
+            {showSuggestions && (filteredSuggestions.length > 0 || productSuggestions.length > 0) && (
+              <div className="absolute top-full left-0 right-0 bg-white border rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-20">
+                {/* Category Suggestions */}
                 {filteredSuggestions.map((suggestion, index) => (
                   <button
                     key={index}
@@ -111,6 +194,41 @@ const SearchPage: React.FC = () => {
                     <span className="text-gray-900 text-sm">{suggestion.name}</span>
                   </button>
                 ))}
+                {/* Product Suggestions */}
+                {loadingProducts && (
+                  <div className="px-3 py-2 text-gray-500 text-sm">Loading products...</div>
+                )}
+                {!loadingProducts && productSuggestions.length > 0 && (
+                  <>
+                    <div className="px-3 pt-2 pb-1 text-xs text-gray-400 font-semibold">Products</div>
+                    <div className="grid grid-cols-2 gap-4 px-3 pb-2">
+                      {productSuggestions.map((product, idx) => {
+                        // Map Shopify product to ProductCard props
+                        const mappedProduct = {
+                          id: product.id.replace('gid://shopify/Product/', ''),
+                          name: product.title,
+                          price: Number(product.priceRange?.minVariantPrice?.amount) || 0,
+                          image: product.images?.edges?.[0]?.node?.url || '/placeholder.svg',
+                          brand: product.vendor,
+                        };
+                        return (
+                          <div key={product.id} className="cursor-pointer" onClick={() => navigate(`/product/${mappedProduct.id}`)}>
+                            <ProductCard
+                              product={mappedProduct}
+                              onAddToCart={() => {}}
+                              onClick={() => navigate(`/product/${mappedProduct.id}`)}
+                              showHeartIcon={false}
+                              hideAddToCart={true}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+                {!loadingProducts && productSuggestions.length === 0 && searchQuery && (
+                  <div className="px-3 py-2 text-gray-500 text-sm">No products found.</div>
+                )}
               </div>
             )}
           </div>

@@ -356,7 +356,7 @@ const ProductDetailPage = () => {
   
       {/* Product Image Carousel */}
       <div className="relative">
-        <ImageCarousel images={currentImages} autoPlay={true} />
+        <ImageCarousel images={currentImages} />
         
         {/* Floating Action Buttons */}
         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 space-y-3">

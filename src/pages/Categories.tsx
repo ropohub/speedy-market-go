@@ -11,61 +11,61 @@ const categoriesData = [
   {
     id: 'women',
     name: "Women's Wear",
-    image: '/lovable-uploads/048b4d5d-3911-4fee-9d33-1b49a08709cd.png',
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women.png?v=1751656164',
     subcategories: [
       {
         title: 'Western Wear',
         items: [
-          { id: 'dresses', name: 'Dresses', image: 'https://cdn.dripzyy.com/dresses.png' },
-          { id: 'tops', name: 'Tops', image: 'https://cdn.dripzyy.com/tops.png' },
-          { id: 'jeans', name: 'Jeans', image: 'https://cdn.dripzyy.com/jeans.png' },
-          { id: 'trousers', name: 'Trousers', image: 'https://cdn.dripzyy.com/trousers.png' },
-          { id: 'tshirts', name: 'T-Shirts', image: 'https://cdn.dripzyy.com/tshirts.png' },
-          { id: 'shirts', name: 'Shirts', image: 'https://cdn.dripzyy.com/shirts.png' },
-          { id: 'co-ords', name: 'Co-ords', image: 'https://cdn.dripzyy.com/coords.png' },
-          { id: 'skirts-shorts', name: 'Skirts & Shorts', image: 'https://cdn.dripzyy.com/skirts.png' },
-          { id: 'jumpsuits', name: 'Jumpsuits', image: 'https://cdn.dripzyy.com/jumpsuit.png' },
+          { id: 'dresses', name: 'Dresses', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/dresses.png?v=1751656140' },
+          { id: 'tops', name: 'Tops', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tops.png?v=1751656150' },
+          { id: 'jeans', name: 'Jeans', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/jeans.png?v=1751656161' },
+          { id: 'trousers', name: 'Trousers', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/trousers.png?v=1751656140' },
+          { id: 'tshirts', name: 'T-Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tshirts.png?v=1751656140' },
+          { id: 'shirts', name: 'Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/shirts.png?v=1751656150' },
+          { id: 'co-ords', name: 'Co-ords', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/coords.png?v=1751656156' },
+          { id: 'skirts-shorts', name: 'Skirts & Shorts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/skirts.png?v=1751656151' },
+          { id: 'jumpsuits', name: 'Jumpsuits', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/jumpsuit.png?v=1751656164' },
           { id: 'western-avenue', name: 'Western Avenue', image: 'https://cdn.dripzyy.com/western-avenue.png' },
         ]
       },
       {
         title: 'Lingerie & Loungewear',
         items: [
-          { id: 'bras', name: 'Bras', image: 'https://cdn.dripzyy.com/bras.png' },
-          { id: 'briefs', name: 'Briefs', image: 'https://cdn.dripzyy.com/briefs.png' },
-          { id: 'lounge-pants', name: 'Lounge Pants', image: 'https://cdn.dripzyy.com/loungepants.png' },
-          { id: 'shapewear', name: 'Shapewear', image: 'https://cdn.dripzyy.com/shapewear.png' },
+          { id: 'bras', name: 'Bras', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/bras.png?v=1751656151' },
+          { id: 'briefs', name: 'Briefs', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/briefs.png?v=1751656150' },
+          { id: 'lounge-pants', name: 'Lounge Pants', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/loungepants.png?v=1751656142' },
+          { id: 'shapewear', name: 'Shapewear', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/shapewear.png?v=1751656139' },
         ]
       },
       {
         title: 'Sports Wear',
         items: [
-          { id: 'tshirts-sports', name: 'T-Shirts', image: 'https://cdn.dripzyy.com/sports_tshirts.png' },
-          { id: 'track-pants', name: 'Track Pants', image: 'https://cdn.dripzyy.com/sports_trackpants.png' },
-          { id: 'shorts-sports', name: 'Shorts', image: 'https://cdn.dripzyy.com/sports_shorts.png' },
-          { id: 'sweatshirts', name: 'Sweatshirts', image: 'https://cdn.dripzyy.com/sweatshirt.png' },
+          { id: 'tshirts-sports', name: 'T-Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports_tshirts.png?v=1751656161' },
+          { id: 'track-pants', name: 'Track Pants', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports_trackpants.png?v=1751656147' },
+          { id: 'shorts-sports', name: 'Shorts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports_shorts.png?v=1751656149' },
+          { id: 'sweatshirts', name: 'Sweatshirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sweatshirt.png?v=1751656156' },
         ]
       },
       {
         title: 'Gen-Z Fashion',
         items: [
-          { id: 'printed-dresses', name: 'Printed Dresses', image: 'https://cdn.dripzyy.com/printeddress.png' },
-          { id: 'flared-dresses', name: 'Flared Dresses', image: 'https://cdn.dripzyy.com/flareddress.png' },
-          { id: 'bodycon-dresses', name: 'Bodycon Dresses', image: 'https://cdn.dripzyy.com/bodycon.png' },
-          { id: 'maxi-dresses', name: 'Maxi Dresses', image: 'https://cdn.dripzyy.com/maxidress.png' },
-          { id: 'crop-tops', name: 'Crop Tops', image: 'https://cdn.dripzyy.com/crop.png' },
-          { id: 'floral-tops', name: 'Floral Tops', image: 'https://cdn.dripzyy.com/tops.png' },
-          { id: 'tank-tops', name: 'Tank Tops', image: 'https://cdn.dripzyy.com/tank.png' },
-          { id: 'printed-tees', name: 'Printed Tees', image: 'https://cdn.dripzyy.com/printedshirt.png' },
-          { id: 'oversized-tees', name: 'Oversized Tees', image: 'https://cdn.dripzyy.com/oversizedtshirt.png' },
-          { id: 'crop-tees', name: 'Crop Tees', image: 'https://cdn.dripzyy.com/crop.png' },
-          { id: 'oversized-shirts', name: 'Oversized Shirts', image: 'https://cdn.dripzyy.com/oversizedshirt.png' },
-          { id: 'printed-shirts', name: 'Printed Shirts', image: 'https://cdn.dripzyy.com/printed_shirt.png' },
-          { id: 'jeans-genz', name: 'Jeans', image: 'https://cdn.dripzyy.com/jeans.png' },
-          { id: 'mini-skirts', name: 'Mini Skirts', image: 'https://cdn.dripzyy.com/miniskirt.png' },
-          { id: 'slit-skirts', name: 'Slit Skirts', image: 'https://cdn.dripzyy.com/slit.png' },
-          { id: 'relaxed-fit-shorts', name: 'Relaxed Fit Shorts', image: 'https://cdn.dripzyy.com/relaxedfit.png' },
-          { id: 'cargos', name: 'Cargos', image: 'https://cdn.dripzyy.com/cargos.png' },
+          { id: 'printed-dresses', name: 'Printed Dresses', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/printeddress.png?v=1751656165' },
+          { id: 'flared-dresses', name: 'Flared Dresses', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/flareddress.png?v=1751656142' },
+          { id: 'bodycon-dresses', name: 'Bodycon Dresses', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/bodycon.png?v=1751656140' },
+          { id: 'maxi-dresses', name: 'Maxi Dresses', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/maxidress.png?v=1751656144' },
+          { id: 'crop-tops', name: 'Crop Tops', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/crop.png?v=1751656143' },
+          { id: 'floral-tops', name: 'Floral Tops', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tops.png?v=1751656150' },
+          { id: 'tank-tops', name: 'Tank Tops', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tank.png?v=1751656155' },
+          { id: 'printed-tees', name: 'Printed Tees', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/printedshirt.png?v=1751656164' },
+          { id: 'oversized-tees', name: 'Oversized Tees', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/oversizedtshirt.png?v=1751656155' },
+          { id: 'crop-tees', name: 'Crop Tees', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/crop.png?v=1751656143' },
+          { id: 'oversized-shirts', name: 'Oversized Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/oversizedshirt.png?v=1751656161' },
+          { id: 'printed-shirts', name: 'Printed Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/printed_shirt.png?v=1751656164' },
+          { id: 'jeans-genz', name: 'Jeans', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/jeans.png?v=1751656161' },
+          { id: 'mini-skirts', name: 'Mini Skirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/miniskirt.png?v=1751656146' },
+          { id: 'slit-skirts', name: 'Slit Skirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/slit.png?v=1751656162' },
+          { id: 'relaxed-fit-shorts', name: 'Relaxed Fit Shorts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/relaxedfit.png?v=1751656161' },
+          { id: 'cargos', name: 'Cargos', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/cargos.png?v=1751656165' },
         ]
       }
     ]
@@ -92,26 +92,26 @@ const categoriesData = [
       {
         title: 'Sports Wear',
         items: [
-          { id: 'tshirts-sports', name: 'T-Shirts', image: 'https://cdn.dripzyy.com/sports_tshirts.png' },
-          { id: 'track-pants-sports', name: 'Track Pants', image: 'https://cdn.dripzyy.com/sports_trackpants.png' },
-          { id: 'shorts-sports', name: 'Shorts', image: 'https://cdn.dripzyy.com/sports_shorts.png' },
-          { id: 'sweatshirts-sports', name: 'Sweatshirts', image: 'https://cdn.dripzyy.com/sweatshirt.png' },
+          { id: 'tshirts-sports', name: 'T-Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tshirts.png?v=1751656140' },
+          { id: 'track-pants-sports', name: 'Track Pants', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports_trackpants.png?v=1751656147' },
+          { id: 'shorts-sports', name: 'Shorts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/skirts.png?v=1751656151' },
+          { id: 'sweatshirts-sports', name: 'Sweatshirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sweatshirt.png?v=1751656156' },
         ]
       },
       {
         title: 'Gen-Z Fashion',
         items: [
-          { id: 'oversized-tees', name: 'Oversized Tees', image: 'https://cdn.dripzyy.com/oversizedtshirt.png' },
-          { id: 'polo-tshirts', name: 'Polo T-Shirts', image: 'https://cdn.dripzyy.com/polotshirt.png' },
-          { id: 'oversized-shirts', name: 'Oversized Shirts', image: 'https://cdn.dripzyy.com/oversizedshirt.png' },
-          { id: 'half-sleeve-shirts', name: 'Half Sleeve Shirts', image: 'https://cdn.dripzyy.com/halfsleeves.png' },
-          { id: 'printed-shirts', name: 'Printed Shirts', image: 'https://cdn.dripzyy.com/printed_shirt.png' },
-          { id: 'stripes-checks', name: 'Stripes & Checks', image: 'https://cdn.dripzyy.com/stripes.png' },
-          { id: 'jeans-genz', name: 'Jeans', image: 'https://cdn.dripzyy.com/jeans.png' },
-          { id: 'cargos', name: 'Cargos', image: 'https://cdn.dripzyy.com/cargos.png' },
-          { id: 'casual-trousers', name: 'Casual Trousers', image: 'https://cdn.dripzyy.com/trousers.png' },
-          { id: 'casual-shorts', name: 'Casual Shorts', image: 'https://cdn.dripzyy.com/casualshorts.png' },
-          { id: 'track-pants-genz', name: 'Track Pants', image: 'https://cdn.dripzyy.com/track.png' },
+          { id: 'oversized-tees', name: 'Oversized Tees', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/oversizedtshirt.png?v=1751656155' },
+          { id: 'polo-tshirts', name: 'Polo T-Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/polotshirt.png?v=1751656140' },
+          { id: 'oversized-shirts', name: 'Oversized Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/oversizedshirt.png?v=1751656161' },
+          { id: 'half-sleeve-shirts', name: 'Half Sleeve Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/halfsleeves.png?v=1751656140' },
+          { id: 'printed-shirts', name: 'Printed Shirts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/printed_shirt.png?v=1751656164' },
+          { id: 'stripes-checks', name: 'Stripes & Checks', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/stripes.png?v=1751656164' },
+          { id: 'jeans-genz', name: 'Jeans', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/jeans.png?v=1751656161' },
+          { id: 'cargos', name: 'Cargos', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/cargos.png?v=1751656165' },
+          { id: 'casual-trousers', name: 'Casual Trousers', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/trousers.png?v=1751656140' },
+          { id: 'casual-shorts', name: 'Casual Shorts', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/skirts.png?v=1751656151' },
+          { id: 'track-pants-genz', name: 'Track Pants', image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/track.webp?v=1751656055' },
         ]
       }
     ]
@@ -153,7 +153,7 @@ const Categories: React.FC = () => {
       }}>
         {/* Header */}
         <Header />
-        
+
         {/* Main content - small padding top for space below header */}
         <div className="pt-20">
           <div className="flex gap-0">
@@ -164,27 +164,25 @@ const Categories: React.FC = () => {
                   <div
                     key={category.id}
                     onClick={() => handleSidebarCategoryChange(category.id)}
-                    className={`mx-2 cursor-pointer transition-all ${
-                      selectedCategory === category.id 
-                        ? 'bg-pink-100 border-pink-200 border-2 shadow-sm' 
-                        : 'hover:bg-white/20 backdrop-blur-sm border-2 border-transparent'
-                    } rounded-xl p-2`}
+                    className={`mx-2 cursor-pointer transition-all ${selectedCategory === category.id
+                      ? 'bg-pink-100 border-pink-200 border-2 shadow-sm'
+                      : 'hover:bg-white/20 backdrop-blur-sm border-2 border-transparent'
+                      } rounded-xl p-2`}
                   >
                     <div className="flex flex-col items-center">
                       {/* Use custom image for women and men, icon for others - reduced size */}
                       {category.image && (
                         <div className="w-8 h-8 mb-1 rounded-full overflow-hidden">
-                          <img 
-                            src={category.image} 
-                            alt={category.name} 
-                            className="w-full h-full object-cover" 
+                          <img
+                            src={category.image}
+                            alt={category.name}
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       )}
-                      <span 
-                        className={`text-xs font-medium text-center leading-tight ${
-                          selectedCategory === category.id ? 'text-pink-600' : 'text-gray-600'
-                        }`}
+                      <span
+                        className={`text-xs font-medium text-center leading-tight ${selectedCategory === category.id ? 'text-pink-600' : 'text-gray-600'
+                          }`}
                         style={{ whiteSpace: 'pre-line' }}
                       >
                         {category.name}
@@ -205,10 +203,10 @@ const Categories: React.FC = () => {
                       <h2 className="font-bold text-gray-900 mb-1 text-base">{currentCategory.name}</h2>
                     </div>
                     <div className="flex items-center">
-                      <img 
-                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=80&fit=crop" 
-                        alt="Fashion Banner" 
-                        className="w-20 h-12 rounded-lg object-cover mr-2 shadow-sm" 
+                      <img
+                        src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=120&h=80&fit=crop"
+                        alt="Fashion Banner"
+                        className="w-20 h-12 rounded-lg object-cover mr-2 shadow-sm"
                       />
                       <ChevronRight className="w-5 h-5 text-gray-600" />
                     </div>
