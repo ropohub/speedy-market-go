@@ -101,37 +101,37 @@ const Index: React.FC = () => {
   // Category squares data with updated items
   const categorySquares = [{
     name: 'Women',
-    image: 'https://cdn.dripzyy.com/women1.jpg'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women1.jpg?v=1751896710'
   }, {
     name: 'Men',
-    image: 'https://cdn.dripzyy.com/men1.jpg'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/men1.jpg?v=1751896709'
   }, {
     name: 'Sports',
-    image: 'https://cdn.dripzyy.com/sports1.jpeg'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports1.jpg?v=1751896707'
   }, {
     name: 'T-Shirts',
     image: 'https://cdn.dripzyy.com/tshirt.png'
   }, {
     name: 'Crop Tops',
-    image: 'https://cdn.dripzyy.com/crop_top.jpg'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/crop_top.jpg?v=1751896712'
   }, {
     name: 'Jackets',
-    image: 'https://cdn.dripzyy.com/women_jacket.webp'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women_jacket.webp?v=1751896713'
   }];
 
   // Main category squares data for the promotional section with appropriate images
   const mainCategorySquares = [{
     name: 'Western Wear',
-    image: 'https://cdn.dripzyy.com/w_wear.jpg'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/w_wear.jpg?v=1751896708'
   }, {
     name: 'Lingerie',
-    image: 'https://cdn.dripzyy.com/bras.avif'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/bras.avif?v=1751896707'
   }, {
     name: 'Inner Wear',
-    image: 'https://cdn.dripzyy.com/p3.webp'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/p3.webp?v=1751896716'
   }, {
     name: 'Sports Wear',
-    image: 'https://cdn.dripzyy.com/w5.avif'
+    image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/w5.avif?v=1751896711'
   }];
   return <Layout cartItems={cartItems} onUpdateCartQuantity={handleUpdateCartQuantity} onRemoveCartItem={handleRemoveCartItem}>
       <div className="bg-white min-h-screen">
@@ -192,7 +192,7 @@ const Index: React.FC = () => {
                 />
                 
                 <div className="bg-white rounded-2xl overflow-hidden relative">
-                  <img src="https://cdn.dripzyy.com/hero_banner_main.png" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain relative z-10" />
+                  <img src="https://cdn.shopify.com/s/files/1/0804/5327/1586/files/hero_banner_main.png?v=1751896710" alt="Introducing Dripzy Fashion Delivery" className="w-full h-auto object-contain relative z-10" />
                 </div>
               </div>
             </div>
@@ -221,7 +221,7 @@ const Index: React.FC = () => {
               <div className="flex items-center justify-between mb-2">
                 {/* Left model image - updated URL */}
                 <div className="w-20 h-24 overflow-hidden">
-                  <img src="https://cdn.dripzyy.com/small_b1.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                  <img src="https://cdn.shopify.com/s/files/1/0804/5327/1586/files/small_b1.png?v=1751896835" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
                 
                 {/* Center text content */}
@@ -240,7 +240,7 @@ const Index: React.FC = () => {
                 
                 {/* Right model image - updated URL */}
                 <div className="w-20 h-24 overflow-hidden">
-                  <img src="https://cdn.dripzyy.com/small_b2.png" alt="Fashion Model" className="w-full h-full object-contain" />
+                  <img src="https://cdn.shopify.com/s/files/1/0804/5327/1586/files/small_b2.png?v=1751896834" alt="Fashion Model" className="w-full h-full object-contain" />
                 </div>
               </div>
               

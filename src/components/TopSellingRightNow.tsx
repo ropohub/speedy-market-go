@@ -16,21 +16,21 @@ const TopSellingRightNow: React.FC = () => {
     {
       id: '1',
       name: "Women's Innerwear",
-      image: 'https://cdn.dripzyy.com/briefs.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/briefs.jpg?v=1751896850',
       category: 'women',
       subcategory: 'bras'
     },
     {
       id: '2',
       name: "Men's Innerwear",
-      image: 'https://cdn.dripzyy.com/p3.webp',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/p3.webp?v=1751896716',
       category: 'men',
       subcategory: 'Lingerie & Loungewear'
     },
     {
       id: '3',
       name: "Men's T-Shirts",
-      image: 'https://cdn.dripzyy.com/tshirt.png',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tshirts.png?v=1751656140',
       category: 'men',
       subcategory: 'T-Shirts'
     },
