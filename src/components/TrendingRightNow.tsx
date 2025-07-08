@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFilter } from '../contexts/FilterContext';
-import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface TrendingCategory {
   id: string;
@@ -19,112 +18,112 @@ const TrendingRightNow: React.FC = () => {
     {
       id: '1',
       name: 'Oversized Tees',
-      image: 'https://cdn.dripzyy.com/i1.avif',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/i1.avif?v=1751896706',
       tag: 'Oversized Tees',
       genderTag: 'Men\'s Wear'
     },
     {
       id: '2',
       name: 'Crop Tops',
-      image: 'https://cdn.dripzyy.com/crop_top.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/crop_top.jpg?v=1751896712',
       tag: 'Crop Tops',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '3',
       name: 'Dresses',
-      image: 'https://cdn.dripzyy.com/dresses_.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/dresses.jpg?v=1751896711',
       tag: 'Dresses',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '4',
       name: 'Jeans',
-      image: 'https://cdn.dripzyy.com/women_jeans.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women_jeans.jpg?v=1751896710',
       tag: 'Jeans',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '5',
       name: 'Sports Wear',
-      image: 'https://cdn.dripzyy.com/sports1.jpeg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/sports1.jpg?v=1751896707',
       tag: 'Sports Wear',
       genderTag: 'Men\'s Wear'
     },
     {
       id: '6',
       name: 'T-Shirts',
-      image: 'https://cdn.dripzyy.com/tshirt.png',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tshirts.png?v=1751656140',
       tag: 'T-Shirts',
       genderTag: 'Men\'s Wear'
     },
     {
       id: '7',
       name: 'Shorts',
-      image: 'https://cdn.dripzyy.com/women_shorts.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women_shorts.avif?v=1751896708',
       tag: 'Shorts',
       genderTag: 'Men\'s Wear'
     },
     {
       id: '8',
       name: 'Jackets',
-      image: 'https://cdn.dripzyy.com/women_jacket.webp',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women_jacket.webp?v=1751896713',
       tag: 'Jackets',
       genderTag: 'Men\'s Wear'
     },
     {
       id: '9',
       name: 'Co-ords',
-      image: 'https://cdn.dripzyy.com/coords.webp',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/coords.webp?v=1751896706',
       tag: 'Co-ords',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '10',
       name: 'Mini Skirts',
-      image: 'https://cdn.dripzyy.com/skirt_mini.jpeg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/skirt_mini.jpg?v=1751896710',
       tag: 'Mini Skirts',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '11',
       name: 'Bras',
-      image: 'https://cdn.dripzyy.com/bras.avif',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/bras.avif?v=1751896707',
       tag: 'Bras',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '12',
       name: 'Briefs',
-      image: 'https://cdn.dripzyy.com/briefs.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/briefs.jpg?v=1751896850',
       tag: 'Briefs',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '13',
       name: 'Trousers',
-      image: 'https://cdn.dripzyy.com/trouser.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/trouser.jpg?v=1751896711',
       tag: 'Trousers',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '14',
       name: 'Cargos',
-      image: 'https://cdn.dripzyy.com/cargo.webp',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/cargo.webp?v=1751896710',
       tag: 'Cargos',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '15',
       name: 'Tank Tops',
-      image: 'https://cdn.dripzyy.com/tank_top.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/tank_top.jpg?v=1751896711',
       tag: 'Tank Tops',
       genderTag: 'Women\'s Wear'
     },
     {
       id: '16',
       name: 'Casual Wear',
-      image: 'https://cdn.dripzyy.com/women1.jpg',
+      image: 'https://cdn.shopify.com/s/files/1/0804/5327/1586/files/women1.jpg?v=1751896710',
       tag: 'Casual Wear',
       genderTag: 'Women\'s Wear'
     }
@@ -154,7 +153,7 @@ const TrendingRightNow: React.FC = () => {
         {/* Hero Section with banner image - no button */}
         <div className="relative rounded-3xl mb-6 overflow-hidden">
           <img 
-            src="https://cdn.dripzyy.com/trending_rn.png" 
+            src="https://cdn.shopify.com/s/files/1/0804/5327/1586/files/trending_rn.jpg?v=1751896720" 
             alt="Trending Right Now Banner" 
             className="w-full h-auto object-cover" 
           />
